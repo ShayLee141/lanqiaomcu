@@ -1,0 +1,125 @@
+C51 COMPILER V9.60.0.0   ONEWIRE                                                           03/20/2023 21:06:26 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE ONEWIRE
+OBJECT MODULE PLACED IN .\Objects\onewire.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE others\onewire.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\others) DEBUG OBJECTE
+                    -XTEND PRINT(.\Listings\onewire.lst) TABS(2) OBJECT(.\Objects\onewire.obj)
+
+line level    source
+
+   1          #include "onewire.h"
+   2          
+   3          //单总线内部延时函数
+   4          void Delay_OneWire(unsigned int t)  
+   5          {
+   6   1        t *= 8; //这个是我加的，原代码是在51单片机的环境下写的，15单片机速度要快，所以延时需要的数值要增加
+   7   1        while(t--);
+   8   1      }
+   9          
+  10          //单总线写操作
+  11          void Write_DS18B20(unsigned char dat)
+  12          {
+  13   1        unsigned char i;
+  14   1        for(i=0;i<8;i++)
+  15   1        {
+  16   2          EA = 0; //为了确保传输不被中断打断要在这里关中断
+  17   2          DQ = 0;
+  18   2          DQ = dat&0x01;
+  19   2          Delay_OneWire(5);
+  20   2          DQ = 1;
+  21   2          EA = 1; //重新打开中断
+  22   2          dat >>= 1;
+  23   2        }
+  24   1        Delay_OneWire(5);
+  25   1      }
+  26          
+  27          //单总线读操作
+  28          unsigned char Read_DS18B20(void)
+  29          {
+  30   1        unsigned char i;
+  31   1        unsigned char dat;
+  32   1        
+  33   1        for(i=0;i<8;i++)
+  34   1        {
+  35   2          EA = 0; //为了确保传输不被中断打断要在这里关中断
+  36   2          DQ = 0;
+  37   2          dat >>= 1;
+  38   2          DQ = 1;
+  39   2          Delay_OneWire(1);
+  40   2          if(DQ)
+  41   2          {
+  42   3            dat |= 0x80;
+  43   3          }
+  44   2          EA = 1; //重新打开中断
+  45   2          Delay_OneWire(5);
+  46   2        }
+  47   1        return dat;
+  48   1      }
+  49          
+  50          //DS18B20初始化
+  51          bit init_ds18b20(void)
+  52          {
+  53   1          bit initflag = 0;
+  54   1          
+C51 COMPILER V9.60.0.0   ONEWIRE                                                           03/20/2023 21:06:26 PAGE 2   
+
+  55   1          DQ = 1;
+  56   1          Delay_OneWire(12);
+  57   1          DQ = 0;
+  58   1          Delay_OneWire(80);
+  59   1          DQ = 1;
+  60   1          EA = 0; //为了确保传输不被中断打断要在这里关中断
+  61   1          Delay_OneWire(10); 
+  62   1          initflag = DQ;     
+  63   1          EA = 1; //重新打开中断
+  64   1          Delay_OneWire(5);
+  65   1        
+  66   1          return initflag;
+  67   1      }
+  68          
+  69          int16_t temperature = -11451;
+  70          
+  71          void rd_temperature(void)
+  72          {
+  73   1        uint8_t temp[2];
+  74   1        
+  75   1        if (init_ds18b20())
+  76   1          return ; //初始化不成功就直接返回
+  77   1        Write_DS18B20(0xCC);
+  78   1        Write_DS18B20(0x44);
+  79   1        
+  80   1        if (init_ds18b20())
+  81   1          return ; //初始化不成功就直接返回
+  82   1        Write_DS18B20(0xCC);
+  83   1        Write_DS18B20(0xBE);
+  84   1        
+  85   1        temp[1] = Read_DS18B20(); //低八位
+  86   1        temp[0] = Read_DS18B20(); //高八位
+  87   1        
+  88   1        temperature = (float)(*(int16_t*)temp) * 6.25F; //看不懂吧，看不懂就对咯
+  89   1        /* temp是个uint8_t类型的地址，
+  90   1           广义来说也可以叫uint8_t指针常量（固定指向一个地址的指针），
+  91   1           (uint16_t*)可以temp强制转换成int16_t指针常量，
+  92   1           *即取值，意思是将temp数组的两个成员直接按int16_t的方式读取，
+  93   1           之后在强制转换为float方便进行下一步浮点乘法运算，
+  94   1           正常情况下读到的值要乘0.0625才能得到摄氏温度，
+  95   1           但我想把结果扩大100倍就不用以float类型保存了，
+  96   1           所以乘的是6.25，F是指定这个数值是浮点数，
+  97   1           最后赋值给int16_t类型变量temperature，
+  98   1           直接把float转化为int16_t类型了 */
+  99   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    222    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       1
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

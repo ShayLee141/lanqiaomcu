@@ -1,0 +1,61 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              03/20/2023 21:06:26 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\others) DEBUG OBJECTEXTEND PRIN
+                    -T(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <STC15F2K60S2.H>
+   2          #include <intrins.h>
+   3          
+   4          #include "base.h"
+   5          #include "key.h"
+   6          #include "ultrasonic.h"
+   7          
+   8          #include "ds1302.h"
+   9          #include "onewire.h"
+  10          #include "iic.h"
+  11          
+  12          #include "test.h"
+  13          
+  14          int main(void)
+  15          {
+  16   1        P2 = 0x00;
+  17   1        CHANNLE(4, 0xFF);
+  18   1        CHANNLE(5, 0x00);
+  19   1        CHANNLE(6, 0x00);
+  20   1        CHANNLE(7, 0x00);
+  21   1        
+  22   1        Timer0Init();
+  23   1        Timer1Init();
+  24   1      //  TimerPCAInit();
+  25   1        
+  26   1        EA = 1;
+  27   1        
+  28   1        /* 测试的时候只能保留一个函数，因为每个函数里都有while(1) */
+  29   1      //  led_pwm_test();
+  30   1      //  key_test();
+  31   1      //  display_test();
+  32   1      //  ultrasonic_test();
+  33   1      //  e2prom_test();
+  34   1        temperature_test();
+  35   1        
+  36   1        return 0;
+  37   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     51    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

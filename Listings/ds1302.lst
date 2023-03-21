@@ -1,0 +1,136 @@
+C51 COMPILER V9.60.0.0   DS1302                                                            03/20/2023 10:31:12 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE DS1302
+OBJECT MODULE PLACED IN .\Objects\ds1302.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE others\ds1302.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\others) DEBUG OBJECTEX
+                    -TEND PRINT(.\Listings\ds1302.lst) TABS(2) OBJECT(.\Objects\ds1302.obj)
+
+line level    source
+
+   1          #include "ds1302.h"                   
+   2          
+   3          sbit SCK = P1^7; //这两句是从h文件移过来的
+   4          sbit SDA = P2^3;    
+   5          sbit RST = P1^3; 
+   6          
+   7          //写字节
+   8          void Write_Ds1302(unsigned  char temp) 
+   9          {
+  10   1        unsigned char i;
+  11   1        for (i=0;i<8;i++)       
+  12   1        { 
+  13   2          SCK = 0;
+  14   2          SDA = temp&0x01;
+  15   2          temp>>=1; 
+  16   2          SCK=1;
+  17   2        }
+  18   1      }   
+  19          
+  20          //向DS1302寄存器写入数据
+  21          void Write_Ds1302_Byte( unsigned char address,unsigned char dat )     
+  22          {
+  23   1        RST=0;  _nop_();
+  24   1        SCK=0;  _nop_();
+  25   1        RST=1;  _nop_();  
+  26   1        Write_Ds1302(address);  
+  27   1        Write_Ds1302(dat);    
+  28   1        RST=0; 
+  29   1      }
+  30          
+  31          //从DS1302寄存器读出数据
+  32          unsigned char Read_Ds1302_Byte ( unsigned char address )
+  33          {
+  34   1        unsigned char i,temp=0x00;
+  35   1        RST=0;  _nop_();
+  36   1        SCK=0;  _nop_();
+  37   1        RST=1;  _nop_();
+  38   1        Write_Ds1302(address);
+  39   1        for (i=0;i<8;i++)   
+  40   1        {   
+  41   2          SCK=0;
+  42   2          temp>>=1; 
+  43   2          if(SDA)
+  44   2          temp|=0x80; 
+  45   2          SCK=1;
+  46   2        } 
+  47   1        RST=0;  _nop_();
+  48   1        SCK=0;  _nop_();
+  49   1        SCK=1;  _nop_();
+  50   1        SDA=0;  _nop_();
+  51   1        SDA=1;  _nop_();
+  52   1        return (temp);      
+  53   1      }
+  54          
+C51 COMPILER V9.60.0.0   DS1302                                                            03/20/2023 10:31:12 PAGE 2   
+
+  55          /* 以上的文件内容均未修改，下面才是我加的 */
+  56          //                     时  分  秒  月  日  年 星期
+  57          uint8_t time_dec[] = { 23, 59, 55, 03, 16, 23, 04, }; //十进制
+  58          uint8_t time_hex[] = { 0x23, 0x59, 0x55, 0x03, 0x16, 0x23, 0x04, }; //十六进制
+  59          
+  60          /* 十进制转十六进制 */
+  61          void time_dec_to_hex()
+  62          {
+  63   1        uint8_t i = 6;
+  64   1        while(i--)
+  65   1        {
+  66   2          time_hex[i] = (time_dec[i] / 10) * 0x10 + time_dec[i] % 10;
+  67   2        }
+  68   1      }
+  69          
+  70          /* 十六进制转十进制 */
+  71          void time_hex_to_dec()
+  72          {
+  73   1        uint8_t i = 6;
+  74   1        while(i--)
+  75   1        {
+  76   2          time_dec[i] = (time_hex[i] / 0x10) * 10 + time_hex[i] % 0x10;
+  77   2        }
+  78   1      }
+  79          
+  80          void write_time(void)
+  81          {
+  82   1        time_dec_to_hex();
+  83   1        
+  84   1        Write_Ds1302_Byte(0x8E, 0x00); //解锁写保护
+  85   1        
+  86   1        Write_Ds1302_Byte(0x80, time_hex[2]); //秒
+  87   1        Write_Ds1302_Byte(0x82, time_hex[1]); //分
+  88   1        Write_Ds1302_Byte(0x84, time_hex[0]); //时
+  89   1        Write_Ds1302_Byte(0x86, time_hex[4]); //日
+  90   1        Write_Ds1302_Byte(0x88, time_hex[3]); //月
+  91   1        Write_Ds1302_Byte(0x8A, time_hex[6]); //星期
+  92   1        Write_Ds1302_Byte(0x8C, time_hex[5]); //年
+  93   1        
+  94   1        Write_Ds1302_Byte(0x8E, 0x80); //恢复写保护
+  95   1      }
+  96          
+  97          void read_time(void)
+  98          {
+  99   1        time_hex[2] = Read_Ds1302_Byte(0x81); //秒
+ 100   1        time_hex[1] = Read_Ds1302_Byte(0x83); //分
+ 101   1        time_hex[0] = Read_Ds1302_Byte(0x85); //时
+ 102   1        time_hex[4] = Read_Ds1302_Byte(0x87); //日
+ 103   1        time_hex[3] = Read_Ds1302_Byte(0x89); //月
+ 104   1        time_hex[6] = Read_Ds1302_Byte(0x8B); //星期
+ 105   1        time_hex[5] = Read_Ds1302_Byte(0x8D); //星期 //年
+ 106   1        
+ 107   1        time_hex_to_dec();
+ 108   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    303    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     14    ----
+C51 COMPILER V9.60.0.0   DS1302                                                            03/20/2023 10:31:12 PAGE 3   
+
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

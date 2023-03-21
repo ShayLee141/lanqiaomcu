@@ -1,0 +1,128 @@
+C51 COMPILER V9.60.0.0   HARDWARE                                                          01/24/2023 10:26:03 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE HARDWARE
+OBJECT MODULE PLACED IN .\Objects\hardware.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE hardware.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\
+                    -hardware.lst) TABS(2) OBJECT(.\Objects\hardware.obj)
+
+line level    source
+
+   1          #include <STC15F2K60S2.H>
+   2          
+   3          #include "hardware.h"
+   4          
+   5          /*************  本地常量声明    **************/
+   6          unsigned char code t_display[]={                       //标准字库
+   7          //   0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F
+   8              0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F,0x77,0x7C,0x39,0x5E,0x79,0x71,
+   9          //black  -     H    J    K    L    N    o   P    U     t    G    Q    r   M    y
+  10              0x00,0x40,0x76,0x1E,0x70,0x38,0x37,0x5C,0x73,0x3E,0x78,0x3d,0x67,0x50,0x37,0x6e,
+  11          //   0.   1.   2.   3.   4.   5.   6.   7.   8.   9.   -1
+  12              0xBF,0x86,0xDB,0xCF,0xE6,0xED,0xFD,0x87,0xFF,0xEF,0x46};
+  13          
+  14          unsigned char code T_COM[]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};      //位码
+  15          
+  16          void Timer1Init(void)   //10微秒@12.000MHz
+  17          {
+  18   1        AUXR |= 0x40;   //定时器时钟1T模式
+  19   1        TMOD &= 0x0F;   //设置定时器模式
+  20   1        TL1 = 0x88;   //设置定时初始值
+  21   1        TH1 = 0xFF;   //设置定时初始值
+  22   1        TF1 = 0;    //清除TF1标志
+  23   1        TR1 = 1;    //定时器1开始计时
+  24   1      }
+  25          
+  26          //void Timer1Init(void)   //100微秒@12.000MHz
+  27          //{
+  28          //  AUXR |= 0x40;   //定时器时钟1T模式
+  29          //  TMOD &= 0x0F;   //设置定时器模式
+  30          //  TL1 = 0x50;   //设置定时初始值
+  31          //  TH1 = 0xFB;   //设置定时初始值
+  32          //  TF1 = 0;    //清除TF1标志
+  33          //  TR1 = 1;    //定时器1开始计时
+  34          //}
+  35          
+  36          unsigned char dig_com = 0; //当前显示的数码管位
+  37          unsigned char dig_all[][8] = 
+  38          {
+  39            { 16, 16, 16, 16, 16, 16, 16, 16, },  //默认界面
+  40            { 2, 0, 2, 3, 0, 1, 1, 6, },          //测试界面
+  41            { 16, 16, 16, 16, 16, 16, 16, 16, },
+  42            { 16, 16, 16, 16, 16, 16, 16, 16, },
+  43            { 16, 16, 16, 16, 16, 16, 16, 16, },
+  44          };
+  45          unsigned char *dig = dig_all[1]; //默认为测试界面
+  46          
+  47          unsigned char led_state = 0; //每个led的状态
+  48          unsigned char led_pwm_cnt = 0;  //led的pwm计数器
+  49          unsigned char led_pwm_duty = 0; //led的pwm占空比
+  50          unsigned char led_pwm_period = 100; //led的pwm周期（单位就是定时器的周期，这里是10us）
+  51          
+  52          unsigned char high_power_state = 0; //大功率外设状态
+  53                                              //bit 0 - 3为步进电机驱动输出
+  54                                              //bit 4为继电器输出
+C51 COMPILER V9.60.0.0   HARDWARE                                                          01/24/2023 10:26:03 PAGE 2   
+
+  55                                              //bit 5为电机驱动输出
+  56                                              //bit 6为蜂鸣器输出
+  57          
+  58          unsigned char Timer1ms_cnt = 0;
+  59          unsigned char Timer10ms_cnt = 0;
+  60          unsigned char Timer200ms_cnt = 0;
+  61          unsigned char Timer200ms_cnt_1 = 0;
+  62          
+  63          void Timer1Isr(void) interrupt 3
+  64          {
+  65   1        if (++Timer1ms_cnt >= 100) //1ms
+  66   1        {
+  67   2          Timer1ms_cnt = 0;
+  68   2          
+  69   2          //数码管
+  70   2          CHANNLE(6, 0x00);
+  71   2          CHANNLE(7, ~t_display[dig[dig_com]]);
+  72   2          CHANNLE(6, T_COM[dig_com]);
+  73   2          if (++dig_com >= 8)
+  74   2          {
+  75   3            dig_com = 0;
+  76   3          }
+  77   2          
+  78   2          //大功率
+  79   2          if (++Timer200ms_cnt_1 >= 100)
+  80   2          {
+  81   3            Timer200ms_cnt_1 = 0;
+  82   3            CHANNLE(5, high_power_state);
+  83   3          }
+  84   2          
+  85   2          Timer10ms_cnt++;
+  86   2          Timer200ms_cnt++;
+  87   2        }
+  88   1        
+  89   1        //LED_PWM
+  90   1        if (led_pwm_cnt < led_pwm_duty) //有效电平
+  91   1        {
+  92   2          CHANNLE(4, ~led_state);
+  93   2        }
+  94   1        else //无效电平
+  95   1        {
+  96   2          CHANNLE(4, 0xFF); //关闭LED
+  97   2        }
+  98   1        if (++led_pwm_cnt >= led_pwm_period)
+  99   1        {
+ 100   2          led_pwm_cnt = 0;
+ 101   2        }
+ 102   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    200    ----
+   CONSTANT SIZE    =     51    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     53    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

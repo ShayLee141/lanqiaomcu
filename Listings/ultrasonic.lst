@@ -1,0 +1,142 @@
+C51 COMPILER V9.60.0.0   ULTRASONIC                                                        03/20/2023 12:55:59 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE ULTRASONIC
+OBJECT MODULE PLACED IN .\Objects\ultrasonic.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ultrasonic.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\others) DEBUG OBJECTEXTEN
+                    -D PRINT(.\Listings\ultrasonic.lst) TABS(2) OBJECT(.\Objects\ultrasonic.obj)
+
+line level    source
+
+   1          #include "ultrasonic.h"
+   2          
+   3          uint8_t ultrasonic_busy = 0;
+   4          
+   5          /* 如果你发现测距的量程很短，那你应该看看
+   6             下载的时候IRC频率有没有调成12.000MHz，
+   7             而不是来质疑我的代码 (>w<) */
+   8          void Delay13us()    //@12.000MHz
+   9          {
+  10   1        unsigned char i;
+  11   1      
+  12   1        _nop_();
+  13   1        _nop_();
+  14   1        i = 36;
+  15   1        while (--i);
+  16   1      }
+  17          
+  18          void TimerPCAInit()
+  19          {
+  20   1        CR = 0;   //停止定时器PCA
+  21   1        CCON = 0; //初始化PCA控制寄存器
+  22   1                  //PCA定时器停止
+  23   1                  //清除CF标志
+  24   1                  //清除模块中断标志
+  25   1        CMOD = 0x01;    //设置PCA时钟源 1MHz
+  26   1                        //开启PCA定时器溢出中断
+  27   1        CCAPM0 = 0x11;  //PCA模块0为下降沿触发
+  28   1                        //利用脉冲捕获来模拟P11下降沿外部中断
+  29   1      }
+  30          
+  31          /* P11，即超声波RX，一旦出现下降沿，
+  32             则说明已经收到返回的超声波，进入此中断 */
+  33          void TimerPCAIsr() interrupt 7
+  34          {
+  35   1        CR = 0; //优先结束计时
+  36   1        
+  37   1        /* 清除标志位 */
+  38   1        if (CCF0)
+  39   1          CCF0 = 0;
+  40   1        if (CCF1)
+  41   1          CCF1 = 0;
+  42   1        if (CCF2)
+  43   1          CCF2 = 0;
+  44   1        //这里没有清除CF标志位是以为要在read_distance函数中判断是否溢出
+  45   1        
+  46   1        ultrasonic_busy = 0;
+  47   1      }
+  48          
+  49          /* 超声波测距函数
+  50             每一次调用会先对上一次测距的数值进行换算，
+  51             再发送一组新的超声波，随后返回换算的值，
+  52             若调用的时候上一次测距未完成，则会直接跳过，
+  53             所以理论上可以连续调用不用间隔时间，
+  54             出于安全和全局考虑，还是建议读取间隔至少为100ms，
+C51 COMPILER V9.60.0.0   ULTRASONIC                                                        03/20/2023 12:55:59 PAGE 2   
+
+  55             可根据需要更改（100ms效果已经很好了，太快没啥用哈哈） */
+  56          uint16_t read_distance()
+  57          {
+  58   1        static uint16_t distance = 0;
+  59   1        /* 实际上distance不可能为0，所以用0作为初值，
+  60   1           可以识别是否为开机第一次测距离 */
+  61   1        
+  62   1        if (!ultrasonic_busy) //如果正处于发送阶段则直接跳过
+  63   1        {
+  64   2          /* 距离换算 */
+  65   2          if (distance)
+  66   2          /* 如果是开机第一次测距，则会跳过if里的内容，
+  67   2             执行后面else里的distance = 1，确保第一次测距不会
+  68   2             进行距离换算，进而不会得到错误的结果 */
+  69   2          {
+  70   3            if (CF) //如果计数溢出了表面超出量程了
+  71   3            {
+  72   4              CF = 0;
+  73   4              distance = DISTANCE_OUTRANG;
+  74   4            }
+  75   3            else //没有超量程则要进行
+  76   3            {
+  77   4              led_state |= 0x80;
+  78   4              distance = CCAP0H;
+  79   4              distance <<= 8;
+  80   4              distance |= CCAP0L;
+  81   4              distance -= 0x8D1C; //减掉定时器初值，减去初值原因在设置初值的地方有注解
+  82   4              distance = (float)distance * 0.017;
+  83   4            }
+  84   3          }
+  85   2          else
+  86   2            distance = 1;
+  87   2          
+  88   2          /* 启动超声波发送 */
+  89   2          EA = 0; //我们有个定时器是10微秒的，对这个一定会有影响，所以要先关闭中断
+  90   2          P10 = 1; Delay13us(); P10 = 0; Delay13us(); //高电平在前低电平在后
+  91   2          P10 = 1; Delay13us(); P10 = 0; Delay13us();
+  92   2          P10 = 1; Delay13us(); P10 = 0; Delay13us();
+  93   2          P10 = 1; Delay13us(); P10 = 0; Delay13us();
+  94   2          P10 = 1; Delay13us(); P10 = 0; Delay13us();
+  95   2          P10 = 1; Delay13us(); P10 = 0; Delay13us();
+  96   2          P10 = 1; Delay13us(); P10 = 0; Delay13us();
+  97   2          P10 = 1; Delay13us(); P10 = 0;
+  98   2          EA = 1; //不关中断会减少量程
+  99   2          
+ 100   2          /* 启动定时器 */
+ 101   2          CL = 0x1C;    //设置定时初始值
+ 102   2          CH = 0x8D;    //设置定时初始值
+ 103   2          /* 经过测试，板子能测的最长距离是4米（至少我这块板子是这样），
+ 104   2             而定时器的理论量程远超4米，所以设置初值的意义在于缩短量程
+ 105   2             （大概缩减到5米），以此来减少不必要的测量时间，
+ 106   2             所以超声波传播的时间就是终值减初值 */
+ 107   2          CF = 0;   //清除CF标志
+ 108   2          CR = 1;   //定时器开始计时
+ 109   2          
+ 110   2          ultrasonic_busy = 1; //只有中断7才能重新置零
+ 111   2        }
+ 112   1        
+ 113   1        return distance;
+ 114   1      }
+
+
+C51 COMPILER V9.60.0.0   ULTRASONIC                                                        03/20/2023 12:55:59 PAGE 3   
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    197    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
