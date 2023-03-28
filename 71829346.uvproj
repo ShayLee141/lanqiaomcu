@@ -401,6 +401,11 @@
               <FileType>1</FileType>
               <FilePath>.\base.c</FilePath>
             </File>
+            <File>
+              <FileName>filter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\filter.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -1,0 +1,27 @@
+C51 COMPILER V9.60.0.0   MEDIAN_FILTER                                                     03/25/2023 12:12:30 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MEDIAN_FILTER
+OBJECT MODULE PLACED IN .\Objects\median_filter.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE median_filter.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\others) DEBUG OBJECTEX
+                    -TEND PRINT(.\Listings\median_filter.lst) TABS(2) OBJECT(.\Objects\median_filter.obj)
+
+line level    source
+
+   1          #include "median_filter.h"
+   2          
+   3          void median_filter();
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

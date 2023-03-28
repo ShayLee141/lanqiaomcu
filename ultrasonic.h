@@ -13,4 +13,6 @@
 void TimerPCAInit();
 uint16_t read_distance();
 
+extern uint16_t distance;
+
 #endif

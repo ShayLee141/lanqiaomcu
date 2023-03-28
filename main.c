@@ -6,8 +6,10 @@
 #include "ultrasonic.h"
 
 #include "ds1302.h"
-#include "onewire.h"
 #include "iic.h"
+
+#include "myint.h"
+#include "filter.h"
 
 #include "test.h"
 
@@ -21,17 +23,16 @@ int main(void)
 	
 	Timer0Init();
 	Timer1Init();
-//	TimerPCAInit();
+	TimerPCAInit();
 	
 	EA = 1;
+
+	test(); //模块测试可以使用这个函数，函数里有一个死循环，不会执行后面的while(1)，正常模板没有这句
 	
-	/* 测试的时候只能保留一个函数，因为每个函数里都有while(1) */
-//	led_pwm_test();
-//	key_test();
-	display_test();
-//	ultrasonic_test();
-//	e2prom_test();
-//	temperature_test();
+	while(1)
+	{
+		;
+	}
 	
-	return 0;
+//	return 0;
 }

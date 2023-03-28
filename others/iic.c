@@ -1,254 +1,210 @@
+/*	#   I2Cä»£ç ç‰‡æ®µè¯´æ˜
+	1. 	æœ¬æ–‡ä»¶å¤¹ä¸­æä¾›çš„é©±åŠ¨ä»£ç ä¾›å‚èµ›é€‰æ‰‹å®Œæˆç¨‹åºè®¾è®¡å‚è€ƒã€‚
+	2. 	å‚èµ›é€‰æ‰‹å¯ä»¥è‡ªè¡Œç¼–å†™ç›¸å…³ä»£ç æˆ–ä»¥è¯¥ä»£ç ä¸ºåŸºç¡€ï¼Œæ ¹æ®æ‰€é€‰å•ç‰‡æœºç±»å‹ã€è¿è¡Œé€Ÿåº¦å’Œè¯•é¢˜
+		ä¸­å¯¹å•ç‰‡æœºæ—¶é’Ÿé¢‘ç‡çš„è¦æ±‚ï¼Œè¿›è¡Œä»£ç è°ƒè¯•å’Œä¿®æ”¹ã€‚
+*/
+
 #include "iic.h"
 
-sbit SDA = P2^1; //ÕâÁ½¾äÊÇ´ÓhÎÄ¼şÒÆ¹ıÀ´µÄ
-sbit SCL = P2^0;
+#define DELAY_TIME	5
 
-#define DELAY_TIME 5
+sbit scl = P2^0;
+sbit sda = P2^1;
 
-//I2C×ÜÏßÄÚ²¿ÑÓÊ±º¯Êı
-void IIC_Delay(unsigned char i)
+//
+static void I2C_Delay(unsigned char n)
 {
-    do{_nop_();}
-    while(i--);        
+    do
+    {
+        _nop_();_nop_();_nop_();_nop_();_nop_();
+        _nop_();_nop_();_nop_();_nop_();_nop_();
+        _nop_();_nop_();_nop_();_nop_();_nop_();		
+    }
+    while(n--);      	
 }
 
-//I2C×ÜÏßÆô¶¯ĞÅºÅ
-void IIC_Start(void)
+//
+void I2CStart(void)
 {
-    SDA = 1;
-    SCL = 1;
-    IIC_Delay(DELAY_TIME);
-    SDA = 0;
-    IIC_Delay(DELAY_TIME);
-    SCL = 0;	
+    sda = 1;
+    scl = 1;
+	I2C_Delay(DELAY_TIME);
+    sda = 0;
+	I2C_Delay(DELAY_TIME);
+    scl = 0;    
 }
 
-//I2C×ÜÏßÍ£Ö¹ĞÅºÅ
-void IIC_Stop(void)
+//
+void I2CStop(void)
 {
-    SDA = 0;
-    SCL = 1;
-    IIC_Delay(DELAY_TIME);
-    SDA = 1;
-    IIC_Delay(DELAY_TIME);
+    sda = 0;
+    scl = 1;
+	I2C_Delay(DELAY_TIME);
+    sda = 1;
+	I2C_Delay(DELAY_TIME);
 }
 
-//·¢ËÍÓ¦´ğ»ò·ÇÓ¦´ğĞÅºÅ
-void IIC_SendAck(bit ackbit)
-{
-    SCL = 0;
-    SDA = ackbit;  					
-    IIC_Delay(DELAY_TIME);
-    SCL = 1;
-    IIC_Delay(DELAY_TIME);
-    SCL = 0; 
-    SDA = 1;
-    IIC_Delay(DELAY_TIME);
-}
-
-//µÈ´ıÓ¦´ğ
-bit IIC_WaitAck(void)
-{
-    bit ackbit;
-	
-    SCL  = 1;
-    IIC_Delay(DELAY_TIME);
-    ackbit = SDA;
-    SCL = 0;
-    IIC_Delay(DELAY_TIME);
-    return ackbit;
-}
-
-//I2C×ÜÏß·¢ËÍÒ»¸ö×Ö½ÚÊı¾İ
-void IIC_SendByte(unsigned char byt)
+// å‘é€å­—èŠ‚
+void I2CSendByte(unsigned char byt)
 {
     unsigned char i;
-
-    for(i=0; i<8; i++)
-    {
-        SCL  = 0;
-        IIC_Delay(DELAY_TIME);
-        if(byt & 0x80) SDA  = 1;
-        else SDA  = 0;
-        IIC_Delay(DELAY_TIME);
-        SCL = 1;
+	
+    for(i=0; i<8; i++){
+        scl = 0;
+		I2C_Delay(DELAY_TIME);
+        if(byt & 0x80){
+            sda = 1;
+        }
+        else{
+            sda = 0;
+        }
+		I2C_Delay(DELAY_TIME);
+        scl = 1;
         byt <<= 1;
-        IIC_Delay(DELAY_TIME);
+		I2C_Delay(DELAY_TIME);
     }
-    SCL  = 0;  
+	
+    scl = 0;  
 }
 
-//I2C×ÜÏß½ÓÊÕÒ»¸ö×Ö½ÚÊı¾İ
-unsigned char IIC_RecByte(void)
+// æ¥æ”¶å­—èŠ‚
+unsigned char I2CReceiveByte(void)
 {
-    unsigned char i, da;
-    for(i=0; i<8; i++)
-    {   
-    	SCL = 1;
-	IIC_Delay(DELAY_TIME);
-	da <<= 1;
-	if(SDA) da |= 1;
-	SCL = 0;
-	IIC_Delay(DELAY_TIME);
-    }
-    return da;    
+	unsigned char da;
+	unsigned char i;
+	for(i=0;i<8;i++){   
+		scl = 1;
+		I2C_Delay(DELAY_TIME);
+		da <<= 1;
+		if(sda) 
+			da |= 0x01;
+		scl = 0;
+		I2C_Delay(DELAY_TIME);
+	}
+	return da;    
 }
 
-/**** ¡ü¡ü¡ü ÒÔÉÏ´úÂë¾ùÎ´ĞŞ¸Ä£¬ÏÂÃæÊÇ×Ô¼º¼ÓµÄ ¡ı¡ı¡ı ********/
-
-/****************** ¡ı¡ı¡ı PCF8591 ¡ı¡ı¡ı ******************/
-uint8_t dac_level = 0; //µ±Ç°dacÊä³öµÈ¼¶
-uint8_t control_byte = 0x04;
-//ÓĞ¹ØÕâ¸ö±äÁ¿µÄÉèÖÃ£¬Çë¼ûPCF0591µÄÊı¾İÊÖ²á£¬CONTROL BYTE
-
-/* dacÊä³ö */
-void write_dac(void)
+// ç­‰å¾…å›åº”
+unsigned char I2CWaitAck(void)
 {
-	control_byte |= 0x40;
+	unsigned char ackbit;
 	
-	IIC_Start();
-	IIC_SendByte(0x90);
-	IIC_WaitAck();
-	IIC_SendByte(control_byte);
-	IIC_WaitAck();
-	IIC_SendByte(dac_level);
-	IIC_Stop();
+    scl = 1;
+	I2C_Delay(DELAY_TIME);
+    ackbit = sda; 
+    scl = 0;
+	I2C_Delay(DELAY_TIME);
+	
+	return ackbit;
 }
 
-/* Í£Ö¹dacÊä³ö */
-void stop_dac(void)
+// å‘é€å›åº”
+void I2CSendAck(unsigned char ackbit)
 {
-	control_byte &= ~0x40;
-	
-	IIC_Start();
-	IIC_SendByte(0x90);
-	IIC_WaitAck();
-	IIC_SendByte(control_byte);
-	IIC_Stop();
+    scl = 0;
+    sda = ackbit; 
+	I2C_Delay(DELAY_TIME);
+    scl = 1;
+	I2C_Delay(DELAY_TIME);
+    scl = 0; 
+	sda = 1;
+	I2C_Delay(DELAY_TIME);
 }
 
-uint8_t adc_level[4] = { 0 }; //¶ÔÓ¦4¸öadcÍ¨µÀ
-/* adc²É¼¯ */
-void read_adc(void)
+/* ------------------at24c02----------------- */
+void e2prom_write(uint8_t addr, uint8_t *Data, uint8_t len)
 {
-	IIC_Start();
-	IIC_SendByte(0x90);
-	IIC_WaitAck();
-	IIC_SendByte(control_byte);
-	IIC_WaitAck();
-	
-	IIC_Start();
-	IIC_SendByte(0x91);
-	IIC_WaitAck();
-	
-	IIC_RecByte(); //Ô¤¶Á
-	IIC_SendAck(0);
-	//ADCÃ¿Ò»´Î¶ÁÊı¶¼ÊÇÉÏÒ»´Î²ÉÑùµÄÖµ£¬
-	//²¢ÇÒÒòÎªÎÒÃÇ¿ªÆôÁËÍ¨µÀÍ¨µÀÊı×ÔÔöµÄ¶Á·¨£¬
-	//»áµ¼ÖÂ·µ»ØµÄÖµ²»ÊÇÎÒÃÇÏëÒªµÄÍ¨µÀ£¬
-	//ËùÒÔÕâÀïµÄÔ¤¶Á½öÎªÁËÈÃĞ¾Æ¬²ÉÑù£¬¶ø²»±£Áô¶ÁÊı
-	
-	adc_level[0] = IIC_RecByte();
-	IIC_SendAck(0);
-	adc_level[1] = IIC_RecByte();
-	IIC_SendAck(0);
-	adc_level[2] = IIC_RecByte();
-	IIC_SendAck(0);
-	adc_level[3] = IIC_RecByte();
-	IIC_Stop(); //×îºóÒ»´Î¶Á¿ÉÒÔÖ±½Ó½áÊø£¬ÎŞĞè·¢Ó¦´ğĞÅºÅ
-}
-/****************** ¡ü¡ü¡ü PCF8591 ¡ü¡ü¡ü ******************/
-
-/****************** ¡ı¡ı¡ı AT24C02 ¡ı¡ı¡ı ******************/
-/* µ¥×Ö½ÚĞ´Èë£¨ĞÂÊÖÕÆÎÕÕâ¸ö¼´¿É£¬Ê¡Èü¶àÊı¿¼µÄµ¥×Ö½Ú²Ù×÷£©
-   addr£º	Ä¿±êµØÖ·
-   Data£º	Ğ´ÈëÊı¾İµÄÖ¸Õë
-   £¨ÆäÊµDataÖ±½ÓÓÃ±äÁ¿£¬²»ÓÃÖ¸ÕëÒ²ĞĞ£¬Ö»ÊÇÎªÁËºÍºóÃæµÄÍ³Ò»£© */
-void write_e2prom_single_byte(uint8_t addr, uint8_t *Data)
-{
-	IIC_Start();
-	IIC_SendByte(0xA0);
-	IIC_WaitAck();
-	
-	IIC_SendByte(addr); //È·¶¨Ä¿±êµØÖ·
-	IIC_WaitAck();
-	
-	IIC_SendByte(*Data); //Ğ´ÈëÊı¾İ
-	IIC_WaitAck();
-	
-	IIC_Stop();
-}
-
-/* µ¥×Ö½Ú¶ÁÈ¡£¨ĞÂÊÖÕÆÎÕÕâ¸ö¼´¿É£¬Ê¡Èü¶àÊı¿¼µÄµ¥×Ö½Ú²Ù×÷£©
-   addr£º	Ä¿±êµØÖ·
-   Data£º¶ÁÈ¡Êı¾İµÄÖ¸Õë
-   £¨Õâ¸öDataÖ»ÄÜÓÃÖ¸Õë£¬²»ÄÜ¸Ä³É±äÁ¿£© */
-void read_e2prom_single_byte(uint8_t addr, uint8_t *Data)
-{
-	IIC_Start();
-	IIC_SendByte(0xA0);
-	IIC_WaitAck();
-	
-	IIC_SendByte(addr); //È·¶¨Ä¿±êµØÖ·
-	IIC_WaitAck();
-	
-	IIC_Start();
-	IIC_SendByte(0xA1);
-	IIC_WaitAck();
-	
-	*Data = IIC_RecByte(); //¶ÁÈ¡Êı¾İ
-	
-	IIC_Stop();
-}
-
-/* ¶à×Ö½ÚĞ´Èë£¨Ñ§ÓĞÓàÁ¦µÄÖ±½ÓÕÆÎÕÕâ¸ö£¬¿ÉÒÔÈ¡´úµ¥×Ö½ÚĞ´Èë£¬ÆäÊµÒ²ÊÇÃ»Ê²Ã´ÄÑ¶ÈµÄ£¬¾ÍÊÇÑ­»·ÄÇÀïÒªÀí½âÒ»ÏÂ£©
-   addr£º	Ä¿±êµØÖ·
-   Data£º	Ğ´ÈëÊı¾İµÄÖ¸Õë
-   len£º	Ğ´Èë×Ö½ÚÊı */
-void write_e2prom(uint8_t addr, uint8_t *Data, uint8_t len)
-{
-	IIC_Start();
-	IIC_SendByte(0xA0);
-	IIC_WaitAck();
-	
-	IIC_SendByte(addr); //È·¶¨Ä¿±êµØÖ·
-	IIC_WaitAck();
-	
+	I2CStart();
+	I2CSendByte(0xA0);
+	I2CWaitAck();
+	I2CSendByte(addr);
+	I2CWaitAck();
 	while(len--)
 	{
-		IIC_SendByte(*Data);
-		IIC_WaitAck();
-		Data++; //Ö¸Õë×Ô¼Ó£¬ËùÖ¸ÏòµÄµØÖ·Ôò»áÌøµ½ÏÂÒ»¸ö×Ö½Ú
+		I2CSendByte(*Data);
+		I2CWaitAck();
+		Data++;
 	}
-	
-	IIC_Stop();
+	I2CStop();
+	I2C_Delay(DELAY_TIME);
 }
 
-/* ¶à×Ö½Ú¶ÁÈ¡£¨Ñ§ÓĞÓàÁ¦µÄÖ±½ÓÕÆÎÕÕâ¸ö£¬¿ÉÒÔÈ¡´úµ¥×Ö½Ú¶ÁÈ¡£¬ÆäÊµÒ²ÊÇÃ»Ê²Ã´ÄÑ¶ÈµÄ£¬¾ÍÊÇÑ­»·ÄÇÀïÒªÀí½âÒ»ÏÂ£©
-   addr£º	Ä¿±êµØÖ·
-   Data£º	¶ÁÈ¡Êı¾İµÄÖ¸Õë
-   len£º	¶ÁÈ¡×Ö½ÚÊı */
-void read_e2prom(uint8_t addr, uint8_t *Data, uint8_t len)
+void e2prom_read(uint8_t addr, uint8_t *Data, uint8_t len)
 {
-	IIC_Start();
-	IIC_SendByte(0xA0);
-	IIC_WaitAck();
+	I2CStart();
+	I2CSendByte(0xA0);
+	I2CWaitAck();
+	I2CSendByte(addr);
+	I2CWaitAck();
 	
-	IIC_SendByte(addr); //È·¶¨Ä¿±êµØÖ·
-	IIC_WaitAck();
+	I2CStart();
+	I2CSendByte(0xA1);
+	I2CWaitAck();
 	
-	IIC_Start();
-	IIC_SendByte(0xA1);
-	IIC_WaitAck();
-	
-	loop: //ºÍÏÂÃæµÄgoto½áºÏ×ö³ÉÑ­»·£¬Ë¼À´ÏëÈ¥»¹ÊÇgoto×öÕâ¸öÑ­»·×î¼òµ¥
-	*Data = IIC_RecByte(); //¶ÁÈ¡Êı¾İ
-	if (--len) //×îºóÒ»´Î½ÓÊÕ²»ĞèÒª·¢Ó¦´ğ¿ÉÒÔÖ±½Óstop
+	loop:
+	*Data = I2CReceiveByte();
+	if (--len)
 	{
-		IIC_SendAck(0);
+		I2CSendAck(0); //å‘é€åº”ç­”
 		Data++;
 		goto loop;
 	}
+	I2CSendAck(1); //å‘é€éåº”ç­”
+	I2CStop();
+}
+
+/* ------------------pcf8591----------------- */
+uint8_t control_byte = 0x04;
+uint8_t dac_level = 0; //å½“å‰dacè¾“å‡ºçš„ç­‰çº§ï¼Œè¾“å‡ºå‰å…ˆä¿®æ”¹è¿™ä¸ªå€¼å†è°ƒç”¨è¾“å‡ºå‡½æ•°
+uint8_t adc_level[4] = { 0 };
+
+void dac_out(void)
+{
+	control_byte |= 0x40; //å¼€å¯dacè¾“å‡º
 	
-	IIC_Stop();
+	I2CStart();
+	I2CSendByte(0x90);
+	I2CWaitAck();
+	I2CSendByte(control_byte);
+	I2CWaitAck();
+	I2CSendByte(dac_level);
+	I2CWaitAck();
+	I2CStop();
+}
+
+void dac_stop(void)
+{
+	control_byte &= ~0x40; //å…³é—­dacè¾“å‡º
+	
+	I2CStart();
+	I2CSendByte(0x90);
+	I2CWaitAck();
+	I2CSendByte(control_byte);
+	I2CWaitAck();
+	I2CStop();
+}
+
+void adc_read(void)
+{
+	I2CStart();
+	I2CSendByte(0x90);
+	I2CWaitAck();
+	I2CSendByte(control_byte);
+	I2CWaitAck();
+	
+	I2CStart();
+	I2CSendByte(0x91);
+	I2CWaitAck();
+	
+	I2CReceiveByte(); //ç¬¬ä¸€æ¬¡è¯»å–çš„æ•°æ®ä¸è¦ä½¿ç”¨
+	I2CSendAck(0); //å‘é€åº”ç­”
+	adc_level[0] = I2CReceiveByte();
+	I2CSendAck(0); //å‘é€åº”ç­”
+	adc_level[1] = I2CReceiveByte();
+	I2CSendAck(0); //å‘é€åº”ç­”
+	adc_level[2] = I2CReceiveByte();
+	I2CSendAck(0); //å‘é€åº”ç­”
+	adc_level[3] = I2CReceiveByte();
+	I2CSendAck(1); //å‘é€éåº”ç­”
+	I2CStop();
 }

@@ -1,0 +1,97 @@
+C51 COMPILER V9.60.0.0   FILTER                                                            03/28/2023 16:55:20 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE FILTER
+OBJECT MODULE PLACED IN .\Objects\filter.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE filter.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\others) DEBUG OBJECTEXTEND PR
+                    -INT(.\Listings\filter.lst) TABS(2) OBJECT(.\Objects\filter.obj)
+
+line level    source
+
+   1          #include "filter.h"
+   2          
+   3          void swap(uint16_t *a, uint16_t *b)
+   4          {
+   5   1        uint16_t c = *a;
+   6   1        *a = *b;
+   7   1        *b = c;
+   8   1      }
+   9          
+  10          /* 只是一个很简陋的中值滤波，返回数据集的中位数，
+  11             不过请注意，传入的数据只能是3个，不能多也不能少，
+  12             虽然简陋，但是用在温度、超声波、adc、频率的读取，
+  13             效果都是很稳定的，可以从软件层面上
+  14             解决数据偶尔读取错误的问题 */
+  15          uint16_t median_filter(uint16_t *Data)
+  16          {
+  17   1        uint16_t temp1;
+  18   1        uint16_t temp2;
+  19   1        
+  20   1        temp1 = MAX(*(Data + 0), *(Data + 1));
+  21   1        if (temp1 <= *(Data + 2))
+  22   1          return temp1;
+  23   1        else
+  24   1        {
+  25   2          temp2 = MIN(*(Data + 0), *(Data + 1));
+  26   2          return MAX(temp2, *(Data + 2));
+  27   2        }
+  28   1      }
+  29          
+  30          ///* 简单的冒泡排序 */
+  31          //void sort(uint16_t *Data, uint16_t len)
+  32          //{
+  33          //  int i, j;
+  34          //  
+  35          //  for (i = 0; i < len; i++)
+  36          //  {
+  37          //    for (j = i + 1; j < len; j++)
+  38          //    {
+  39          //      if (*(Data + i) > *(Data + j))
+  40          //        swap((Data + i), (Data + j));
+  41          //    }
+  42          //  }
+  43          //}
+  44          
+  45          ///* 只是一个简单的中值滤波，返回这些数据的中位数 */
+  46          //uint16_t median_filter(uint16_t *Data, uint16_t len)
+  47          //{
+  48          //  uint16_t Data_bak[20];
+  49          //  uint16_t Data_out;
+  50          //  uint32_t sum = 0;
+  51          //  
+  52          //  memcpy(Data_bak, Data, sizeof(uint16_t) * len);
+  53          //  
+  54          //  sort(Data_bak, len);
+C51 COMPILER V9.60.0.0   FILTER                                                            03/28/2023 16:55:20 PAGE 2   
+
+  55          //  
+  56          //  Data_out = Data_bak[len - (len / 2)];
+  57          //  
+  58          //  return Data_out;
+  59          //}
+  60          
+  61          /* 只是一个简单的均值滤波，计算平均值 */
+  62          uint16_t average_filter(uint16_t *Data, uint16_t len)
+  63          {
+  64   1        uint32_t sum = 0;
+  65   1        uint16_t i;
+  66   1        
+  67   1        for (i = 0; i < len; i++)
+  68   1          sum += *(Data + i);
+  69   1        
+  70   1        return sum / len;
+  71   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    263    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      14
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,15 +1,21 @@
-#include "ds1302.h"  									
+/*	# 	DS1302ä»£ç ç‰‡æ®µè¯´æ˜
+	1. 	æœ¬æ–‡ä»¶å¤¹ä¸­æä¾›çš„é©±åŠ¨ä»£ç ä¾›å‚èµ›é€‰æ‰‹å®Œæˆç¨‹åºè®¾è®¡å‚è€ƒã€‚
+	2. 	å‚èµ›é€‰æ‰‹å¯ä»¥è‡ªè¡Œç¼–å†™ç›¸å…³ä»£ç æˆ–ä»¥è¯¥ä»£ç ä¸ºåŸºç¡€ï¼Œæ ¹æ®æ‰€é€‰å•ç‰‡æœºç±»å‹ã€è¿è¡Œé€Ÿåº¦å’Œè¯•é¢˜
+		ä¸­å¯¹å•ç‰‡æœºæ—¶é’Ÿé¢‘ç‡çš„è¦æ±‚ï¼Œè¿›è¡Œä»£ç è°ƒè¯•å’Œä¿®æ”¹ã€‚
+*/								
 
-sbit SCK = P1^7; //ÕâÁ½¾äÊÇ´ÓhÎÄ¼şÒÆ¹ıÀ´µÄ
-sbit SDA = P2^3;		
-sbit RST = P1^3; 
+#include "ds1302.h"
 
-//Ğ´×Ö½Ú
+sbit SCK = P1^7;
+sbit SDA = P2^3;
+sbit RST = P1^3;
+
+//
 void Write_Ds1302(unsigned  char temp) 
 {
 	unsigned char i;
-	for (i=0;i<8;i++)     	
-	{ 
+	for (i=0;i<8;i++)
+	{
 		SCK = 0;
 		SDA = temp&0x01;
 		temp>>=1; 
@@ -17,7 +23,7 @@ void Write_Ds1302(unsigned  char temp)
 	}
 }   
 
-//ÏòDS1302¼Ä´æÆ÷Ğ´ÈëÊı¾İ
+//
 void Write_Ds1302_Byte( unsigned char address,unsigned char dat )     
 {
  	RST=0;	_nop_();
@@ -28,7 +34,7 @@ void Write_Ds1302_Byte( unsigned char address,unsigned char dat )
  	RST=0; 
 }
 
-//´ÓDS1302¼Ä´æÆ÷¶Á³öÊı¾İ
+//
 unsigned char Read_Ds1302_Byte ( unsigned char address )
 {
  	unsigned char i,temp=0x00;
@@ -52,57 +58,40 @@ unsigned char Read_Ds1302_Byte ( unsigned char address )
 	return (temp);			
 }
 
-/* ÒÔÉÏµÄÎÄ¼şÄÚÈİ¾ùÎ´ĞŞ¸Ä£¬ÏÂÃæ²ÅÊÇÎÒ¼ÓµÄ */
-//                     Ê±  ·Ö  Ãë  ÔÂ  ÈÕ  Äê ĞÇÆÚ
-uint8_t time_dec[] = { 23, 59, 55, 03, 16, 23, 04, }; //Ê®½øÖÆ
-uint8_t time_hex[] = { 0x23, 0x59, 0x55, 0x03, 0x16, 0x23, 0x04, }; //Ê®Áù½øÖÆ
+/* ------------------------------------- */
+#define DATA_NUM 3 //æ•°æ®ä¸ªæ•°
 
-/* Ê®½øÖÆ×ªÊ®Áù½øÖÆ */
-void time_dec_to_hex()
+uint8_t time_10[DATA_NUM] = { 23, 59, 55, };
+static uint8_t time_16[DATA_NUM] = { 0x23, 0x59, 0x55, };
+
+void time_10_to_16(void)
 {
-	uint8_t i = 6;
-	while(i--)
-	{
-		time_hex[i] = (time_dec[i] / 10) * 0x10 + time_dec[i] % 10;
-	}
+	uint8_t num;
+	for (num = 0; num < DATA_NUM; num++) 
+		time_16[num] = time_10[num] / 10 * 0x10 + time_10[num] % 10;
 }
 
-/* Ê®Áù½øÖÆ×ªÊ®½øÖÆ */
-void time_hex_to_dec()
+void time_16_to_10(void)
 {
-	uint8_t i = 6;
-	while(i--)
-	{
-		time_dec[i] = (time_hex[i] / 0x10) * 10 + time_hex[i] % 0x10;
-	}
+	uint8_t num;
+	for (num = 0; num < DATA_NUM; num++) 
+		time_10[num] = time_16[num] / 0x10 * 10 + time_16[num] % 0x10;
 }
 
-void write_time(void)
+void write_ds1302(void)
 {
-	time_dec_to_hex();
+	time_10_to_16();
 	
-	Write_Ds1302_Byte(0x8E, 0x00); //½âËøĞ´±£»¤
-	
-	Write_Ds1302_Byte(0x80, time_hex[2]); //Ãë
-	Write_Ds1302_Byte(0x82, time_hex[1]); //·Ö
-	Write_Ds1302_Byte(0x84, time_hex[0]); //Ê±
-	Write_Ds1302_Byte(0x86, time_hex[4]); //ÈÕ
-	Write_Ds1302_Byte(0x88, time_hex[3]); //ÔÂ
-	Write_Ds1302_Byte(0x8A, time_hex[6]); //ĞÇÆÚ
-	Write_Ds1302_Byte(0x8C, time_hex[5]); //Äê
-	
-	Write_Ds1302_Byte(0x8E, 0x80); //»Ö¸´Ğ´±£»¤
+	Write_Ds1302_Byte(0x84, time_16[0]); // æ—¶
+	Write_Ds1302_Byte(0x82, time_16[1]); // åˆ†
+	Write_Ds1302_Byte(0x80, time_16[2]); // ç§’
 }
 
-void read_time(void)
+void read_ds1302(void)
 {
-	time_hex[2] = Read_Ds1302_Byte(0x81); //Ãë
-	time_hex[1] = Read_Ds1302_Byte(0x83); //·Ö
-	time_hex[0] = Read_Ds1302_Byte(0x85); //Ê±
-	time_hex[4] = Read_Ds1302_Byte(0x87); //ÈÕ
-	time_hex[3] = Read_Ds1302_Byte(0x89); //ÔÂ
-	time_hex[6] = Read_Ds1302_Byte(0x8B); //ĞÇÆÚ
-	time_hex[5] = Read_Ds1302_Byte(0x8D); //ĞÇÆÚ //Äê
+	time_16[0] = Read_Ds1302_Byte(0x85); // æ—¶
+	time_16[1] = Read_Ds1302_Byte(0x83); // åˆ†
+	time_16[2] = Read_Ds1302_Byte(0x81); // ç§’
 	
-	time_hex_to_dec();
+	time_16_to_10();
 }

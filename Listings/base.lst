@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   BASE                                                              03/20/2023 12:55:59 PAGE 1   
+C51 COMPILER V9.60.0.0   BASE                                                              03/28/2023 16:55:20 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE BASE
@@ -22,12 +22,12 @@ line level    source
   12   1      }
   13          
   14          /* ledpwm、数码管、继电器、蜂鸣器，以及各种周期延时均使用这个定时器 */
-  15          void Timer1Init(void)   //10微秒@12.000MHz
+  15          void Timer1Init(void)   //100微秒@12.000MHz
   16          {
   17   1        AUXR |= 0x40;   //定时器时钟1T模式
   18   1        TMOD &= 0x0F;   //设置定时器模式
-  19   1        TL1 = 0x88;   //设置定时初始值
-  20   1        TH1 = 0xFF;   //设置定时初始值
+  19   1        TL1 = 0x50;   //设置定时初始值
+  20   1        TH1 = 0xFB;   //设置定时初始值
   21   1        TF1 = 0;    //清除TF1标志
   22   1        TR1 = 1;    //定时器1开始计时
   23   1        ET1 = 1;
@@ -44,110 +44,103 @@ line level    source
   34          
   35          uint8_t code T_COM[]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};      //位码
   36          
-  37          uint8_t dig_com = 0; //当前显示的数码管位
+  37          uint8_t xdata dig_com = 0; //当前显示的数码管位
   38          uint8_t xdata dig_all[SCREEN_NUM][8] = 
   39          {
   40            { 16, 16, 16, 16, 16, 16, 16, 16, },  //黑屏界面
-  41            { 0x0C, 16, 16, 16, 16, 16, 2, 6, },  //温度界面
-  42            { 16, 16, 17, 16, 16, 17, 16, 16, },  //时钟界面
-  43            { 16, 16, 16, 16, 16, 16, 16, 16, },  //日期界面
-  44            { 0x0F, 16, 16, 16, 16, 16, 16, 16, },  //频率界面
-  45            { 16, 16, 16, 16, 16, 16, 16, 16, },  //AD/DA界面
-  46          }; //这些初值都是可以更改的
-  47          uint8_t *dig = dig_all[0]; //当前显示界面
-  48          uint8_t dig_switch = 0xFF; //数码管每一位的开关
-  49          
-  50          uint8_t led_state = 0; //每个led的状态
-  51          uint8_t led_pwm_cnt = 0;  //led的pwm计数器
-  52          uint8_t led_pwm_duty = 100; //led的pwm占空比，默认满占空比
-  53          uint8_t led_pwm_period = 100; //led的pwm周期（单位就是定时器的周期，这里是10us）
-  54          
-C51 COMPILER V9.60.0.0   BASE                                                              03/20/2023 12:55:59 PAGE 2   
+  41            { 25, 1, 16, 16, 16, 16, 16, 16, }, //界面1
+  42            { 25, 2, 16, 16, 16, 16, 16, 16, }, //界面2
+  43            { 25, 3, 16, 16, 16, 16, 16, 16, }, //界面3
+  44            { 25, 4, 16, 16, 16, 16, 16, 16, }, //界面4
+  45            { 25, 5, 16, 16, 16, 16, 16, 16, }, //界面5
+  46            { 25, 6, 16, 16, 16, 16, 16, 16, }, //界面6
+  47          };
+  48          uint8_t xdata *dig = dig_all[0]; //当前显示界面
+  49          uint8_t xdata dig_switch = 0xFF; //数码管每一位的开关
+  50          
+  51          uint8_t xdata led_state = 0; //每个led的状态
+  52          uint8_t xdata led_pwm_cnt = 0;  //led的pwm计数器
+  53          uint8_t xdata led_pwm_duty = 10; //led的pwm占空比，默认满占空比，占空比不能超过周期
+  54          uint8_t xdata led_pwm_period = 10; //led的pwm周期（单位就是定时器的周期，这里是100us）
+C51 COMPILER V9.60.0.0   BASE                                                              03/28/2023 16:55:20 PAGE 2   
 
-  55          /* 大功率外设状态 */
-  56          uint8_t high_power_state = 0;
-  57          
-  58          /* 虚拟定时器 */
-  59          uint8_t Timer10ms_cnt = 10;
-  60          uint8_t Timer50ms_cnt = 50;
-  61          uint8_t Timer100ms_cnt = 100;
-  62          uint8_t Timer200ms_cnt = 200;
-  63          uint16_t Timer1s_cnt = 1000;
-  64          uint16_t ne555_cnt = 100; //ne555专用的定时器，可以调整采样周期
+  55          
+  56          /* 大功率外设状态 */
+  57          uint8_t xdata high_power_state = 0;
+  58          
+  59          /* 虚拟定时器 */
+  60          uint8_t xdata Timer10ms_cnt = 0;
+  61          uint8_t xdata Timer100ms_cnt = 0;
+  62          uint16_t xdata Timer500ms_cnt = 0;
+  63          uint16_t xdata Timer1s_cnt = 0;
+  64          uint16_t xdata operate_timer_cnt = 0; //操作周期定时器，用来错开每个时序操作防止时序混乱，需要根据操作的芯
+             -片数量来决定定时器周期
   65          
   66          /* NE555频率 */
-  67          uint16_t ne555_out = 0;
+  67          uint16_t xdata ne555_out = 0;
   68          
-  69          void Timer1Isr(void) interrupt 3 //10us一周期
+  69          void Timer1Isr(void) interrupt 3 //100us一周期
   70          {
-  71   1        static uint8_t Timer1ms_cnt = 100;
-  72   1        
-  73   1        if (++Timer1ms_cnt >= 100) //1ms
-  74   1        {
-  75   2          Timer1ms_cnt = 0;
-  76   2          
-  77   2          Timer10ms_cnt++;
-  78   2          Timer50ms_cnt++;
-  79   2          Timer100ms_cnt++;
-  80   2          Timer200ms_cnt++;
-  81   2          Timer1s_cnt++;
-  82   2          ne555_cnt++;
-  83   2          
-  84   2          { //数码管
-  85   3            CHANNLE(6, 0x00);
-  86   3            if (dig_switch & (1 << dig_com)) //根据这一位数码管开关来决定是否显示
-  87   3            {
-  88   4              CHANNLE(7, ~t_display[dig[dig_com]]); //关键步骤
-  89   4              CHANNLE(6, T_COM[dig_com]); //关键步骤
-  90   4            }
-  91   3            
-  92   3            if (++dig_com >= 8)
-  93   3            {
-  94   4              dig_com = 0;
-  95   4            }
-  96   3          }
-  97   2          
-  98   2          //大功率外设
-  99   2          CHANNLE(5, high_power_state);
- 100   2        }
- 101   1        
- 102   1        { //LED_PWM
- 103   2          if (led_pwm_cnt < led_pwm_duty) //有效电平
- 104   2          {
- 105   3            CHANNLE(4, ~led_state);
- 106   3          }
- 107   2          else //无效电平
- 108   2          {
- 109   3            CHANNLE(4, 0xFF); //关闭LED
- 110   3          }
- 111   2          if (++led_pwm_cnt >= led_pwm_period)
- 112   2            led_pwm_cnt = 0;
- 113   2        }
- 114   1        
- 115   1        if (ne555_cnt >= 100)
- 116   1        {
-C51 COMPILER V9.60.0.0   BASE                                                              03/20/2023 12:55:59 PAGE 3   
+  71   1        static uint8_t Timer1ms_cnt = 10;
+  72   1        static uint16_t ne555_cnt = 100; //ne555专用的定时器，可以调整采样周期
+  73   1      
+  74   1        { //LED_PWM
+  75   2          if (led_pwm_cnt <= led_pwm_duty) //有效电平
+  76   2          {
+  77   3            CHANNLE(4, ~led_state);
+  78   3          }
+  79   2          else //无效电平
+  80   2          {
+  81   3            CHANNLE(4, 0xFF); //关闭LED
+  82   3          }
+  83   2          if (++led_pwm_cnt >= led_pwm_period)
+  84   2            led_pwm_cnt = 0;
+  85   2        }
+  86   1        
+  87   1        if (++Timer1ms_cnt >= 10) //1ms
+  88   1        {
+  89   2          Timer1ms_cnt = 0;
+  90   2          
+  91   2          Timer10ms_cnt++;
+  92   2          operate_timer_cnt++;
+  93   2          Timer100ms_cnt++;
+  94   2          Timer500ms_cnt++;
+  95   2          Timer1s_cnt++;
+  96   2          
+  97   2          { //数码管
+  98   3            CHANNLE(6, 0x00);
+  99   3            CHANNLE(7, ~t_display[dig[dig_com]]); //关键步骤
+ 100   3            CHANNLE(6, T_COM[dig_com] & dig_switch); //关键步骤 根据这一位数码管开关来决定是否显示
+ 101   3            if (++dig_com >= 8)
+ 102   3              dig_com = 0;
+ 103   3          }
+ 104   2      
+ 105   2          if (++ne555_cnt >= 100)
+ 106   2          {
+ 107   3            ne555_cnt = 0;
+ 108   3            
+ 109   3            TR0 = 0;    //定时器0暂停计数
+ 110   3            ne555_out = TH0 << 8 | TL0;
+ 111   3            TL0 = 0x00; //复位初始值
+ 112   3            TH0 = 0x00; //复位初始值
+ 113   3            TR0 = 1;    //定时器0开始计数
+ 114   3      //      ne555_out *= 10;
+ 115   3          }
+C51 COMPILER V9.60.0.0   BASE                                                              03/28/2023 16:55:20 PAGE 3   
 
- 117   2          ne555_cnt = 0;
- 118   2          
- 119   2          TR0 = 0;    //定时器0暂停计数
- 120   2          ne555_out = TH0;
- 121   2          ne555_out <<= 8;
- 122   2          ne555_out |= TL0;
- 123   2          TL0 = 0x00; //复位初始值
- 124   2          TH0 = 0x00; //复位初始值
- 125   2          TR0 = 1;    //定时器0开始计数
- 126   2          ne555_out *= 10;
- 127   2        }
- 128   1      }
+ 116   2          
+ 117   2          //大功率外设
+ 118   2          CHANNLE(5, high_power_state);
+ 119   2        }
+ 120   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    326    ----
+   CODE SIZE        =    323    ----
    CONSTANT SIZE    =     51    ----
-   XDATA SIZE       =     48    ----
+   XDATA SIZE       =     73    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     21    ----
+   DATA SIZE        =      5    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

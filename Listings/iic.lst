@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   IIC                                                               03/20/2023 10:31:12 PAGE 1   
+C51 COMPILER V9.60.0.0   IIC                                                               03/28/2023 16:55:20 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE IIC
@@ -8,278 +8,233 @@ COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE others\iic.c OPTIMIZE(8,SPEED) B
 
 line level    source
 
-   1          #include "iic.h"
-   2          
-   3          sbit SDA = P2^1; //ÕâÁ½¾äÊÇ´ÓhÎÄ¼þÒÆ¹ýÀ´µÄ
-   4          sbit SCL = P2^0;
-   5          
-   6          #define DELAY_TIME 5
-   7          
-   8          //I2C×ÜÏßÄÚ²¿ÑÓÊ±º¯Êý
-   9          void IIC_Delay(unsigned char i)
-  10          {
-  11   1          do{_nop_();}
-  12   1          while(i--);        
-  13   1      }
-  14          
-  15          //I2C×ÜÏßÆô¶¯ÐÅºÅ
-  16          void IIC_Start(void)
-  17          {
-  18   1          SDA = 1;
-  19   1          SCL = 1;
-  20   1          IIC_Delay(DELAY_TIME);
-  21   1          SDA = 0;
-  22   1          IIC_Delay(DELAY_TIME);
-  23   1          SCL = 0;  
+   1          /*  #   I2Cä»£ç ç‰‡æ®µè¯´æ˜Ž
+   2            1.  æœ¬æ–‡ä»¶å¤¹ä¸­æä¾›çš„é©±åŠ¨ä»£ç ä¾›å‚èµ›é€‰æ‰‹å®Œæˆç¨‹åºè®¾è®¡å‚è€ƒã€‚
+   3            2.  å‚èµ›é€‰æ‰‹å¯ä»¥è‡ªè¡Œç¼–å†™ç›¸å…³ä»£ç æˆ–ä»¥è¯¥ä»£ç ä¸ºåŸºç¡€ï¼Œæ ¹æ®æ‰€é€‰å•ç‰‡æœºç±»åž‹ã€è¿
+             -è¡Œé€Ÿåº¦å’Œè¯•é¢˜
+   4              ä¸­å¯¹å•ç‰‡æœºæ—¶é’Ÿé¢‘çŽ‡çš„è¦æ±‚ï¼Œè¿›è¡Œä»£ç è°ƒè¯•å’Œä¿®æ”¹ã€‚
+   5          */
+   6          
+   7          #include "iic.h"
+   8          
+   9          #define DELAY_TIME  5
+  10          
+  11          sbit scl = P2^0;
+  12          sbit sda = P2^1;
+  13          
+  14          //
+  15          static void I2C_Delay(unsigned char n)
+  16          {
+  17   1          do
+  18   1          {
+  19   2              _nop_();_nop_();_nop_();_nop_();_nop_();
+  20   2              _nop_();_nop_();_nop_();_nop_();_nop_();
+  21   2              _nop_();_nop_();_nop_();_nop_();_nop_();    
+  22   2          }
+  23   1          while(n--);       
   24   1      }
   25          
-  26          //I2C×ÜÏßÍ£Ö¹ÐÅºÅ
-  27          void IIC_Stop(void)
+  26          //
+  27          void I2CStart(void)
   28          {
-  29   1          SDA = 0;
-  30   1          SCL = 1;
-  31   1          IIC_Delay(DELAY_TIME);
-  32   1          SDA = 1;
-  33   1          IIC_Delay(DELAY_TIME);
-  34   1      }
-  35          
-  36          //·¢ËÍÓ¦´ð»ò·ÇÓ¦´ðÐÅºÅ
-  37          void IIC_SendAck(bit ackbit)
-  38          {
-  39   1          SCL = 0;
-  40   1          SDA = ackbit;           
-  41   1          IIC_Delay(DELAY_TIME);
-  42   1          SCL = 1;
-  43   1          IIC_Delay(DELAY_TIME);
-  44   1          SCL = 0; 
-  45   1          SDA = 1;
-  46   1          IIC_Delay(DELAY_TIME);
-  47   1      }
-  48          
-  49          //µÈ´ýÓ¦´ð
-  50          bit IIC_WaitAck(void)
-  51          {
-  52   1          bit ackbit;
-  53   1        
-  54   1          SCL  = 1;
-C51 COMPILER V9.60.0.0   IIC                                                               03/20/2023 10:31:12 PAGE 2   
+  29   1          sda = 1;
+  30   1          scl = 1;
+  31   1        I2C_Delay(DELAY_TIME);
+  32   1          sda = 0;
+  33   1        I2C_Delay(DELAY_TIME);
+  34   1          scl = 0;    
+  35   1      }
+  36          
+  37          //
+  38          void I2CStop(void)
+  39          {
+  40   1          sda = 0;
+  41   1          scl = 1;
+  42   1        I2C_Delay(DELAY_TIME);
+  43   1          sda = 1;
+  44   1        I2C_Delay(DELAY_TIME);
+  45   1      }
+  46          
+  47          // å‘é€å­—èŠ‚
+  48          void I2CSendByte(unsigned char byt)
+  49          {
+  50   1          unsigned char i;
+  51   1        
+  52   1          for(i=0; i<8; i++){
+  53   2              scl = 0;
+C51 COMPILER V9.60.0.0   IIC                                                               03/28/2023 16:55:20 PAGE 2   
 
-  55   1          IIC_Delay(DELAY_TIME);
-  56   1          ackbit = SDA;
-  57   1          SCL = 0;
-  58   1          IIC_Delay(DELAY_TIME);
-  59   1          return ackbit;
-  60   1      }
-  61          
-  62          //I2C×ÜÏß·¢ËÍÒ»¸ö×Ö½ÚÊý¾Ý
-  63          void IIC_SendByte(unsigned char byt)
-  64          {
-  65   1          unsigned char i;
-  66   1      
-  67   1          for(i=0; i<8; i++)
-  68   1          {
-  69   2              SCL  = 0;
-  70   2              IIC_Delay(DELAY_TIME);
-  71   2              if(byt & 0x80) SDA  = 1;
-  72   2              else SDA  = 0;
-  73   2              IIC_Delay(DELAY_TIME);
-  74   2              SCL = 1;
-  75   2              byt <<= 1;
-  76   2              IIC_Delay(DELAY_TIME);
-  77   2          }
-  78   1          SCL  = 0;  
-  79   1      }
-  80          
-  81          //I2C×ÜÏß½ÓÊÕÒ»¸ö×Ö½ÚÊý¾Ý
-  82          unsigned char IIC_RecByte(void)
-  83          {
-  84   1          unsigned char i, da;
-  85   1          for(i=0; i<8; i++)
-  86   1          {   
-  87   2            SCL = 1;
-  88   2        IIC_Delay(DELAY_TIME);
-  89   2        da <<= 1;
-  90   2        if(SDA) da |= 1;
-  91   2        SCL = 0;
-  92   2        IIC_Delay(DELAY_TIME);
-  93   2          }
-  94   1          return da;    
-  95   1      }
-  96          
-  97          /**** ¡ü¡ü¡ü ÒÔÉÏ´úÂë¾ùÎ´ÐÞ¸Ä£¬ÏÂÃæÊÇ×Ô¼º¼ÓµÄ ¡ý¡ý¡ý ********/
-  98          
-  99          /****************** ¡ý¡ý¡ý PCF8591 ¡ý¡ý¡ý ******************/
- 100          uint8_t dac_level = 0; //µ±Ç°dacÊä³öµÈ¼¶
- 101          uint8_t control_byte = 0x04;
- 102          //ÓÐ¹ØÕâ¸ö±äÁ¿µÄÉèÖÃ£¬Çë¼ûPCF0591µÄÊý¾ÝÊÖ²á£¬CONTROL BYTE
- 103          
- 104          /* dacÊä³ö */
- 105          void write_dac(void)
- 106          {
- 107   1        control_byte |= 0x40;
- 108   1        
- 109   1        IIC_Start();
- 110   1        IIC_SendByte(0x90);
- 111   1        IIC_WaitAck();
- 112   1        IIC_SendByte(control_byte);
- 113   1        IIC_WaitAck();
- 114   1        IIC_SendByte(dac_level);
- 115   1        IIC_Stop();
- 116   1      }
-C51 COMPILER V9.60.0.0   IIC                                                               03/20/2023 10:31:12 PAGE 3   
+  54   2          I2C_Delay(DELAY_TIME);
+  55   2              if(byt & 0x80){
+  56   3                  sda = 1;
+  57   3              }
+  58   2              else{
+  59   3                  sda = 0;
+  60   3              }
+  61   2          I2C_Delay(DELAY_TIME);
+  62   2              scl = 1;
+  63   2              byt <<= 1;
+  64   2          I2C_Delay(DELAY_TIME);
+  65   2          }
+  66   1        
+  67   1          scl = 0;  
+  68   1      }
+  69          
+  70          // æŽ¥æ”¶å­—èŠ‚
+  71          unsigned char I2CReceiveByte(void)
+  72          {
+  73   1        unsigned char da;
+  74   1        unsigned char i;
+  75   1        for(i=0;i<8;i++){   
+  76   2          scl = 1;
+  77   2          I2C_Delay(DELAY_TIME);
+  78   2          da <<= 1;
+  79   2          if(sda) 
+  80   2            da |= 0x01;
+  81   2          scl = 0;
+  82   2          I2C_Delay(DELAY_TIME);
+  83   2        }
+  84   1        return da;    
+  85   1      }
+  86          
+  87          // ç­‰å¾…å›žåº”
+  88          unsigned char I2CWaitAck(void)
+  89          {
+  90   1        unsigned char ackbit;
+  91   1        
+  92   1          scl = 1;
+  93   1        I2C_Delay(DELAY_TIME);
+  94   1          ackbit = sda; 
+  95   1          scl = 0;
+  96   1        I2C_Delay(DELAY_TIME);
+  97   1        
+  98   1        return ackbit;
+  99   1      }
+ 100          
+ 101          // å‘é€å›žåº”
+ 102          void I2CSendAck(unsigned char ackbit)
+ 103          {
+ 104   1          scl = 0;
+ 105   1          sda = ackbit; 
+ 106   1        I2C_Delay(DELAY_TIME);
+ 107   1          scl = 1;
+ 108   1        I2C_Delay(DELAY_TIME);
+ 109   1          scl = 0; 
+ 110   1        sda = 1;
+ 111   1        I2C_Delay(DELAY_TIME);
+ 112   1      }
+ 113          
+ 114          /* ------------------at24c02----------------- */
+ 115          void e2prom_write(uint8_t addr, uint8_t *Data, uint8_t len)
+C51 COMPILER V9.60.0.0   IIC                                                               03/28/2023 16:55:20 PAGE 3   
 
- 117          
- 118          /* Í£Ö¹dacÊä³ö */
- 119          void stop_dac(void)
- 120          {
- 121   1        control_byte &= ~0x40;
- 122   1        
- 123   1        IIC_Start();
- 124   1        IIC_SendByte(0x90);
- 125   1        IIC_WaitAck();
- 126   1        IIC_SendByte(control_byte);
- 127   1        IIC_Stop();
- 128   1      }
- 129          
- 130          uint8_t adc_level[4] = { 0 }; //¶ÔÓ¦4¸öadcÍ¨µÀ
- 131          /* adc²É¼¯ */
- 132          void read_adc(void)
+ 116          {
+ 117   1        I2CStart();
+ 118   1        I2CSendByte(0xA0);
+ 119   1        I2CWaitAck();
+ 120   1        I2CSendByte(addr);
+ 121   1        I2CWaitAck();
+ 122   1        while(len--)
+ 123   1        {
+ 124   2          I2CSendByte(*Data);
+ 125   2          I2CWaitAck();
+ 126   2          Data++;
+ 127   2        }
+ 128   1        I2CStop();
+ 129   1        I2C_Delay(DELAY_TIME);
+ 130   1      }
+ 131          
+ 132          void e2prom_read(uint8_t addr, uint8_t *Data, uint8_t len)
  133          {
- 134   1        IIC_Start();
- 135   1        IIC_SendByte(0x90);
- 136   1        IIC_WaitAck();
- 137   1        IIC_SendByte(control_byte);
- 138   1        IIC_WaitAck();
+ 134   1        I2CStart();
+ 135   1        I2CSendByte(0xA0);
+ 136   1        I2CWaitAck();
+ 137   1        I2CSendByte(addr);
+ 138   1        I2CWaitAck();
  139   1        
- 140   1        IIC_Start();
- 141   1        IIC_SendByte(0x91);
- 142   1        IIC_WaitAck();
+ 140   1        I2CStart();
+ 141   1        I2CSendByte(0xA1);
+ 142   1        I2CWaitAck();
  143   1        
- 144   1        IIC_RecByte(); //Ô¤¶Á
- 145   1        IIC_SendAck(0);
- 146   1        //ADCÃ¿Ò»´Î¶ÁÊý¶¼ÊÇÉÏÒ»´Î²ÉÑùµÄÖµ£¬
- 147   1        //²¢ÇÒÒòÎªÎÒÃÇ¿ªÆôÁËÍ¨µÀÍ¨µÀÊý×ÔÔöµÄ¶Á·¨£¬
- 148   1        //»áµ¼ÖÂ·µ»ØµÄÖµ²»ÊÇÎÒÃÇÏëÒªµÄÍ¨µÀ£¬
- 149   1        //ËùÒÔÕâÀïµÄÔ¤¶Á½öÎªÁËÈÃÐ¾Æ¬²ÉÑù£¬¶ø²»±£Áô¶ÁÊý
- 150   1        
- 151   1        adc_level[0] = IIC_RecByte();
- 152   1        IIC_SendAck(0);
- 153   1        adc_level[1] = IIC_RecByte();
- 154   1        IIC_SendAck(0);
- 155   1        adc_level[2] = IIC_RecByte();
- 156   1        IIC_SendAck(0);
- 157   1        adc_level[3] = IIC_RecByte();
- 158   1        IIC_Stop(); //×îºóÒ»´Î¶Á¿ÉÒÔÖ±½Ó½áÊø£¬ÎÞÐè·¢Ó¦´ðÐÅºÅ
- 159   1      }
- 160          /****************** ¡ü¡ü¡ü PCF8591 ¡ü¡ü¡ü ******************/
- 161          
- 162          /****************** ¡ý¡ý¡ý AT24C02 ¡ý¡ý¡ý ******************/
- 163          /* µ¥×Ö½ÚÐ´Èë£¨ÐÂÊÖÕÆÎÕÕâ¸ö¼´¿É£¬Ê¡Èü¶àÊý¿¼µÄµ¥×Ö½Ú²Ù×÷£©
- 164             addr£º Ä¿±êµØÖ·
- 165             Data£º Ð´ÈëÊý¾ÝµÄÖ¸Õë
- 166             £¨ÆäÊµDataÖ±½ÓÓÃ±äÁ¿£¬²»ÓÃÖ¸ÕëÒ²ÐÐ£¬Ö»ÊÇÎªÁËºÍºóÃæµÄÍ³Ò»£© */
- 167          void write_e2prom_single_byte(uint8_t addr, uint8_t *Data)
- 168          {
- 169   1        IIC_Start();
- 170   1        IIC_SendByte(0xA0);
- 171   1        IIC_WaitAck();
- 172   1        
- 173   1        IIC_SendByte(addr); //È·¶¨Ä¿±êµØÖ·
- 174   1        IIC_WaitAck();
- 175   1        
- 176   1        IIC_SendByte(*Data); //Ð´ÈëÊý¾Ý
- 177   1        IIC_WaitAck();
+ 144   1        loop:
+ 145   1        *Data = I2CReceiveByte();
+ 146   1        if (--len)
+ 147   1        {
+ 148   2          I2CSendAck(0); //å‘é€åº”ç­”
+ 149   2          Data++;
+ 150   2          goto loop;
+ 151   2        }
+ 152   1        I2CSendAck(1); //å‘é€éžåº”ç­”
+ 153   1        I2CStop();
+ 154   1      }
+ 155          
+ 156          /* ------------------pcf8591----------------- */
+ 157          uint8_t control_byte = 0x04;
+ 158          uint8_t dac_level = 0; //å½“å‰dacè¾“å‡ºçš„ç­‰çº§ï¼Œè¾“å‡ºå‰å…ˆä¿®æ”¹è¿™ä¸ªå€¼å†è°ƒç”¨è¾“å‡ºå‡½æ•°
+ 159          uint8_t adc_level[4] = { 0 };
+ 160          
+ 161          void dac_out(void)
+ 162          {
+ 163   1        control_byte |= 0x40; //å¼€å¯dacè¾“å‡º
+ 164   1        
+ 165   1        I2CStart();
+ 166   1        I2CSendByte(0x90);
+ 167   1        I2CWaitAck();
+ 168   1        I2CSendByte(control_byte);
+ 169   1        I2CWaitAck();
+ 170   1        I2CSendByte(dac_level);
+ 171   1        I2CWaitAck();
+ 172   1        I2CStop();
+ 173   1      }
+ 174          
+ 175          void dac_stop(void)
+ 176          {
+ 177   1        control_byte &= ~0x40; //å…³é—­dacè¾“å‡º
+C51 COMPILER V9.60.0.0   IIC                                                               03/28/2023 16:55:20 PAGE 4   
+
  178   1        
-C51 COMPILER V9.60.0.0   IIC                                                               03/20/2023 10:31:12 PAGE 4   
-
- 179   1        IIC_Stop();
- 180   1      }
- 181          
- 182          /* µ¥×Ö½Ú¶ÁÈ¡£¨ÐÂÊÖÕÆÎÕÕâ¸ö¼´¿É£¬Ê¡Èü¶àÊý¿¼µÄµ¥×Ö½Ú²Ù×÷£©
- 183             addr£º Ä¿±êµØÖ·
- 184             Data£º¶ÁÈ¡Êý¾ÝµÄÖ¸Õë
- 185             £¨Õâ¸öDataÖ»ÄÜÓÃÖ¸Õë£¬²»ÄÜ¸Ä³É±äÁ¿£© */
- 186          void read_e2prom_single_byte(uint8_t addr, uint8_t *Data)
- 187          {
- 188   1        IIC_Start();
- 189   1        IIC_SendByte(0xA0);
- 190   1        IIC_WaitAck();
- 191   1        
- 192   1        IIC_SendByte(addr); //È·¶¨Ä¿±êµØÖ·
- 193   1        IIC_WaitAck();
+ 179   1        I2CStart();
+ 180   1        I2CSendByte(0x90);
+ 181   1        I2CWaitAck();
+ 182   1        I2CSendByte(control_byte);
+ 183   1        I2CWaitAck();
+ 184   1        I2CStop();
+ 185   1      }
+ 186          
+ 187          void adc_read(void)
+ 188          {
+ 189   1        I2CStart();
+ 190   1        I2CSendByte(0x90);
+ 191   1        I2CWaitAck();
+ 192   1        I2CSendByte(control_byte);
+ 193   1        I2CWaitAck();
  194   1        
- 195   1        IIC_Start();
- 196   1        IIC_SendByte(0xA1);
- 197   1        IIC_WaitAck();
+ 195   1        I2CStart();
+ 196   1        I2CSendByte(0x91);
+ 197   1        I2CWaitAck();
  198   1        
- 199   1        *Data = IIC_RecByte(); //¶ÁÈ¡Êý¾Ý
- 200   1        
- 201   1        IIC_Stop();
- 202   1      }
- 203          
- 204          /* ¶à×Ö½ÚÐ´Èë£¨Ñ§ÓÐÓàÁ¦µÄÖ±½ÓÕÆÎÕÕâ¸ö£¬¿ÉÒÔÈ¡´úµ¥×Ö½ÚÐ´Èë£¬ÆäÊµÒ²ÊÇÃ»Ê²Ã´ÄÑ¶ÈµÄ£¬¾ÍÊÇÑ­»·ÄÇÀïÒªÀí½âÒ»ÏÂ£©
- 205             addr£º Ä¿±êµØÖ·
- 206             Data£º Ð´ÈëÊý¾ÝµÄÖ¸Õë
- 207             len£º  Ð´Èë×Ö½ÚÊý */
- 208          void write_e2prom(uint8_t addr, uint8_t *Data, uint8_t len)
- 209          {
- 210   1        IIC_Start();
- 211   1        IIC_SendByte(0xA0);
- 212   1        IIC_WaitAck();
- 213   1        
- 214   1        IIC_SendByte(addr); //È·¶¨Ä¿±êµØÖ·
- 215   1        IIC_WaitAck();
- 216   1        
- 217   1        while(len--)
- 218   1        {
- 219   2          IIC_SendByte(*Data);
- 220   2          IIC_WaitAck();
- 221   2          Data++; //Ö¸Õë×Ô¼Ó£¬ËùÖ¸ÏòµÄµØÖ·Ôò»áÌøµ½ÏÂÒ»¸ö×Ö½Ú
- 222   2        }
- 223   1        
- 224   1        IIC_Stop();
- 225   1      }
- 226          
- 227          /* ¶à×Ö½Ú¶ÁÈ¡£¨Ñ§ÓÐÓàÁ¦µÄÖ±½ÓÕÆÎÕÕâ¸ö£¬¿ÉÒÔÈ¡´úµ¥×Ö½Ú¶ÁÈ¡£¬ÆäÊµÒ²ÊÇÃ»Ê²Ã´ÄÑ¶ÈµÄ£¬¾ÍÊÇÑ­»·ÄÇÀïÒªÀí½âÒ»ÏÂ£©
- 228             addr£º Ä¿±êµØÖ·
- 229             Data£º ¶ÁÈ¡Êý¾ÝµÄÖ¸Õë
- 230             len£º  ¶ÁÈ¡×Ö½ÚÊý */
- 231          void read_e2prom(uint8_t addr, uint8_t *Data, uint8_t len)
- 232          {
- 233   1        IIC_Start();
- 234   1        IIC_SendByte(0xA0);
- 235   1        IIC_WaitAck();
- 236   1        
- 237   1        IIC_SendByte(addr); //È·¶¨Ä¿±êµØÖ·
- 238   1        IIC_WaitAck();
- 239   1        
- 240   1        IIC_Start();
-C51 COMPILER V9.60.0.0   IIC                                                               03/20/2023 10:31:12 PAGE 5   
-
- 241   1        IIC_SendByte(0xA1);
- 242   1        IIC_WaitAck();
- 243   1        
- 244   1        loop: //ºÍÏÂÃæµÄgoto½áºÏ×ö³ÉÑ­»·£¬Ë¼À´ÏëÈ¥»¹ÊÇgoto×öÕâ¸öÑ­»·×î¼òµ¥
- 245   1        *Data = IIC_RecByte(); //¶ÁÈ¡Êý¾Ý
- 246   1        if (--len) //×îºóÒ»´Î½ÓÊÕ²»ÐèÒª·¢Ó¦´ð¿ÉÒÔÖ±½Óstop
- 247   1        {
- 248   2          IIC_SendAck(0);
- 249   2          Data++;
- 250   2          goto loop;
- 251   2        }
- 252   1        
- 253   1        IIC_Stop();
- 254   1      }
+ 199   1        I2CReceiveByte(); //ç¬¬ä¸€æ¬¡è¯»å–çš„æ•°æ®ä¸è¦ä½¿ç”¨
+ 200   1        I2CSendAck(0); //å‘é€åº”ç­”
+ 201   1        adc_level[0] = I2CReceiveByte();
+ 202   1        I2CSendAck(0); //å‘é€åº”ç­”
+ 203   1        adc_level[1] = I2CReceiveByte();
+ 204   1        I2CSendAck(0); //å‘é€åº”ç­”
+ 205   1        adc_level[2] = I2CReceiveByte();
+ 206   1        I2CSendAck(0); //å‘é€åº”ç­”
+ 207   1        adc_level[3] = I2CReceiveByte();
+ 208   1        I2CSendAck(1); //å‘é€éžåº”ç­”
+ 209   1        I2CStop();
+ 210   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    452    ----
+   CODE SIZE        =    400    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      6      12
+   DATA SIZE        =      6      10
    IDATA SIZE       =   ----    ----
-   BIT SIZE         =   ----       2
+   BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
 

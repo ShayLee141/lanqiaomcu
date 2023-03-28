@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   ONEWIRE                                                           03/20/2023 21:06:26 PAGE 1   
+C51 COMPILER V9.60.0.0   ONEWIRE                                                           03/28/2023 16:55:21 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE ONEWIRE
@@ -8,111 +8,109 @@ COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE others\onewire.c OPTIMIZE(8,SPEE
 
 line level    source
 
-   1          #include "onewire.h"
-   2          
-   3          //µ¥×ÜÏßÄÚ²¿ÑÓÊ±º¯Êı
-   4          void Delay_OneWire(unsigned int t)  
-   5          {
-   6   1        t *= 8; //Õâ¸öÊÇÎÒ¼ÓµÄ£¬Ô­´úÂëÊÇÔÚ51µ¥Æ¬»úµÄ»·¾³ÏÂĞ´µÄ£¬15µ¥Æ¬»úËÙ¶ÈÒª¿ì£¬ËùÒÔÑÓÊ±ĞèÒªµÄÊıÖµÒªÔö¼Ó
-   7   1        while(t--);
-   8   1      }
-   9          
-  10          //µ¥×ÜÏßĞ´²Ù×÷
-  11          void Write_DS18B20(unsigned char dat)
-  12          {
-  13   1        unsigned char i;
-  14   1        for(i=0;i<8;i++)
-  15   1        {
-  16   2          EA = 0; //ÎªÁËÈ·±£´«Êä²»±»ÖĞ¶Ï´ò¶ÏÒªÔÚÕâÀï¹ØÖĞ¶Ï
-  17   2          DQ = 0;
-  18   2          DQ = dat&0x01;
-  19   2          Delay_OneWire(5);
-  20   2          DQ = 1;
-  21   2          EA = 1; //ÖØĞÂ´ò¿ªÖĞ¶Ï
-  22   2          dat >>= 1;
-  23   2        }
-  24   1        Delay_OneWire(5);
-  25   1      }
-  26          
-  27          //µ¥×ÜÏß¶Á²Ù×÷
-  28          unsigned char Read_DS18B20(void)
-  29          {
-  30   1        unsigned char i;
-  31   1        unsigned char dat;
-  32   1        
-  33   1        for(i=0;i<8;i++)
-  34   1        {
-  35   2          EA = 0; //ÎªÁËÈ·±£´«Êä²»±»ÖĞ¶Ï´ò¶ÏÒªÔÚÕâÀï¹ØÖĞ¶Ï
-  36   2          DQ = 0;
-  37   2          dat >>= 1;
-  38   2          DQ = 1;
-  39   2          Delay_OneWire(1);
-  40   2          if(DQ)
-  41   2          {
-  42   3            dat |= 0x80;
-  43   3          }
-  44   2          EA = 1; //ÖØĞÂ´ò¿ªÖĞ¶Ï
-  45   2          Delay_OneWire(5);
-  46   2        }
-  47   1        return dat;
-  48   1      }
-  49          
-  50          //DS18B20³õÊ¼»¯
-  51          bit init_ds18b20(void)
-  52          {
-  53   1          bit initflag = 0;
-  54   1          
-C51 COMPILER V9.60.0.0   ONEWIRE                                                           03/20/2023 21:06:26 PAGE 2   
+   1          /*  #   å•æ€»çº¿ä»£ç ç‰‡æ®µè¯´æ˜
+   2            1.  æœ¬æ–‡ä»¶å¤¹ä¸­æä¾›çš„é©±åŠ¨ä»£ç ä¾›å‚èµ›é€‰æ‰‹å®Œæˆç¨‹åºè®¾è®¡å‚è€ƒã€‚
+   3            2.  å‚èµ›é€‰æ‰‹å¯ä»¥è‡ªè¡Œç¼–å†™ç›¸å…³ä»£ç æˆ–ä»¥è¯¥ä»£ç ä¸ºåŸºç¡€ï¼Œæ ¹æ®æ‰€é€‰å•ç‰‡æœºç±»å‹ã€è¿
+             -è¡Œé€Ÿåº¦å’Œè¯•é¢˜
+   4              ä¸­å¯¹å•ç‰‡æœºæ—¶é’Ÿé¢‘ç‡çš„è¦æ±‚ï¼Œè¿›è¡Œä»£ç è°ƒè¯•å’Œä¿®æ”¹ã€‚
+   5          */
+   6          
+   7          #include "onewire.h"
+   8          
+   9          sbit DQ = P1^4;
+  10          
+  11          //
+  12          void Delay_OneWire(unsigned int t)  
+  13          {
+  14   1        unsigned char i;
+  15   1        while(t--){
+  16   2          for(i=0;i<12;i++);
+  17   2        }
+  18   1      }
+  19          
+  20          //
+  21          void Write_DS18B20(unsigned char dat)
+  22          {
+  23   1        unsigned char i;
+  24   1        for(i=0;i<8;i++)
+  25   1        {
+  26   2          EA = 0; //------------å…³ä¸­æ–­
+  27   2          DQ = 0;
+  28   2          DQ = dat&0x01;
+  29   2          Delay_OneWire(5);
+  30   2          DQ = 1;
+  31   2          dat >>= 1;
+  32   2          EA = 1; //------------å¼€ä¸­æ–­
+  33   2        }
+  34   1        Delay_OneWire(5);
+  35   1      }
+  36          
+  37          //
+  38          unsigned char Read_DS18B20(void)
+  39          {
+  40   1        unsigned char i;
+  41   1        unsigned char dat;
+  42   1        
+  43   1        for(i=0;i<8;i++)
+  44   1        {
+  45   2          EA = 0; //------------å…³ä¸­æ–­
+  46   2          DQ = 0;
+  47   2          dat >>= 1;
+  48   2          DQ = 1;
+  49   2          if(DQ)
+  50   2          {
+  51   3            dat |= 0x80;
+  52   3          }     
+  53   2          Delay_OneWire(5);
+C51 COMPILER V9.60.0.0   ONEWIRE                                                           03/28/2023 16:55:21 PAGE 2   
 
-  55   1          DQ = 1;
-  56   1          Delay_OneWire(12);
-  57   1          DQ = 0;
-  58   1          Delay_OneWire(80);
-  59   1          DQ = 1;
-  60   1          EA = 0; //ÎªÁËÈ·±£´«Êä²»±»ÖĞ¶Ï´ò¶ÏÒªÔÚÕâÀï¹ØÖĞ¶Ï
-  61   1          Delay_OneWire(10); 
-  62   1          initflag = DQ;     
-  63   1          EA = 1; //ÖØĞÂ´ò¿ªÖĞ¶Ï
-  64   1          Delay_OneWire(5);
-  65   1        
-  66   1          return initflag;
-  67   1      }
-  68          
-  69          int16_t temperature = -11451;
-  70          
-  71          void rd_temperature(void)
-  72          {
-  73   1        uint8_t temp[2];
+  54   2          EA = 1; //------------å¼€ä¸­æ–­
+  55   2        }
+  56   1        return dat;
+  57   1      }
+  58          
+  59          //
+  60          bit init_ds18b20(void)
+  61          {
+  62   1          bit initflag = 0;
+  63   1          
+  64   1          DQ = 1;
+  65   1          Delay_OneWire(12);
+  66   1          DQ = 0;
+  67   1          Delay_OneWire(80);
+  68   1          DQ = 1;
+  69   1          EA = 0; //------------å…³ä¸­æ–­
+  70   1          Delay_OneWire(10); 
+  71   1          initflag = DQ;    
+  72   1          EA = 1; //------------å¼€ä¸­æ–­
+  73   1          Delay_OneWire(5);
   74   1        
-  75   1        if (init_ds18b20())
-  76   1          return ; //³õÊ¼»¯²»³É¹¦¾ÍÖ±½Ó·µ»Ø
-  77   1        Write_DS18B20(0xCC);
-  78   1        Write_DS18B20(0x44);
-  79   1        
-  80   1        if (init_ds18b20())
-  81   1          return ; //³õÊ¼»¯²»³É¹¦¾ÍÖ±½Ó·µ»Ø
-  82   1        Write_DS18B20(0xCC);
-  83   1        Write_DS18B20(0xBE);
-  84   1        
-  85   1        temp[1] = Read_DS18B20(); //µÍ°ËÎ»
-  86   1        temp[0] = Read_DS18B20(); //¸ß°ËÎ»
+  75   1          return initflag;
+  76   1      }
+  77          
+  78          /* -------------------------------------------- */
+  79          uint16_t temperature = 0;
+  80          void read_temp(void)
+  81          {
+  82   1        uint16_t temp_H, temp_L;
+  83   1        
+  84   1        init_ds18b20();
+  85   1        Write_DS18B20(0xCC);
+  86   1        Write_DS18B20(0x44);
   87   1        
-  88   1        temperature = (float)(*(int16_t*)temp) * 6.25F; //¿´²»¶®°É£¬¿´²»¶®¾Í¶Ô¿©
-  89   1        /* tempÊÇ¸öuint8_tÀàĞÍµÄµØÖ·£¬
-  90   1           ¹ãÒåÀ´ËµÒ²¿ÉÒÔ½Ğuint8_tÖ¸Õë³£Á¿£¨¹Ì¶¨Ö¸ÏòÒ»¸öµØÖ·µÄÖ¸Õë£©£¬
-  91   1           (uint16_t*)¿ÉÒÔtempÇ¿ÖÆ×ª»»³Éint16_tÖ¸Õë³£Á¿£¬
-  92   1           *¼´È¡Öµ£¬ÒâË¼ÊÇ½«tempÊı×éµÄÁ½¸ö³ÉÔ±Ö±½Ó°´int16_tµÄ·½Ê½¶ÁÈ¡£¬
-  93   1           Ö®ºóÔÚÇ¿ÖÆ×ª»»Îªfloat·½±ã½øĞĞÏÂÒ»²½¸¡µã³Ë·¨ÔËËã£¬
-  94   1           Õı³£Çé¿öÏÂ¶Áµ½µÄÖµÒª³Ë0.0625²ÅÄÜµÃµ½ÉãÊÏÎÂ¶È£¬
-  95   1           µ«ÎÒÏë°Ñ½á¹ûÀ©´ó100±¶¾Í²»ÓÃÒÔfloatÀàĞÍ±£´æÁË£¬
-  96   1           ËùÒÔ³ËµÄÊÇ6.25£¬FÊÇÖ¸¶¨Õâ¸öÊıÖµÊÇ¸¡µãÊı£¬
-  97   1           ×îºó¸³Öµ¸øint16_tÀàĞÍ±äÁ¿temperature£¬
-  98   1           Ö±½Ó°Ñfloat×ª»¯Îªint16_tÀàĞÍÁË */
-  99   1      }
+  88   1        init_ds18b20();
+  89   1        Write_DS18B20(0xCC);
+  90   1        Write_DS18B20(0xBE);
+  91   1        
+  92   1        temp_L = Read_DS18B20();
+  93   1        temp_H = Read_DS18B20();
+  94   1        
+  95   1        temperature = (float)(temp_H << 8 | temp_L) * 6.25;
+  96   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    222    ----
+   CODE SIZE        =    221    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

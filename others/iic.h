@@ -1,34 +1,20 @@
-#ifndef __IIC_H_
-#define __IIC_H_
+#ifndef __IIC_H__
+#define __IIC_H__
 
-//#include <reg52.h> 注释掉这句
+#include <STC15F2K60S2.H>
 #include "intrins.h"
-#include <STC15F2K60S2.H> //加上这句
 
-#include "myint.h" //加上这句
+#include "myint.h"
 
-/* 这几句函数声明没有改，但是可以注释掉 */
-void IIC_Start(void); 
-void IIC_Stop(void);  
-bit IIC_WaitAck(void);  
-void IIC_SendAck(bit ackbit); 
-void IIC_SendByte(unsigned char byt); 
-unsigned char IIC_RecByte(void); 
-
-/********** ↓↓↓ 自己写的函数 ↓↓↓ **********/
-/*** ↓↓↓ PCF8591 ↓↓↓ ***/
+extern uint8_t control_byte;
 extern uint8_t dac_level;
-extern uint8_t adc_level[];
-void write_dac(void);
-void stop_dac(void);
-void read_adc(void);
+extern uint8_t adc_level[4];
 
-/*** ↓↓↓ AT24C02 ↓↓↓ ***/
-/* 单字节 */
-void write_e2prom_single_byte(uint8_t addr, uint8_t *Data);
-void read_e2prom_single_byte(uint8_t addr, uint8_t *Data);
-/* 多字节 */
-void write_e2prom(uint8_t addr, uint8_t *Data, uint8_t len);
-void read_e2prom(uint8_t addr, uint8_t *Data, uint8_t len);
-	
+void e2prom_write(uint8_t addr, uint8_t *Data, uint8_t len);
+void e2prom_read(uint8_t addr, uint8_t *Data, uint8_t len);
+
+void dac_out(void);
+void dac_stop(void);
+void adc_read(void);
+
 #endif
