@@ -4,9 +4,11 @@
 #include "base.h"
 #include "key.h"
 #include "ultrasonic.h"
+#include "uart.h"
 
 #include "ds1302.h"
 #include "iic.h"
+#include "onewire.h"
 
 #include "myint.h"
 #include "filter.h"
@@ -24,6 +26,7 @@ int main(void)
 	Timer0Init();
 	Timer1Init();
 	TimerPCAInit();
+	UartInit();
 	
 	EA = 1;
 

@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   TEST                                                              03/28/2023 16:55:20 PAGE 1   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TEST
@@ -62,7 +62,7 @@ line level    source
                   
                   if (Timer100ms_cnt >= 100) //10ms更新一次pwm占空比和led输出状态
                   {
-C51 COMPILER V9.60.0.0   TEST                                                              03/28/2023 16:55:20 PAGE 2   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 2   
 
                     Timer100ms_cnt = 0;
                     
@@ -126,7 +126,7 @@ line level    source
                         
                         else if (key_value == 9 && key_state == 253) //s9按下2秒以上再松开
                           led_state |= 0x80;
-C51 COMPILER V9.60.0.0   TEST                                                              03/28/2023 16:55:20 PAGE 3   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 3   
 
                       }
                       
@@ -190,7 +190,7 @@ line level    source
                       }
                     }
                     else
-C51 COMPILER V9.60.0.0   TEST                                                              03/28/2023 16:55:20 PAGE 4   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 4   
 
                     {
                       if (screen_hold) //仔细体会一下这句if和上面那句if
@@ -254,7 +254,7 @@ line level    source
                     
                     /* 控制继电器 */;
                     if (distance < 30)
-C51 COMPILER V9.60.0.0   TEST                                                              03/28/2023 16:55:20 PAGE 5   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 5   
 
                       high_power_state |= 0x10;
                     else
@@ -318,7 +318,7 @@ line level    source
                 dig_all[2][4] = time_10[1] % 10;
                 
                 dig_all[2][6] = time_10[2] / 10;
-C51 COMPILER V9.60.0.0   TEST                                                              03/28/2023 16:55:20 PAGE 6   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 6   
 
                 dig_all[2][7] = time_10[2] % 10;
                 
@@ -382,7 +382,7 @@ line level    source
                     {
                       if (addr_flag == 0)
                         addr += 8;
-C51 COMPILER V9.60.0.0   TEST                                                              03/28/2023 16:55:20 PAGE 7   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 7   
 
                       else
                         addr -= 8;
@@ -446,7 +446,7 @@ line level    source
                   if (key_value == 9 && key_state == 2)
                   {
                     if (control_byte & 0x40)
-C51 COMPILER V9.60.0.0   TEST                                                              03/28/2023 16:55:20 PAGE 8   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 8   
 
                       operate_flag = 12;
                     else
@@ -510,7 +510,7 @@ line level    source
  485   1        read_temp();
  486   1        write_ds1302();
  487   1        dac_out();
-C51 COMPILER V9.60.0.0   TEST                                                              03/28/2023 16:55:20 PAGE 9   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 9   
 
  488   1        Delay5ms();
  489   1        adc_read();
@@ -574,7 +574,7 @@ line level    source
  547   2          
  548   2          dig_all[1][3] = time_10[1] / 10;
  549   2          dig_all[1][4] = time_10[1] % 10;
-C51 COMPILER V9.60.0.0   TEST                                                              03/28/2023 16:55:20 PAGE 10  
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 10  
 
  550   2          
  551   2          dig_all[1][6] = time_10[2] / 10;
@@ -638,7 +638,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----       2
-C51 COMPILER V9.60.0.0   TEST                                                              03/28/2023 16:55:20 PAGE 11  
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 11  
 
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----

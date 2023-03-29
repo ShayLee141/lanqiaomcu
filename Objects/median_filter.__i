@@ -1,1 +1,0 @@
-"median_filter.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(.\others) DEBUG OBJECTEXTEND PRINT(.\Listings\median_filter.lst) TABS (2) OBJECT(.\Objects\median_filter.obj)

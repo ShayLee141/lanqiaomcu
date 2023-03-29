@@ -1,0 +1,76 @@
+C51 COMPILER V9.60.0.0   UART                                                              03/29/2023 10:30:13 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE UART
+OBJECT MODULE PLACED IN .\Objects\uart.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE uart.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\others) DEBUG OBJECTEXTEND PRIN
+                    -T(.\Listings\uart.lst) TABS(2) OBJECT(.\Objects\uart.obj)
+
+line level    source
+
+   1          #include "uart.h"
+   2          
+   3          bit busy = 0;
+   4          
+   5          void UartInit(void)   //9600bps@12.000MHz
+   6          {
+   7   1        SCON = 0x50;    //8位数据,可变波特率
+   8   1        AUXR |= 0x01;   //串口1选择定时器2为波特率发生器
+   9   1        AUXR |= 0x04;   //定时器时钟1T模式
+  10   1        T2L = 0xC7;     //设置定时初始值
+  11   1        T2H = 0xFE;     //设置定时初始值
+  12   1        AUXR |= 0x10;   //定时器2开始计时
+  13   1        ES = 1;         //使能串口1中断
+  14   1      }
+  15          
+  16          void Uart() interrupt 4
+  17          {
+  18   1        if (RI)
+  19   1        {
+  20   2          RI = 0;                 //清除RI位
+  21   2          P0 = SBUF;              //P0显示串口数据
+  22   2          P22 = RB8;              //P2.2显示校验位
+  23   2        }
+  24   1        if (TI)
+  25   1        {
+  26   2          TI = 0;                 //清除TI位
+  27   2          busy = 0;               //清忙标志
+  28   2        }
+  29   1      }
+  30          
+  31          /*----------------------------
+  32          发送串口数据
+  33          ----------------------------*/
+  34          void SendData(uint8_t dat)
+  35          {
+  36   1        while (busy);               //等待前面的数据发送完成
+  37   1        busy = 1;
+  38   1        SBUF = dat;                 //写数据到UART数据寄存器
+  39   1      }
+  40          
+  41          /*----------------------------
+  42          发送字符串
+  43          ----------------------------*/
+  44          void SendString(char *s)
+  45          {
+  46   1          while (*s)                  //检测字符串结束标志
+  47   1          {
+  48   2              SendData(*s++);         //发送当前字符
+  49   2          }
+  50   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     90    ----
+C51 COMPILER V9.60.0.0   UART                                                              03/29/2023 10:30:13 PAGE 2   
+
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

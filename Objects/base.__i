@@ -1,1 +1,0 @@
-"base.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(.\others) DEBUG OBJECTEXTEND PRINT(.\Listings\base.lst) TABS (2) OBJECT(.\Objects\base.obj)
