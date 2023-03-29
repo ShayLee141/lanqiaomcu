@@ -61,6 +61,7 @@ uint8_t xdata Timer10ms_cnt = 0;
 uint8_t xdata Timer100ms_cnt = 0;
 uint16_t xdata Timer500ms_cnt = 0;
 uint16_t xdata Timer1s_cnt = 0;
+uint16_t xdata Timern_cnt = 0;
 uint16_t xdata operate_timer_cnt = 0; //操作周期定时器，用来错开每个时序操作防止时序混乱，需要根据操作的芯片数量来决定定时器周期
 
 /* NE555频率 */
@@ -93,6 +94,7 @@ void Timer1Isr(void) interrupt 3 //100us一周期
 		Timer100ms_cnt++;
 		Timer500ms_cnt++;
 		Timer1s_cnt++;
+		Timern_cnt++;
 		
 		{ //数码管
 			CHANNLE(6, 0x00);

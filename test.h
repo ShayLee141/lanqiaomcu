@@ -6,6 +6,7 @@
 #include "base.h"
 #include "key.h"
 #include "ultrasonic.h"
+#include "uart.h"
 
 #include "ds1302.h"
 #include "iic.h"
@@ -45,12 +46,15 @@
 #define ADC_DAC_TEST 0
 /* 温度测试 */
 #define TEMP_TEST 0
+/* 串口测试 */
+#define UART_TEST 1
 /* 所有芯片综合测试 */
-#define CHIPS_TEST 1
+#define CHIPS_TEST 0
 
 #if LED_PWM_TEST + KEY_TEST + DISPLAY_TEST + \
 		ULTRASONIC_TEST + RTC_TEST + E2PROM_TEST + \
-		ADC_DAC_TEST + TEMP_TEST + CHIPS_TEST > 1
+		ADC_DAC_TEST + TEMP_TEST + CHIPS_TEST + \
+		UART_TEST > 1
 #error 每次最多只能有一个宏定义为 1
 /* 每次最多只能有一个宏定义为1 */
 /* 每次最多只能有一个宏定义为1 */

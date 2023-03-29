@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   MAIN                                                              03/29/2023 10:30:33 PAGE 1   
+C51 COMPILER V9.60.0.0   MAIN                                                              03/29/2023 19:47:31 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
@@ -36,22 +36,23 @@ line level    source
   26   1        Timer0Init();
   27   1        Timer1Init();
   28   1        TimerPCAInit();
-  29   1        
-  30   1        EA = 1;
-  31   1      
-  32   1        test(); //模块测试可以使用这个函数，函数里有一个死循环，不会执行后面的while(1)，正常模板没有这句
-  33   1        
-  34   1        while(1)
-  35   1        {
-  36   2          ;
-  37   2        }
-  38   1        
-  39   1      //  return 0;
-  40   1      }
+  29   1        UartInit();
+  30   1        
+  31   1        EA = 1;
+  32   1      
+  33   1        test(); //模块测试可以使用这个函数，函数里有一个死循环，不会执行后面的while(1)，正常模板没有这句
+  34   1        
+  35   1        while(1)
+  36   1        {
+  37   2          ;
+  38   2        }
+  39   1        
+  40   1      //  return 0;
+  41   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     52    ----
+   CODE SIZE        =     55    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

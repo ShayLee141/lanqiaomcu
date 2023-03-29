@@ -34,6 +34,7 @@ extern uint8_t xdata Timer10ms_cnt;
 extern uint8_t xdata Timer100ms_cnt;
 extern uint16_t xdata Timer500ms_cnt;
 extern uint16_t xdata Timer1s_cnt;
+extern uint16_t xdata Timern_cnt;
 extern uint16_t xdata operate_timer_cnt;
 
 extern uint16_t xdata ne555_out;

@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 1   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 20:15:15 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TEST
@@ -62,7 +62,7 @@ line level    source
                   
                   if (Timer100ms_cnt >= 100) //10ms更新一次pwm占空比和led输出状态
                   {
-C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 2   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 20:15:15 PAGE 2   
 
                     Timer100ms_cnt = 0;
                     
@@ -126,7 +126,7 @@ line level    source
                         
                         else if (key_value == 9 && key_state == 253) //s9按下2秒以上再松开
                           led_state |= 0x80;
-C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 3   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 20:15:15 PAGE 3   
 
                       }
                       
@@ -190,7 +190,7 @@ line level    source
                       }
                     }
                     else
-C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 4   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 20:15:15 PAGE 4   
 
                     {
                       if (screen_hold) //仔细体会一下这句if和上面那句if
@@ -254,7 +254,7 @@ line level    source
                     
                     /* 控制继电器 */;
                     if (distance < 30)
-C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 5   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 20:15:15 PAGE 5   
 
                       high_power_state |= 0x10;
                     else
@@ -318,7 +318,7 @@ line level    source
                 dig_all[2][4] = time_10[1] % 10;
                 
                 dig_all[2][6] = time_10[2] / 10;
-C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 6   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 20:15:15 PAGE 6   
 
                 dig_all[2][7] = time_10[2] % 10;
                 
@@ -382,7 +382,7 @@ line level    source
                     {
                       if (addr_flag == 0)
                         addr += 8;
-C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 7   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 20:15:15 PAGE 7   
 
                       else
                         addr -= 8;
@@ -446,7 +446,7 @@ line level    source
                   if (key_value == 9 && key_state == 2)
                   {
                     if (control_byte & 0x40)
-C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 8   
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 20:15:15 PAGE 8   
 
                       operate_flag = 12;
                     else
@@ -500,131 +500,185 @@ line level    source
                 }
               }
               
-              #elif CHIPS_TEST == 1
- 479          /* 所有芯片综合测试 */
+              #elif UART_TEST == 1
+ 479          /* 串口测试 */
  480          void test(void)
  481          {
- 482   1        uint8_t mode = 1;
- 483   1        uint8_t operate_flag = 0;
- 484   1        
- 485   1        read_temp();
- 486   1        write_ds1302();
- 487   1        dac_out();
-C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 9   
+ 482   1        dig_switch = 0x00;
+ 483   1        
+ 484   1        dig[1] = 5;
+ 485   1        dig[2] = 25;
+ 486   1        dig[3] = 0xC;
+ 487   1        dig[4] = 0xC;
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 20:15:15 PAGE 9   
 
- 488   1        Delay5ms();
- 489   1        adc_read();
- 490   1        
- 491   1        dig_all[1][2] = dig_all[1][5] = 17; //分隔符“-”
- 492   1        
- 493   1        loop:
- 494   1        
- 495   1        if (Timer10ms_cnt >= 10)
- 496   1        {
- 497   2          Timer10ms_cnt = 0;
- 498   2          
- 499   2          /* 按键扫描 */
- 500   2          key_pad_scan();
+ 488   1        dig[5] = 0xE;
+ 489   1        dig[6] = 5;
+ 490   1        dig[7] = 5;
+ 491   1        
+ 492   1        SendString("echo uart\r\n");
+ 493   1        
+ 494   1        while (1)
+ 495   1        {
+ 496   2          if (Timer10ms_cnt >= 10)
+ 497   2          {
+ 498   3            Timer10ms_cnt = 0;
+ 499   3            key_pad_scan(); //矩阵键盘并不会影响串口收发
+ 500   3          }
  501   2          
- 502   2          /* 各种时序操作 */
- 503   2          if (operate_timer_cnt >= 20)
- 504   2          {
- 505   3            operate_timer_cnt = 0;
- 506   3            
- 507   3            switch (operate_flag++)
- 508   3            {
- 509   4              default:
- 510   4                operate_flag = 1;
- 511   4              case 0:
- 512   4                read_ds1302();
- 513   4                break;
- 514   4              case 1:
- 515   4                adc_read();
- 516   4                break;
- 517   4              case 2:
- 518   4                read_temp();
- 519   4                break;
- 520   4              case 3:
- 521   4                read_distance();
- 522   4                break;
- 523   4            }
- 524   3          }
- 525   2          
- 526   2          /* 按键功能 */
- 527   2          if (key_value == 13 && key_state == 2)
- 528   2          {
- 529   3            if (++mode >= SCREEN_NUM)
- 530   3              mode = 1;
- 531   3          }
- 532   2          else if (key_value == 12 && key_state == 2)
- 533   2          {
- 534   3            if (--mode <= 1)
- 535   3              mode = SCREEN_NUM - 1;
- 536   3          }
- 537   2          
- 538   2          /* led显示当前模式 */
- 539   2          led_state = 0x01 << (mode - 1);
- 540   2          
- 541   2          /* 数码管界面选择 */
- 542   2          dig = dig_all[mode];
- 543   2          
- 544   2          /* 界面1 时钟显示 */
- 545   2          dig_all[1][0] = time_10[0] / 10;
- 546   2          dig_all[1][1] = time_10[0] % 10;
- 547   2          
- 548   2          dig_all[1][3] = time_10[1] / 10;
- 549   2          dig_all[1][4] = time_10[1] % 10;
-C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 10  
+ 502   2          if (cmd)
+ 503   2          {
+ 504   3            Timern_cnt = 0;
+ 505   3          }
+ 506   2          else if (Timern_cnt >= 5000)
+ 507   2          {
+ 508   3            Timern_cnt = 0;
+ 509   3            SendString("input 'A' or 'B' or 'C':\r\n");
+ 510   3          }
+ 511   2          
+ 512   2          if (cmd & 0x01)
+ 513   2          {
+ 514   3            led_state ^= 0x80;
+ 515   3            cmd &= ~0x01;
+ 516   3          }
+ 517   2          if (cmd & 0x02)
+ 518   2          {
+ 519   3            dig_switch = ~dig_switch;
+ 520   3            cmd &= ~0x02;
+ 521   3          }
+ 522   2          if (cmd & 0x04)
+ 523   2          {
+ 524   3            high_power_state ^= 0x10;
+ 525   3            cmd &= ~0x04;
+ 526   3          }
+ 527   2        }
+ 528   1      }
+ 529          
+ 530          #elif CHIPS_TEST == 1
+              /* 所有芯片综合测试 */
+              void test(void)
+              {
+                uint8_t mode = 1;
+                uint8_t operate_flag = 0;
+                
+                read_temp();
+                write_ds1302();
+                dac_out();
+                Delay5ms();
+                adc_read();
+                
+                dig_all[1][2] = dig_all[1][5] = 17; //分隔符“-”
+                
+                loop:
+                
+                if (Timer10ms_cnt >= 10)
+                {
+                  Timer10ms_cnt = 0;
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 20:15:15 PAGE 10  
 
- 550   2          
- 551   2          dig_all[1][6] = time_10[2] / 10;
- 552   2          dig_all[1][7] = time_10[2] % 10;
- 553   2          
- 554   2          /* 界面2 ADC通道0、1 */
- 555   2          dig_all[2][0] = adc_level[0] / 100;
- 556   2          dig_all[2][1] = adc_level[0] / 10 % 10;
- 557   2          dig_all[2][2] = adc_level[0] % 10;
- 558   2          
- 559   2          dig_all[2][5] = adc_level[1] / 100;
- 560   2          dig_all[2][6] = adc_level[1] / 10 % 10;
- 561   2          dig_all[2][7] = adc_level[1] % 10;
- 562   2          
- 563   2          /* 界面3 ADC通道2、3 */
- 564   2          dig_all[3][0] = adc_level[2] / 100;
- 565   2          dig_all[3][1] = adc_level[2] / 10 % 10;
- 566   2          dig_all[3][2] = adc_level[2] % 10;
- 567   2          
- 568   2          dig_all[3][5] = adc_level[3] / 100;
- 569   2          dig_all[3][6] = adc_level[3] / 10 % 10;
- 570   2          dig_all[3][7] = adc_level[3] % 10;
- 571   2          
- 572   2          /* 界面4 DAC、超声波测距 */
- 573   2          dig_all[4][0] = dac_level / 100;
- 574   2          dig_all[4][1] = dac_level / 10 % 10;
- 575   2          dig_all[4][2] = dac_level % 10;
- 576   2          
- 577   2          dig_all[4][5] = distance / 100;
- 578   2          dig_all[4][6] = distance / 10 % 10;
- 579   2          dig_all[4][7] = distance % 10;
- 580   2          
- 581   2          /* 界面5 ne555频率 */
- 582   2          dig_all[5][3] = ne555_out / 1000;
- 583   2          dig_all[5][4] = ne555_out / 100 % 10;
- 584   2          dig_all[5][5] = ne555_out / 10 % 10;
- 585   2          dig_all[5][6] = ne555_out % 10;
- 586   2          dig_all[5][7] = 0;
- 587   2          
- 588   2          /* 界面6 温度显示 */
- 589   2          dig_all[6][4] = temperature / 10000;
- 590   2          dig_all[6][5] = temperature / 1000 % 10;
- 591   2          dig_all[6][6] = temperature / 100 % 10 + 32;
- 592   2          dig_all[6][7] = temperature % 10;
- 593   2        }
- 594   1        
- 595   1        goto loop;
- 596   1      }
- 597          
- 598          #else
+                  
+                  /* 按键扫描 */
+                  key_pad_scan();
+                  
+                  /* 各种时序操作 */
+                  if (operate_timer_cnt >= 20)
+                  {
+                    operate_timer_cnt = 0;
+                    
+                    switch (operate_flag++)
+                    {
+                      default:
+                        operate_flag = 1;
+                      case 0:
+                        read_ds1302();
+                        break;
+                      case 1:
+                        adc_read();
+                        break;
+                      case 2:
+                        read_temp();
+                        break;
+                      case 3:
+                        read_distance();
+                        break;
+                    }
+                  }
+                  
+                  /* 按键功能 */
+                  if (key_value == 13 && key_state == 2)
+                  {
+                    if (++mode >= SCREEN_NUM)
+                      mode = 1;
+                  }
+                  else if (key_value == 12 && key_state == 2)
+                  {
+                    if (--mode <= 1)
+                      mode = SCREEN_NUM - 1;
+                  }
+                  
+                  /* led显示当前模式 */
+                  led_state = 0x01 << (mode - 1);
+                  
+                  /* 数码管界面选择 */
+                  dig = dig_all[mode];
+                  
+                  /* 界面1 时钟显示 */
+                  dig_all[1][0] = time_10[0] / 10;
+                  dig_all[1][1] = time_10[0] % 10;
+                  
+                  dig_all[1][3] = time_10[1] / 10;
+                  dig_all[1][4] = time_10[1] % 10;
+                  
+                  dig_all[1][6] = time_10[2] / 10;
+                  dig_all[1][7] = time_10[2] % 10;
+                  
+                  /* 界面2 ADC通道0、1 */
+                  dig_all[2][0] = adc_level[0] / 100;
+                  dig_all[2][1] = adc_level[0] / 10 % 10;
+                  dig_all[2][2] = adc_level[0] % 10;
+                  
+                  dig_all[2][5] = adc_level[1] / 100;
+C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 20:15:15 PAGE 11  
+
+                  dig_all[2][6] = adc_level[1] / 10 % 10;
+                  dig_all[2][7] = adc_level[1] % 10;
+                  
+                  /* 界面3 ADC通道2、3 */
+                  dig_all[3][0] = adc_level[2] / 100;
+                  dig_all[3][1] = adc_level[2] / 10 % 10;
+                  dig_all[3][2] = adc_level[2] % 10;
+                  
+                  dig_all[3][5] = adc_level[3] / 100;
+                  dig_all[3][6] = adc_level[3] / 10 % 10;
+                  dig_all[3][7] = adc_level[3] % 10;
+                  
+                  /* 界面4 DAC、超声波测距 */
+                  dig_all[4][0] = dac_level / 100;
+                  dig_all[4][1] = dac_level / 10 % 10;
+                  dig_all[4][2] = dac_level % 10;
+                  
+                  dig_all[4][5] = distance / 100;
+                  dig_all[4][6] = distance / 10 % 10;
+                  dig_all[4][7] = distance % 10;
+                  
+                  /* 界面5 ne555频率 */
+                  dig_all[5][3] = ne555_out / 1000;
+                  dig_all[5][4] = ne555_out / 100 % 10;
+                  dig_all[5][5] = ne555_out / 10 % 10;
+                  dig_all[5][6] = ne555_out % 10;
+                  dig_all[5][7] = 0;
+                  
+                  /* 界面6 温度显示 */
+                  dig_all[6][4] = temperature / 10000;
+                  dig_all[6][5] = temperature / 1000 % 10;
+                  dig_all[6][6] = temperature / 100 % 10 + 32;
+                  dig_all[6][7] = temperature % 10;
+                }
+                
+                goto loop;
+              }
+              
+              #else
               void test(void) //这个只是为了防止警告
               {
                 ;
@@ -633,13 +687,11 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    664    ----
-   CONSTANT SIZE    =   ----    ----
+   CODE SIZE        =    226    ----
+   CONSTANT SIZE    =     39    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----       2
-C51 COMPILER V9.60.0.0   TEST                                                              03/29/2023 10:30:13 PAGE 11  
-
+   DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   KEY                                                               03/28/2023 16:55:19 PAGE 1   
+C51 COMPILER V9.60.0.0   KEY                                                               03/29/2023 19:47:31 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE KEY
@@ -62,7 +62,7 @@ line level    source
   51   2          /* 行判断 */
   52   2          if (!P33) //第4行
   53   2            row = 3;
-C51 COMPILER V9.60.0.0   KEY                                                               03/28/2023 16:55:19 PAGE 2   
+C51 COMPILER V9.60.0.0   KEY                                                               03/29/2023 19:47:31 PAGE 2   
 
   54   2          else if (!P32) //第3行
   55   2            row = 2;
@@ -126,7 +126,7 @@ line level    source
  113   3          }
  114   2          else //按键完全松开
  115   2      #endif //KEY_RELEASE
-C51 COMPILER V9.60.0.0   KEY                                                               03/28/2023 16:55:19 PAGE 3   
+C51 COMPILER V9.60.0.0   KEY                                                               03/29/2023 19:47:31 PAGE 3   
 
  116   2          {
  117   3            key_value = 0;

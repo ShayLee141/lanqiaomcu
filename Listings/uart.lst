@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   UART                                                              03/29/2023 10:30:13 PAGE 1   
+C51 COMPILER V9.60.0.0   UART                                                              03/29/2023 19:45:30 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE UART
@@ -10,64 +10,82 @@ line level    source
 
    1          #include "uart.h"
    2          
-   3          bit busy = 0;
-   4          
-   5          void UartInit(void)   //9600bps@12.000MHz
-   6          {
-   7   1        SCON = 0x50;    //8位数据,可变波特率
-   8   1        AUXR |= 0x01;   //串口1选择定时器2为波特率发生器
-   9   1        AUXR |= 0x04;   //定时器时钟1T模式
-  10   1        T2L = 0xC7;     //设置定时初始值
-  11   1        T2H = 0xFE;     //设置定时初始值
-  12   1        AUXR |= 0x10;   //定时器2开始计时
-  13   1        ES = 1;         //使能串口1中断
-  14   1      }
-  15          
-  16          void Uart() interrupt 4
-  17          {
-  18   1        if (RI)
-  19   1        {
-  20   2          RI = 0;                 //清除RI位
-  21   2          P0 = SBUF;              //P0显示串口数据
-  22   2          P22 = RB8;              //P2.2显示校验位
-  23   2        }
-  24   1        if (TI)
-  25   1        {
-  26   2          TI = 0;                 //清除TI位
-  27   2          busy = 0;               //清忙标志
-  28   2        }
-  29   1      }
-  30          
-  31          /*----------------------------
-  32          发送串口数据
-  33          ----------------------------*/
-  34          void SendData(uint8_t dat)
-  35          {
-  36   1        while (busy);               //等待前面的数据发送完成
-  37   1        busy = 1;
-  38   1        SBUF = dat;                 //写数据到UART数据寄存器
-  39   1      }
-  40          
-  41          /*----------------------------
-  42          发送字符串
-  43          ----------------------------*/
-  44          void SendString(char *s)
-  45          {
-  46   1          while (*s)                  //检测字符串结束标志
-  47   1          {
-  48   2              SendData(*s++);         //发送当前字符
-  49   2          }
-  50   1      }
+   3          void UartInit(void)   //9600bps@12.000MHz
+   4          {
+   5   1        SCON = 0x50;    //8位数据,可变波特率
+   6   1        AUXR |= 0x01;   //串口1选择定时器2为波特率发生器
+   7   1        AUXR |= 0x04;   //定时器时钟1T模式
+   8   1        T2L = 0xC7;     //设置定时初始值
+   9   1        T2H = 0xFE;     //设置定时初始值
+  10   1        AUXR |= 0x10;   //定时器2开始计时
+  11   1        ES = 1;         //使能串口1中断
+  12   1      }
+  13          
+  14          bit busy = 0;
+  15          uint8_t cmd = 0;
+  16          
+  17          void Uart() interrupt 4
+  18          {
+  19   1        uint8_t buf;
+  20   1      
+  21   1        if (RI)
+  22   1        {
+  23   2          RI = 0;                 //清除RI位
+  24   2          buf = SBUF;
+  25   2          
+  26   2          switch (buf)
+  27   2          {
+  28   3            case 'A':
+  29   3              cmd |= 0x01;
+  30   3            break;
+  31   3            
+  32   3            case 'B':
+  33   3              cmd |= 0x02;
+  34   3            break;
+  35   3            
+  36   3            case 'C':
+  37   3              cmd |= 0x04;
+  38   3            break;
+  39   3          }
+  40   2        }
+  41   1        
+  42   1        if (TI)
+  43   1        {
+  44   2          TI = 0;                 //清除TI位
+  45   2          busy = 0;               //清忙标志
+  46   2        }
+  47   1      }
+  48          
+  49          /*----------------------------
+  50          发送串口数据
+  51          ----------------------------*/
+  52          void SendData(uint8_t dat)
+  53          {
+  54   1        while (busy);               //等待前面的数据发送完成
+C51 COMPILER V9.60.0.0   UART                                                              03/29/2023 19:45:30 PAGE 2   
+
+  55   1        busy = 1;
+  56   1        SBUF = dat;                 //写数据到UART数据寄存器
+  57   1      }
+  58          
+  59          /*----------------------------
+  60          发送字符串
+  61          ----------------------------*/
+  62          void SendString(char *s)
+  63          {
+  64   1          while (*s)                  //检测字符串结束标志
+  65   1          {
+  66   2              SendData(*s++);         //发送当前字符
+  67   2          }
+  68   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     90    ----
-C51 COMPILER V9.60.0.0   UART                                                              03/29/2023 10:30:13 PAGE 2   
-
+   CODE SIZE        =    121    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----       3
+   DATA SIZE        =      1       3
    IDATA SIZE       =   ----    ----
    BIT SIZE         =      1    ----
 END OF MODULE INFORMATION.

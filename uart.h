@@ -9,11 +9,10 @@
 
 #include "myint.h"
 
-#define CMD_NUM 5		//CMD_NUM = 指令数量
-#define CMD_LEN 10	//CMD_LEN = 最长的指令长度 + 1
+#include "base.h"
 
-bit busy = 0;
-uint8_t cmd = 0;
+extern bit busy;
+extern uint8_t cmd;
 
 void UartInit(void);
 void SendData(uint8_t dat);

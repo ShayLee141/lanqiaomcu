@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   ULTRASONIC                                                        03/28/2023 16:55:20 PAGE 1   
+C51 COMPILER V9.60.0.0   ULTRASONIC                                                        03/29/2023 19:45:29 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE ULTRASONIC
@@ -62,7 +62,7 @@ line level    source
   52             再发送一组新的超声波，随后返回换算的值，
   53             若调用的时候上一次测距未完成，则会直接跳过，
   54             所以理论上可以连续调用不用间隔时间，
-C51 COMPILER V9.60.0.0   ULTRASONIC                                                        03/28/2023 16:55:20 PAGE 2   
+C51 COMPILER V9.60.0.0   ULTRASONIC                                                        03/29/2023 19:45:29 PAGE 2   
 
   55             出于安全和全局考虑，还是建议读取间隔至少为50ms，
   56             可根据需要更改（50ms效果已经很好了，太快没啥用哈哈） */
@@ -126,7 +126,7 @@ line level    source
  114   1        return distance;
  115   1      }
 
-C51 COMPILER V9.60.0.0   ULTRASONIC                                                        03/28/2023 16:55:20 PAGE 3   
+C51 COMPILER V9.60.0.0   ULTRASONIC                                                        03/29/2023 19:45:29 PAGE 3   
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

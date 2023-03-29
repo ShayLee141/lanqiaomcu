@@ -475,6 +475,58 @@ void test(void)
 	}
 }
 
+#elif UART_TEST == 1
+/* 串口测试 */
+void test(void)
+{
+	dig_switch = 0x00;
+	
+	dig[1] = 5;
+	dig[2] = 25;
+	dig[3] = 0xC;
+	dig[4] = 0xC;
+	dig[5] = 0xE;
+	dig[6] = 5;
+	dig[7] = 5;
+	
+	SendString("echo uart\r\n");
+	
+	while (1)
+	{
+		if (Timer10ms_cnt >= 10)
+		{
+			Timer10ms_cnt = 0;
+			key_pad_scan(); //矩阵键盘并不会影响串口收发
+		}
+		
+		if (cmd)
+		{
+			Timern_cnt = 0;
+		}
+		else if (Timern_cnt >= 5000)
+		{
+			Timern_cnt = 0;
+			SendString("input 'A' or 'B' or 'C':\r\n");
+		}
+		
+		if (cmd & 0x01)
+		{
+			led_state ^= 0x80;
+			cmd &= ~0x01;
+		}
+		if (cmd & 0x02)
+		{
+			dig_switch = ~dig_switch;
+			cmd &= ~0x02;
+		}
+		if (cmd & 0x04)
+		{
+			high_power_state ^= 0x10;
+			cmd &= ~0x04;
+		}
+	}
+}
+
 #elif CHIPS_TEST == 1
 /* 所有芯片综合测试 */
 void test(void)
