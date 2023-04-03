@@ -126,7 +126,6 @@ void e2prom_write(uint8_t addr, uint8_t *Data, uint8_t len)
 		Data++;
 	}
 	I2CStop();
-	I2C_Delay(DELAY_TIME);
 }
 
 void e2prom_read(uint8_t addr, uint8_t *Data, uint8_t len)
