@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   IIC                                                               04/04/2023 17:30:51 PAGE 1   
+C51 COMPILER V9.60.0.0   IIC                                                               04/04/2023 18:28:16 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE IIC
@@ -62,7 +62,7 @@ line level    source
   51   1        
   52   1          for(i=0; i<8; i++){
   53   2              scl = 0;
-C51 COMPILER V9.60.0.0   IIC                                                               04/04/2023 17:30:51 PAGE 2   
+C51 COMPILER V9.60.0.0   IIC                                                               04/04/2023 18:28:16 PAGE 2   
 
   54   2          I2C_Delay(DELAY_TIME);
   55   2              if(byt & 0x80){
@@ -126,7 +126,7 @@ line level    source
  113          
  114          /* ------------------at24c02----------------- */
  115          void e2prom_write(uint8_t addr, uint8_t *Data, uint8_t len)
-C51 COMPILER V9.60.0.0   IIC                                                               04/04/2023 17:30:51 PAGE 3   
+C51 COMPILER V9.60.0.0   IIC                                                               04/04/2023 18:28:16 PAGE 3   
 
  116          {
  117   1        I2CStart();
@@ -190,7 +190,7 @@ line level    source
  175          {
  176   1        control_byte &= ~0x40; //关闭dac输出
  177   1        
-C51 COMPILER V9.60.0.0   IIC                                                               04/04/2023 17:30:51 PAGE 4   
+C51 COMPILER V9.60.0.0   IIC                                                               04/04/2023 18:28:16 PAGE 4   
 
  178   1        I2CStart();
  179   1        I2CSendByte(0x90);

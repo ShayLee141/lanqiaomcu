@@ -27,7 +27,7 @@
 	 按住、短按、长按1秒、长按2秒、
 	 短按松手（小于1秒）、长按按下1秒至2秒内松开、
 	 长按按下2秒后松开，几种控制方式 */
-#define KEY_TEST 1
+#define KEY_TEST 0
 /* 显示测试
    配合按键，实现按键切换数码管显示界面，
 	 s13和s12可以切换界面1至4
@@ -36,7 +36,7 @@
 #define DISPLAY_TEST 0
 /* 超声波测试
    显示当前测距，距离小于30会打开继电器 */
-#define ULTRASONIC_TEST 0
+#define ULTRASONIC_TEST 1
 /* 实时时钟测试
 	 按键s9可以启动和暂停时钟	 */
 #define RTC_TEST 0

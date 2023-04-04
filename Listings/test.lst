@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 17:30:50 PAGE 1   
+C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 18:28:15 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TEST
@@ -62,7 +62,7 @@ line level    source
                   }
                   
                   if (Timer100ms_cnt >= 100) //10ms更新一次pwm占空比和led输出状态
-C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 17:30:50 PAGE 2   
+C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 18:28:15 PAGE 2   
 
                   {
                     Timer100ms_cnt = 0;
@@ -83,83 +83,83 @@ line level    source
               }
               
               #elif KEY_TEST == 1
-  73          /* 按键测试 */
-  74          void test(void)
-  75          {
-  76   1        uint8_t cnt = 127;
-  77   1        
-  78   1        dig = dig_all[2];
-  79   1        
-  80   1        while(1)
-  81   1        {
-  82   2          /* 10ms执行一次按键扫描 */
-  83   2          if (Timer10ms_cnt >= 10) //这里可以修改消抖时间，如果想看清楚数码管和LED一闪而�
+              /* 按键测试 */
+              void test(void)
+              {
+                uint8_t cnt = 127;
+                
+                dig = dig_all[2];
+                
+                while(1)
+                {
+                  /* 10ms执行一次按键扫描 */
+                  if (Timer10ms_cnt >= 10) //这里可以修改消抖时间，如果想看清楚数码管和LED一闪而�
              -�的内容，不妨把这个值增大到50或者更大，但是要记得调回来哦
-  84   2          {
-  85   3            Timer10ms_cnt = 0;
-  86   3            
-  87   3            /* 按键扫描 */
-  88   3            key_pad_scan();
-  89   3      
-  90   3            /* 判断按键 */
-  91   3            { /* 无非就是利用key_value和key_state两个变量来判断 */
-  92   4              if (key_value == 5 && key_state == 2) //s5短按
-  93   4                led_state |= 0x01;
-  94   4              
-  95   4              else if (key_value == 5 && key_state == 100) //s5长按1秒
-  96   4                led_state |= 0x02;
-  97   4              
-  98   4              else if (key_value == 5 && key_state == 200) //s5长按2秒
-  99   4                led_state |= 0x04;
- 100   4              
- 101   4              else if (key_value == 5 && key_state > 250) //s5松手
- 102   4                led_state |= 0x08;
- 103   4              
- 104   4              else if (key_value == 9 && key_state >= 2) //s9按住时
- 105   4              {
- 106   5                led_state |= 0x10;
- 107   5                
- 108   5                if (key_value == 9 && key_state == 255) //s9按下不到1秒松开
- 109   5                  led_state |= 0x20;
- 110   5                
- 111   5                else if (key_value == 9 && key_state == 254) //s9按下1秒至2秒内松开
- 112   5                  led_state |= 0x40;
- 113   5                
- 114   5                else if (key_value == 9 && key_state == 253) //s9按下2秒以上再松开
-C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 17:30:50 PAGE 3   
+                  {
+                    Timer10ms_cnt = 0;
+                    
+                    /* 按键扫描 */
+                    key_pad_scan();
+              
+                    /* 判断按键 */
+                    { /* 无非就是利用key_value和key_state两个变量来判断 */
+                      if (key_value == 5 && key_state == 2) //s5短按
+                        led_state |= 0x01;
+                      
+                      else if (key_value == 5 && key_state == 100) //s5长按1秒
+                        led_state |= 0x02;
+                      
+                      else if (key_value == 5 && key_state == 200) //s5长按2秒
+                        led_state |= 0x04;
+                      
+                      else if (key_value == 5 && key_state > 250) //s5松手
+                        led_state |= 0x08;
+                      
+                      else if (key_value == 9 && key_state >= 2) //s9按住时
+                      {
+                        led_state |= 0x10;
+                        
+                        if (key_value == 9 && key_state == 255) //s9按下不到1秒松开
+                          led_state |= 0x20;
+                        
+                        else if (key_value == 9 && key_state == 254) //s9按下1秒至2秒内松开
+                          led_state |= 0x40;
+                        
+                        else if (key_value == 9 && key_state == 253) //s9按下2秒以上再松开
+C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 18:28:15 PAGE 3   
 
- 115   5                  led_state |= 0x80;
- 116   5              }
- 117   4              
- 118   4              else if (key_value == 13 && key_state == 2) //s13短按，控制变量增减
- 119   4                cnt++;
- 120   4              
- 121   4              else if (key_value == 12 && key_state == 2) //s12短按，控制变量增减
- 122   4                cnt--;
- 123   4              
- 124   4              else //除此之外，熄灭LED
- 125   4                led_state = 0x00;
- 126   4            }
- 127   3      
- 128   3            /* 数码管显示 */
- 129   3            {
- 130   4              /* 键值显示 */
- 131   4              dig_all[2][0] = key_value / 10;
- 132   4              dig_all[2][1] = key_value % 10;
- 133   4              
- 134   4              /* 状态显示 */
- 135   4              dig_all[2][3] = key_state / 100;
- 136   4              dig_all[2][4] = key_state / 10 % 10;
- 137   4              dig_all[2][5] = key_state % 10;
- 138   4              
- 139   4              /* 变量显示 */
- 140   4              dig_all[2][7] = cnt % 10;
- 141   4            }
- 142   3          }
- 143   2        }
- 144   1      }
- 145          
- 146          #elif DISPLAY_TEST == 1
+                          led_state |= 0x80;
+                      }
+                      
+                      else if (key_value == 13 && key_state == 2) //s13短按，控制变量增减
+                        cnt++;
+                      
+                      else if (key_value == 12 && key_state == 2) //s12短按，控制变量增减
+                        cnt--;
+                      
+                      else //除此之外，熄灭LED
+                        led_state = 0x00;
+                    }
+              
+                    /* 数码管显示 */
+                    {
+                      /* 键值显示 */
+                      dig_all[2][0] = key_value / 10;
+                      dig_all[2][1] = key_value % 10;
+                      
+                      /* 状态显示 */
+                      dig_all[2][3] = key_state / 100;
+                      dig_all[2][4] = key_state / 10 % 10;
+                      dig_all[2][5] = key_state % 10;
+                      
+                      /* 变量显示 */
+                      dig_all[2][7] = cnt % 10;
+                    }
+                  }
+                }
+              }
+              
+              #elif DISPLAY_TEST == 1
               /* 显示测试 */
               void test(void)
               {
@@ -190,7 +190,7 @@ line level    source
                         screen = 5;
                       }
                     }
-C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 17:30:50 PAGE 4   
+C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 18:28:15 PAGE 4   
 
                     else
                     {
@@ -233,45 +233,45 @@ line level    source
               }
               
               #elif ULTRASONIC_TEST == 1
-              /* 超声波测试 */
-              void test(void)
-              {
-                uint16_t distance_buf[3] = { 2, 2, 2 }; //用来存放最近的3次测距结果，初值不要给0
-                uint16_t distance_out = 0; //存放经过均值滤波后的结果
-                uint8_t p = 0;
-                
-                while(1)
-                {
-                  if (operate_timer_cnt >= 50)
-                  {
-                    operate_timer_cnt = 0;
-                    
-                    /* 测距 */
-                    read_distance();
-                    distance_buf[p] = distance;
-                    if (++p >= 3)
-                      P = 0;
-                    distance_out = median_filter(distance_buf); //使用滤波的范例，不使用也行的
-                    
-                    /* 控制继电器 */;
-C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 17:30:50 PAGE 5   
+ 218          /* 超声波测试 */
+ 219          void test(void)
+ 220          {
+ 221   1        uint16_t distance_buf[3] = { 2, 2, 2 }; //用来存放最近的3次测距结果，初值不要给0
+ 222   1        uint16_t distance_out = 0; //存放经过均值滤波后的结果
+ 223   1        uint8_t p = 0;
+ 224   1        
+ 225   1        while(1)
+ 226   1        {
+ 227   2          if (operate_timer_cnt >= 50)
+ 228   2          {
+ 229   3            operate_timer_cnt = 0;
+ 230   3            
+ 231   3            /* 测距 */
+ 232   3            read_distance();
+ 233   3            distance_buf[p] = distance;
+ 234   3            if (++p >= 3)
+ 235   3              P = 0;
+ 236   3            distance_out = median_filter(distance_buf); //使用滤波的范例，不使用也行的
+ 237   3            
+ 238   3            /* 控制继电器 */;
+C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 18:28:15 PAGE 5   
 
-                    if (distance < 30)
-                      high_power_state |= 0x10;
-                    else
-                      high_power_state &= ~0x10;
-                    
-                    /* 距离显示 */
-                    dig[0] = distance_out / 10000;
-                    dig[1] = distance_out / 1000 % 10;
-                    dig[2] = distance_out / 100 % 10;
-                    dig[3] = distance_out / 10 % 10;
-                    dig[4] = distance_out % 10;
-                  }
-                }
-              }
-              
-              #elif RTC_TEST == 1
+ 239   3            if (distance < 30)
+ 240   3              high_power_state |= 0x10;
+ 241   3            else
+ 242   3              high_power_state &= ~0x10;
+ 243   3            
+ 244   3            /* 距离显示 */
+ 245   3            dig[0] = distance_out / 10000;
+ 246   3            dig[1] = distance_out / 1000 % 10;
+ 247   3            dig[2] = distance_out / 100 % 10;
+ 248   3            dig[3] = distance_out / 10 % 10;
+ 249   3            dig[4] = distance_out % 10;
+ 250   3          }
+ 251   2        }
+ 252   1      }
+ 253          
+ 254          #elif RTC_TEST == 1
               /* 实时时钟测试 */
               void test(void)
               {
@@ -318,7 +318,7 @@ line level    source
                 dig_all[2][3] = time_10[1] / 10;
                 dig_all[2][4] = time_10[1] % 10;
                 
-C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 17:30:50 PAGE 6   
+C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 18:28:15 PAGE 6   
 
                 dig_all[2][6] = time_10[2] / 10;
                 dig_all[2][7] = time_10[2] % 10;
@@ -382,7 +382,7 @@ line level    source
                     else if (key_value == 13 && key_state == 2)
                     {
                       if (addr_flag == 0)
-C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 17:30:50 PAGE 7   
+C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 18:28:15 PAGE 7   
 
                         addr += 8;
                       else
@@ -446,7 +446,7 @@ line level    source
                   
                   if (key_value == 9 && key_state == 2)
                   {
-C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 17:30:50 PAGE 8   
+C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 18:28:15 PAGE 8   
 
                     if (control_byte & 0x40)
                       operate_flag = 12;
@@ -510,7 +510,7 @@ line level    source
                 dig[1] = 5;
                 dig[2] = 25;
                 dig[3] = 0xC;
-C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 17:30:50 PAGE 9   
+C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 18:28:15 PAGE 9   
 
                 dig[4] = 0xC;
                 dig[5] = 0xE;
@@ -574,7 +574,7 @@ line level    source
                 
                 if (Timer10ms_cnt >= 10)
                 {
-C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 17:30:50 PAGE 10  
+C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 18:28:15 PAGE 10  
 
                   Timer10ms_cnt = 0;
                   
@@ -638,7 +638,7 @@ line level    source
                   dig_all[2][1] = adc_level[0] / 10 % 10;
                   dig_all[2][2] = adc_level[0] % 10;
                   
-C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 17:30:50 PAGE 11  
+C51 COMPILER V9.60.0.0   TEST                                                              04/04/2023 18:28:15 PAGE 11  
 
                   dig_all[2][5] = adc_level[1] / 100;
                   dig_all[2][6] = adc_level[1] / 10 % 10;
@@ -688,11 +688,11 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    335    ----
-   CONSTANT SIZE    =   ----    ----
+   CODE SIZE        =    253    ----
+   CONSTANT SIZE    =      6    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----       1
+   DATA SIZE        =   ----       9
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

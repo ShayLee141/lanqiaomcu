@@ -14,16 +14,15 @@ void swap(uint16_t *a, uint16_t *b)
 	 解决数据偶尔读取错误的问题 */
 uint16_t median_filter(uint16_t *Data)
 {
-	uint16_t temp1;
-	uint16_t temp2;
+	uint16_t temp;
 	
-	temp1 = MAX(*(Data + 0), *(Data + 1));
-	if (temp1 <= *(Data + 2))
-		return temp1;
+	temp = MAX(*(Data + 0), *(Data + 1));
+	if (temp <= *(Data + 2))
+		return temp;
 	else
 	{
-		temp2 = MIN(*(Data + 0), *(Data + 1));
-		return MAX(temp2, *(Data + 2));
+		temp = MIN(*(Data + 0), *(Data + 1));
+		return MAX(temp, *(Data + 2));
 	}
 }
 
