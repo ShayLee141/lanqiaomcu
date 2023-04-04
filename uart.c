@@ -2,13 +2,13 @@
 
 void UartInit(void)		//9600bps@12.000MHz
 {
-	SCON = 0x50;		//8λ����,�ɱ䲨����
-	AUXR |= 0x01;		//����1ѡ��ʱ��2Ϊ�����ʷ�����
-	AUXR |= 0x04;		//��ʱ��ʱ��1Tģʽ
-	T2L = 0xC7;			//���ö�ʱ��ʼֵ
-	T2H = 0xFE;			//���ö�ʱ��ʼֵ
-	AUXR |= 0x10;		//��ʱ��2��ʼ��ʱ
-	ES = 1;					//ʹ�ܴ���1�ж�
+	SCON = 0x50;		//8位数据,可变波特率
+	AUXR |= 0x01;		//串口1选择定时器2为波特率发生器
+	AUXR |= 0x04;		//定时器时钟1T模式
+	T2L = 0xC7;			//设置定时初始值
+	T2H = 0xFE;			//设置定时初始值
+	AUXR |= 0x10;		//定时器2开始计时
+	ES = 1;					//使能串口1中断
 }
 
 bit busy = 0;
@@ -20,7 +20,7 @@ void Uart() interrupt 4
 
 	if (RI)
 	{
-		RI = 0;                 //���RIλ
+		RI = 0;                 //清除RI位
 		buf = SBUF;
 		
 		switch (buf)
@@ -41,28 +41,28 @@ void Uart() interrupt 4
 	
 	if (TI)
 	{
-		TI = 0;                 //���TIλ
-		busy = 0;               //��æ��־
+		TI = 0;                 //清除TI位
+		busy = 0;               //清忙标志
 	}
 }
 
 /*----------------------------
-���ʹ�������
+发送串口数据
 ----------------------------*/
 void SendData(uint8_t dat)
 {
-	while (busy);               //�ȴ�ǰ������ݷ������
+	while (busy);               //等待前面的数据发送完成
 	busy = 1;
-	SBUF = dat;                 //д���ݵ�UART���ݼĴ���
+	SBUF = dat;                 //写数据到UART数据寄存器
 }
 
 /*----------------------------
-�����ַ���
+发送字符串
 ----------------------------*/
 void SendString(char *s)
 {
-    while (*s)                  //����ַ���������־
+    while (*s)                  //检测字符串结束标志
     {
-        SendData(*s++);         //���͵�ǰ�ַ�
+        SendData(*s++);         //发送当前字符
     }
 }

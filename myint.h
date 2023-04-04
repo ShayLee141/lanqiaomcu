@@ -1,12 +1,12 @@
 #ifndef __MYINT_H__
 #define __MYINT_H__
 
-typedef unsigned char uint8_t; //8Î»ÎŞ·ûºÅÕûĞÎ
-typedef unsigned int uint16_t; //16Î»ÎŞ·ûºÅÕûĞÎ
-typedef unsigned long uint32_t; //32Î»ÎŞ·ûºÅÕûĞÎ
+typedef unsigned char uint8_t; //8ä½æ— ç¬¦å·æ•´å½¢
+typedef unsigned int uint16_t; //16ä½æ— ç¬¦å·æ•´å½¢
+typedef unsigned long uint32_t; //32ä½æ— ç¬¦å·æ•´å½¢
 
-typedef signed char int8_t; //8Î»ÕûĞÎ
-typedef int int16_t; //16Î»ÕûĞÎ
-typedef long int32_t; //16Î»ÕûĞÎ
+typedef signed char int8_t; //8ä½æ•´å½¢
+typedef int int16_t; //16ä½æ•´å½¢
+typedef long int32_t; //16ä½æ•´å½¢
 
 #endif

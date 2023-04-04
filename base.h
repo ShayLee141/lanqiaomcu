@@ -2,9 +2,9 @@
 #define __BASE_H__
 
 /* 
-	Ìý×Å£¬ËùÎ½»ù´¡£¨BASE£©£¬
-	¾ÍÊÇledpwm¡¢ÊýÂë¹Ü¡¢¼ÌµçÆ÷¡¢·äÃùÆ÷¡¢ne555²âÆµÂÊ¡¢
-	ÒÔ¼°Ò»Ð©Ö÷º¯ÊýÀïÊ¹ÓÃµ½µÄÈí¼þ¶¨Ê±Æ÷
+	å¬ç€ï¼Œæ‰€è°“åŸºç¡€ï¼ˆBASEï¼‰ï¼Œ
+	å°±æ˜¯ledpwmã€æ•°ç ç®¡ã€ç»§ç”µå™¨ã€èœ‚é¸£å™¨ã€ne555æµ‹é¢‘çŽ‡ã€
+	ä»¥åŠä¸€äº›ä¸»å‡½æ•°é‡Œä½¿ç”¨åˆ°çš„è½¯ä»¶å®šæ—¶å™¨
  */
 
 #include <STC15F2K60S2.H>
@@ -13,23 +13,23 @@
 
 #define CHANNLE(n, x) { P0 = x; P2 |= n << 5; P2 &= 0x1F; }
 
-#define SCREEN_NUM 7 //½çÃæµÄÊýÁ¿
+#define SCREEN_NUM 7 //ç•Œé¢çš„æ•°é‡
 
-extern uint8_t xdata *dig; //µ±Ç°ÏÔÊ¾½çÃæ
+extern uint8_t xdata *dig; //å½“å‰æ˜¾ç¤ºç•Œé¢
 extern uint8_t xdata dig_all[][8];
-extern uint8_t xdata dig_switch; //ÊýÂë¹ÜÃ¿Ò»Î»µÄ¿ª¹Ø
+extern uint8_t xdata dig_switch; //æ•°ç ç®¡æ¯ä¸€ä½çš„å¼€å…³
 
-extern uint8_t xdata led_state; //Ã¿¸öledµÄ×´Ì¬
-extern uint8_t xdata led_pwm_duty; //ledµÄpwmÕ¼¿Õ±È£¬Ä¬ÈÏÂúÕ¼¿Õ±È
+extern uint8_t xdata led_state; //æ¯ä¸ªledçš„çŠ¶æ€
+extern uint8_t xdata led_pwm_duty; //ledçš„pwmå ç©ºæ¯”ï¼Œé»˜è®¤æ»¡å ç©ºæ¯”
 
-/* ´ó¹¦ÂÊÍâÉè×´Ì¬
-   bit 0 - 3Îª²½½øµç»úÇý¶¯Êä³ö
-   bit 4Îª¼ÌµçÆ÷Êä³ö
-   bit 5Îªµç»úÇý¶¯Êä³ö
-   bit 6Îª·äÃùÆ÷Êä³ö */
+/* å¤§åŠŸçŽ‡å¤–è®¾çŠ¶æ€
+   bit 0 - 3ä¸ºæ­¥è¿›ç”µæœºé©±åŠ¨è¾“å‡º
+   bit 4ä¸ºç»§ç”µå™¨è¾“å‡º
+   bit 5ä¸ºç”µæœºé©±åŠ¨è¾“å‡º
+   bit 6ä¸ºèœ‚é¸£å™¨è¾“å‡º */
 extern uint8_t xdata high_power_state;
 
-/* ÐéÄâ¶¨Ê±Æ÷ */
+/* è™šæ‹Ÿå®šæ—¶å™¨ */
 extern uint8_t xdata Timer10ms_cnt;
 extern uint8_t xdata Timer100ms_cnt;
 extern uint16_t xdata Timer500ms_cnt;

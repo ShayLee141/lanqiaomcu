@@ -1,117 +1,117 @@
 #include "key.h"
 
-/* ÏÂÃæÁÐ³öµÄËùÓÐ°´¼üº¯Êý
-	 ¾ùÊ¹ÓÃÕâÁ½¸ö±äÁ¿×÷ÎªÊä³ö£¬
-	 Ö÷º¯ÊýÀïÖ»ÐèÒªÅÐ¶ÏÕâÁ½¸ö±äÁ¿£¬
-	 ¼´¿É»ñÈ¡°´¼ü×´Ì¬ÐÅÏ¢ */
-uint8_t key_value = 0; //È¡Öµ·¶Î§4 - 19
+/* ä¸‹é¢åˆ—å‡ºçš„æ‰€æœ‰æŒ‰é”®å‡½æ•°
+	 å‡ä½¿ç”¨è¿™ä¸¤ä¸ªå˜é‡ä½œä¸ºè¾“å‡ºï¼Œ
+	 ä¸»å‡½æ•°é‡Œåªéœ€è¦åˆ¤æ–­è¿™ä¸¤ä¸ªå˜é‡ï¼Œ
+	 å³å¯èŽ·å–æŒ‰é”®çŠ¶æ€ä¿¡æ¯ */
+uint8_t key_value = 0; //å–å€¼èŒƒå›´4 - 19
 uint8_t key_state = 0;
-/* key_state±íÊ¾°´¼üµ±Ç°×´Ì¬
-   0£º±íÊ¾Î´°´ÏÂ
-   1£º°´¼üÕýÔÚÏû¶¶´¦Àí
-   2 - 250£º±íÊ¾Ïû¶¶ÒÔºó°´ÏÂµÄÊ±¼ä£¬µ¥Î»ÊÇ10ms
-            ±¾Ä£°åÖ»¼ÆÊ±µ½2.5Ãë£¬ÐèÒªµÄ¿ÉÒÔÑÓ³¤
-						×¢ÒâÒª¸Ä³Éuint16_tÀàÐÍ
-	 253£ºµ±Ç°°´¼ü´Ó°´ÏÂµ½ËÉ¿ªµÄÊ±¼ä´óÓÚ2Ãë
-	 254£ºµ±Ç°°´¼ü´Ó°´ÏÂµ½ËÉ¿ªµÄÊ±¼äÔÚ1Ãëµ½2ÃëÖ®¼ä
-	 255£ºµ±Ç°°´¼ü´Ó°´ÏÂµ½ËÉ¿ªµÄÊ±¼ä²»µ½1Ãë */
+/* key_stateè¡¨ç¤ºæŒ‰é”®å½“å‰çŠ¶æ€
+   0ï¼šè¡¨ç¤ºæœªæŒ‰ä¸‹
+   1ï¼šæŒ‰é”®æ­£åœ¨æ¶ˆæŠ–å¤„ç†
+   2 - 250ï¼šè¡¨ç¤ºæ¶ˆæŠ–ä»¥åŽæŒ‰ä¸‹çš„æ—¶é—´ï¼Œå•ä½æ˜¯10ms
+            æœ¬æ¨¡æ¿åªè®¡æ—¶åˆ°2.5ç§’ï¼Œéœ€è¦çš„å¯ä»¥å»¶é•¿
+						æ³¨æ„è¦æ”¹æˆuint16_tç±»åž‹
+	 253ï¼šå½“å‰æŒ‰é”®ä»ŽæŒ‰ä¸‹åˆ°æ¾å¼€çš„æ—¶é—´å¤§äºŽ2ç§’
+	 254ï¼šå½“å‰æŒ‰é”®ä»ŽæŒ‰ä¸‹åˆ°æ¾å¼€çš„æ—¶é—´åœ¨1ç§’åˆ°2ç§’ä¹‹é—´
+	 255ï¼šå½“å‰æŒ‰é”®ä»ŽæŒ‰ä¸‹åˆ°æ¾å¼€çš„æ—¶é—´ä¸åˆ°1ç§’ */
 
-/* ¼üÖµ²éÑ¯±í */
+/* é”®å€¼æŸ¥è¯¢è¡¨ */
 uint8_t code key_pad_value_all[4][4] = 
-{ //³£ÓÃÓÚ¾ØÕó°´¼ü
+{ //å¸¸ç”¨äºŽçŸ©é˜µæŒ‰é”®
 	{7, 11, 15, 19, },
 	{6, 10, 14, 18, },
 	{5, 9, 13, 17, },
 	{4, 8, 12, 16, },
 };
-/* Ò»°ã¶¼ÊÇ10ms×óÓÒµ÷ÓÃÒ»´Î£¬
-	 10msÎªÏû¶¶Ê±¼ä£¬¿ÉÒÔ¸ù¾ÝÐèÒª¸ü¸Ä */
-/* ¾ØÕó°´¼ü */
+/* ä¸€èˆ¬éƒ½æ˜¯10mså·¦å³è°ƒç”¨ä¸€æ¬¡ï¼Œ
+	 10msä¸ºæ¶ˆæŠ–æ—¶é—´ï¼Œå¯ä»¥æ ¹æ®éœ€è¦æ›´æ”¹ */
+/* çŸ©é˜µæŒ‰é”® */
 void key_pad_scan()
 {
-	uint8_t row = 255, column = 255; //ÐÐºÅÓëÁÐºÅ£¬255ÊÇÄ¬ÈÏÖµ£¬¼´ÎÞÐ§Öµ
+	uint8_t row = 255, column = 255; //è¡Œå·ä¸Žåˆ—å·ï¼Œ255æ˜¯é»˜è®¤å€¼ï¼Œå³æ— æ•ˆå€¼
 	
-	/* ²Ù×÷IO¿Ú£¬ÕâÀï°´Ã¿¸öÎ»À´²Ù×÷µÄ£¬Êµ¼ÊÉÏ¿ÉÒÔÍ³Ò»¸³Öµ */
+	/* æ“ä½œIOå£ï¼Œè¿™é‡ŒæŒ‰æ¯ä¸ªä½æ¥æ“ä½œçš„ï¼Œå®žé™…ä¸Šå¯ä»¥ç»Ÿä¸€èµ‹å€¼ */
 #ifndef USE_UART
-	P30 = 1; //µÚ1ÐÐ
-	P31 = 1; //µÚ2ÐÐ
+	P30 = 1; //ç¬¬1è¡Œ
+	P31 = 1; //ç¬¬2è¡Œ
 #endif //USE_UART
-	P32 = 1; //µÚ3ÐÐ
-	P33 = 1; //µÚ4ÐÐ
+	P32 = 1; //ç¬¬3è¡Œ
+	P33 = 1; //ç¬¬4è¡Œ
 	
-	P44 = 0; //µÚ1ÁÐ
-	P42 = 0; //µÚ2ÁÐ
-	P35 = 0; //µÚ3ÁÐ
+	P44 = 0; //ç¬¬1åˆ—
+	P42 = 0; //ç¬¬2åˆ—
+	P35 = 0; //ç¬¬3åˆ—
 #ifndef USE_NE555
-	P34 = 0; //µÚ4ÁÐ
+	P34 = 0; //ç¬¬4åˆ—
 #endif //USE_NE555
 	
-	if (~P3 & 0x0F) //Èç¹ûÓÐ°´¼ü°´ÏÂ£»ÕâÀï¿ÉÒÔ·­ÒëÎªP3È¡·´ºóÆÁ±Îµô¸ßËÄÎ»£¬ÓÐ°´¼ü°´ÏÂÔòÕâ¸ö½á¹û¾Í²»ÎªÁã£¬ºÍÇ°Ãæ¶ÀÁ¢°´¼üÒ»ÖÂµÄ
+	if (~P3 & 0x0F) //å¦‚æžœæœ‰æŒ‰é”®æŒ‰ä¸‹ï¼›è¿™é‡Œå¯ä»¥ç¿»è¯‘ä¸ºP3å–ååŽå±è”½æŽ‰é«˜å››ä½ï¼Œæœ‰æŒ‰é”®æŒ‰ä¸‹åˆ™è¿™ä¸ªç»“æžœå°±ä¸ä¸ºé›¶ï¼Œå’Œå‰é¢ç‹¬ç«‹æŒ‰é”®ä¸€è‡´çš„
 	{
-		/* ÐÐÅÐ¶Ï */
-		if (!P33) //µÚ4ÐÐ
+		/* è¡Œåˆ¤æ–­ */
+		if (!P33) //ç¬¬4è¡Œ
 			row = 3;
-		else if (!P32) //µÚ3ÐÐ
+		else if (!P32) //ç¬¬3è¡Œ
 			row = 2;
 #ifndef USE_UART
-		else if (!P31) //µÚ2ÐÐ
+		else if (!P31) //ç¬¬2è¡Œ
 			row = 1;
-		else if (!P30) //µÚ1ÐÐ
+		else if (!P30) //ç¬¬1è¡Œ
 			row = 0;
 #endif //USE_UART
-		else //Èç¹ûÊ¹Îó¶ÁÔòÍË³öº¯Êý
+		else //å¦‚æžœä½¿è¯¯è¯»åˆ™é€€å‡ºå‡½æ•°
 			return ;
 		
-		/* ²Ù×÷IO¿Ú */
+		/* æ“ä½œIOå£ */
 #ifndef USE_UART
-		P30 = 0; //µÚ1ÐÐ
-		P31 = 0; //µÚ2ÐÐ
+		P30 = 0; //ç¬¬1è¡Œ
+		P31 = 0; //ç¬¬2è¡Œ
 #endif //USE_UART
-		P32 = 0; //µÚ3ÐÐ
-		P33 = 0; //µÚ4ÐÐ
+		P32 = 0; //ç¬¬3è¡Œ
+		P33 = 0; //ç¬¬4è¡Œ
 		
-		P44 = 1; //µÚ1ÁÐ
-		P42 = 1; //µÚ2ÁÐ
-		P35 = 1; //µÚ3ÁÐ
-		P34 = 1; //µÚ4ÁÐ
+		P44 = 1; //ç¬¬1åˆ—
+		P42 = 1; //ç¬¬2åˆ—
+		P35 = 1; //ç¬¬3åˆ—
+		P34 = 1; //ç¬¬4åˆ—
 		
-		/* ÁÐÅÐ¶Ï */
-		if (!P44) //µÚ1ÁÐ
+		/* åˆ—åˆ¤æ–­ */
+		if (!P44) //ç¬¬1åˆ—
 			column = 0;
-		else if (!P42) //µÚ2ÁÐ
+		else if (!P42) //ç¬¬2åˆ—
 			column = 1;
-		else if (!P35) //µÚ3ÁÐ
+		else if (!P35) //ç¬¬3åˆ—
 			column = 2;
 #ifndef USE_NE555
-		else if (!P34) //µÚ4ÁÐ
+		else if (!P34) //ç¬¬4åˆ—
 			column = 3;
 #endif //USE_NE555
-		else //Èç¹ûÊ¹Îó¶ÁÔòÍË³öº¯Êý
+		else //å¦‚æžœä½¿è¯¯è¯»åˆ™é€€å‡ºå‡½æ•°
 			return ;
 		
-		/* ¼üÖµÅÐ¶Ï */
-		if (row != 255 && column != 255) //Èç¹û°´¼üÓÐÐ§
+		/* é”®å€¼åˆ¤æ–­ */
+		if (row != 255 && column != 255) //å¦‚æžœæŒ‰é”®æœ‰æ•ˆ
 		{
 			key_value = key_pad_value_all[row][column];
 		}
 		
-		/* °´¼ü¼ÆÊ± */
+		/* æŒ‰é”®è®¡æ—¶ */
 		if (key_state < 250)
 			key_state++;
 	}
 	else
 	{
 #ifdef KEY_RELEASE
-		if (key_value && (key_state <= 250)) //Èç¹û°´¼ü¸ÕËÉ¿ª
+		if (key_state <= 250) //å¦‚æžœæŒ‰é”®åˆšæ¾å¼€
 		{
-			if (key_state < 100) //Èô°´ÏÂµ½ËÉÊÖÊ±¼äÃ»ÓÐ³¬¹ý1Ãë
+			if (key_state < 100) //è‹¥æŒ‰ä¸‹åˆ°æ¾æ‰‹æ—¶é—´æ²¡æœ‰è¶…è¿‡1ç§’
 				key_state = 255;
-			else if (key_state < 200) //Èô°´ÏÂµ½ËÉÊÖÊ±¼ä³¬¹ý1Ãë¶øÃ»³¬¹ý2Ãë
+			else if (key_state < 200) //è‹¥æŒ‰ä¸‹åˆ°æ¾æ‰‹æ—¶é—´è¶…è¿‡1ç§’è€Œæ²¡è¶…è¿‡2ç§’
 				key_state = 254;
-			else //Èô°´ÏÂµ½ËÉÊÖÊ±¼ä³¬¹ý2Ãë
+			else //è‹¥æŒ‰ä¸‹åˆ°æ¾æ‰‹æ—¶é—´è¶…è¿‡2ç§’
 				key_state = 253;
 		}
-		else //°´¼üÍêÈ«ËÉ¿ª
+		else //æŒ‰é”®å®Œå…¨æ¾å¼€
 #endif //KEY_RELEASE
 		{
 			key_value = 0;

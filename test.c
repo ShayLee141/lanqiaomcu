@@ -25,18 +25,18 @@ void Delay100ms()		//@12.000MHz
 }
 
 #if LED_PWM_TEST == 1
-/* led pwm²âÊÔ£¬Ç°ËÄ¸öµÆ»áÀÛ¼Ó¼ÆÊı£¬ºóËÄ¸öµÆ»áÔËĞĞÅÜÂíµÆ£¬ËùÓĞµÆ¾ù»á³ÊÏÖºôÎüµÆµÄÌØĞ§ */
+/* led pwmæµ‹è¯•ï¼Œå‰å››ä¸ªç¯ä¼šç´¯åŠ è®¡æ•°ï¼Œåå››ä¸ªç¯ä¼šè¿è¡Œè·‘é©¬ç¯ï¼Œæ‰€æœ‰ç¯å‡ä¼šå‘ˆç°å‘¼å¸ç¯çš„ç‰¹æ•ˆ */
 void test(void)
 {
-	/* Õâ¸öÊı×é±£´æÁËÁ÷Ë®µÆµÄÃ¿Ò»Ö¡µÄLED×´Ì¬£¬½öºóËÄ¸öµÆ */
+	/* è¿™ä¸ªæ•°ç»„ä¿å­˜äº†æµæ°´ç¯çš„æ¯ä¸€å¸§çš„LEDçŠ¶æ€ï¼Œä»…åå››ä¸ªç¯ */
 	uint8_t code led_state_all[6] = 
 	{ 0x80, 0x40, 0x20, 0x10, 0x20, 0x40, };
 	
-	int16_t add = 1; //ÓÃÓÚ¿ØÖÆÀÛ¼ÓµÄ·½Ïò
-	uint8_t cnt = 0; //¼ÆÊı£¬²¢ÏÔÊ¾ÔÚÇ°ËÄ¸öµÆÉÏ
-	uint8_t led_state_cnt = 0; //ÓÃÓÚÁ÷Ë®µÆ
+	int16_t add = 1; //ç”¨äºæ§åˆ¶ç´¯åŠ çš„æ–¹å‘
+	uint8_t cnt = 0; //è®¡æ•°ï¼Œå¹¶æ˜¾ç¤ºåœ¨å‰å››ä¸ªç¯ä¸Š
+	uint8_t led_state_cnt = 0; //ç”¨äºæµæ°´ç¯
 	
-	dig = dig_all[1]; //ÊıÂë¹Ü³õÊ¼½çÃæÉèÖÃÎª½çÃæ1
+	dig = dig_all[1]; //æ•°ç ç®¡åˆå§‹ç•Œé¢è®¾ç½®ä¸ºç•Œé¢1
 	
 	while(1)
 	{
@@ -46,15 +46,15 @@ void test(void)
 			
 			cnt++;
 			
-			if (++led_state_cnt >= 6) //ÓÃÓÚÁ÷Ë®µÆ
+			if (++led_state_cnt >= 6) //ç”¨äºæµæ°´ç¯
 				led_state_cnt = 0;
 		}
 		
-		if (Timer100ms_cnt >= 100) //10ms¸üĞÂÒ»´ÎpwmÕ¼¿Õ±ÈºÍledÊä³ö×´Ì¬
+		if (Timer100ms_cnt >= 100) //10msæ›´æ–°ä¸€æ¬¡pwmå ç©ºæ¯”å’Œledè¾“å‡ºçŠ¶æ€
 		{
 			Timer100ms_cnt = 0;
 			
-			/* ledpwmÕ¼¿Õ±ÈµÄ¿ØÖÆ */
+			/* ledpwmå ç©ºæ¯”çš„æ§åˆ¶ */
 			led_pwm_duty += add;
 			if (led_pwm_duty >= 10)
 				add = -1;
@@ -70,7 +70,7 @@ void test(void)
 }
 
 #elif KEY_TEST == 1
-/* °´¼ü²âÊÔ */
+/* æŒ‰é”®æµ‹è¯• */
 void test(void)
 {
 	uint8_t cnt = 127;
@@ -79,64 +79,64 @@ void test(void)
 	
 	while(1)
 	{
-		/* 10msÖ´ĞĞÒ»´Î°´¼üÉ¨Ãè */
-		if (Timer10ms_cnt >= 10) //ÕâÀï¿ÉÒÔĞŞ¸ÄÏû¶¶Ê±¼ä£¬Èç¹ûÏë¿´Çå³şÊıÂë¹ÜºÍLEDÒ»ÉÁ¶ø¹ıµÄÄÚÈİ£¬²»·Á°ÑÕâ¸öÖµÔö´óµ½50»òÕß¸ü´ó£¬µ«ÊÇÒª¼ÇµÃµ÷»ØÀ´Å¶
+		/* 10msæ‰§è¡Œä¸€æ¬¡æŒ‰é”®æ‰«æ */
+		if (Timer10ms_cnt >= 10) //è¿™é‡Œå¯ä»¥ä¿®æ”¹æ¶ˆæŠ–æ—¶é—´ï¼Œå¦‚æœæƒ³çœ‹æ¸…æ¥šæ•°ç ç®¡å’ŒLEDä¸€é—ªè€Œè¿‡çš„å†…å®¹ï¼Œä¸å¦¨æŠŠè¿™ä¸ªå€¼å¢å¤§åˆ°50æˆ–è€…æ›´å¤§ï¼Œä½†æ˜¯è¦è®°å¾—è°ƒå›æ¥å“¦
 		{
 			Timer10ms_cnt = 0;
 			
-			/* °´¼üÉ¨Ãè */
+			/* æŒ‰é”®æ‰«æ */
 			key_pad_scan();
 
-			/* ÅĞ¶Ï°´¼ü */
-			{ /* ÎŞ·Ç¾ÍÊÇÀûÓÃkey_valueºÍkey_stateÁ½¸ö±äÁ¿À´ÅĞ¶Ï */
-				if (key_value == 5 && key_state == 2) //s5¶Ì°´
+			/* åˆ¤æ–­æŒ‰é”® */
+			{ /* æ— éå°±æ˜¯åˆ©ç”¨key_valueå’Œkey_stateä¸¤ä¸ªå˜é‡æ¥åˆ¤æ–­ */
+				if (key_value == 5 && key_state == 2) //s5çŸ­æŒ‰
 					led_state |= 0x01;
 				
-				else if (key_value == 5 && key_state == 100) //s5³¤°´1Ãë
+				else if (key_value == 5 && key_state == 100) //s5é•¿æŒ‰1ç§’
 					led_state |= 0x02;
 				
-				else if (key_value == 5 && key_state == 200) //s5³¤°´2Ãë
+				else if (key_value == 5 && key_state == 200) //s5é•¿æŒ‰2ç§’
 					led_state |= 0x04;
 				
-				else if (key_value == 5 && key_state > 250) //s5ËÉÊÖ
+				else if (key_value == 5 && key_state > 250) //s5æ¾æ‰‹
 					led_state |= 0x08;
 				
-				else if (key_value == 9 && key_state >= 2) //s9°´×¡Ê±
+				else if (key_value == 9 && key_state >= 2) //s9æŒ‰ä½æ—¶
 				{
 					led_state |= 0x10;
 					
-					if (key_value == 9 && key_state == 255) //s9°´ÏÂ²»µ½1ÃëËÉ¿ª
+					if (key_value == 9 && key_state == 255) //s9æŒ‰ä¸‹ä¸åˆ°1ç§’æ¾å¼€
 						led_state |= 0x20;
 					
-					else if (key_value == 9 && key_state == 254) //s9°´ÏÂ1ÃëÖÁ2ÃëÄÚËÉ¿ª
+					else if (key_value == 9 && key_state == 254) //s9æŒ‰ä¸‹1ç§’è‡³2ç§’å†…æ¾å¼€
 						led_state |= 0x40;
 					
-					else if (key_value == 9 && key_state == 253) //s9°´ÏÂ2ÃëÒÔÉÏÔÙËÉ¿ª
+					else if (key_value == 9 && key_state == 253) //s9æŒ‰ä¸‹2ç§’ä»¥ä¸Šå†æ¾å¼€
 						led_state |= 0x80;
 				}
 				
-				else if (key_value == 13 && key_state == 2) //s13¶Ì°´£¬¿ØÖÆ±äÁ¿Ôö¼õ
+				else if (key_value == 13 && key_state == 2) //s13çŸ­æŒ‰ï¼Œæ§åˆ¶å˜é‡å¢å‡
 					cnt++;
 				
-				else if (key_value == 12 && key_state == 2) //s12¶Ì°´£¬¿ØÖÆ±äÁ¿Ôö¼õ
+				else if (key_value == 12 && key_state == 2) //s12çŸ­æŒ‰ï¼Œæ§åˆ¶å˜é‡å¢å‡
 					cnt--;
 				
-				else //³ı´ËÖ®Íâ£¬Ï¨ÃğLED
+				else //é™¤æ­¤ä¹‹å¤–ï¼Œç†„ç­LED
 					led_state = 0x00;
 			}
 
-			/* ÊıÂë¹ÜÏÔÊ¾ */
+			/* æ•°ç ç®¡æ˜¾ç¤º */
 			{
-				/* ¼üÖµÏÔÊ¾ */
+				/* é”®å€¼æ˜¾ç¤º */
 				dig_all[2][0] = key_value / 10;
 				dig_all[2][1] = key_value % 10;
 				
-				/* ×´Ì¬ÏÔÊ¾ */
+				/* çŠ¶æ€æ˜¾ç¤º */
 				dig_all[2][3] = key_state / 100;
 				dig_all[2][4] = key_state / 10 % 10;
 				dig_all[2][5] = key_state % 10;
 				
-				/* ±äÁ¿ÏÔÊ¾ */
+				/* å˜é‡æ˜¾ç¤º */
 				dig_all[2][7] = cnt % 10;
 			}
 		}
@@ -144,30 +144,30 @@ void test(void)
 }
 
 #elif DISPLAY_TEST == 1
-/* ÏÔÊ¾²âÊÔ */
+/* æ˜¾ç¤ºæµ‹è¯• */
 void test(void)
 {
-	uint8_t screen = 1; //µ±Ç°½çÃæ
-	uint8_t screen_bak = screen; //±¸·İµ±Ç°½çÃæ£¬ÒÔ±ãÖØĞÂ·µ»Ø
-	bit screen_hold = 0; //ÏÔÊ¾½çÃæ5µÄ±êÖ¾Î»
-	bit screen_switch = 1; //ÏÔÊ¾¿ª¹Ø
+	uint8_t screen = 1; //å½“å‰ç•Œé¢
+	uint8_t screen_bak = screen; //å¤‡ä»½å½“å‰ç•Œé¢ï¼Œä»¥ä¾¿é‡æ–°è¿”å›
+	bit screen_hold = 0; //æ˜¾ç¤ºç•Œé¢5çš„æ ‡å¿—ä½
+	bit screen_switch = 1; //æ˜¾ç¤ºå¼€å…³
 	
-	dig = dig_all[screen]; //Ä¬ÈÏÎª½çÃæ1
+	dig = dig_all[screen]; //é»˜è®¤ä¸ºç•Œé¢1
 	
 	while(1)
 	{
-		/* 10msÖ´ĞĞÒ»´Î°´¼üÉ¨Ãè */
+		/* 10msæ‰§è¡Œä¸€æ¬¡æŒ‰é”®æ‰«æ */
 		if (Timer10ms_cnt >= 10)
 		{
 			Timer10ms_cnt = 0;
 			
-			/* °´¼üÉ¨Ãè */
+			/* æŒ‰é”®æ‰«æ */
 			key_pad_scan();
 			
-			/* ÅĞ¶Ï°´¼ü */
-			if (key_value == 9 && key_state >= 2) //°´×¡s9Ê±
+			/* åˆ¤æ–­æŒ‰é”® */
+			if (key_value == 9 && key_state >= 2) //æŒ‰ä½s9æ—¶
 			{
-				if (!screen_hold && screen_switch) //×ĞÏ¸Ìå»áÒ»ÏÂÕâ¾äifºÍÏÂÃæÄÇ¾äif
+				if (!screen_hold && screen_switch) //ä»”ç»†ä½“ä¼šä¸€ä¸‹è¿™å¥ifå’Œä¸‹é¢é‚£å¥if
 				{
 					screen_hold = 1;
 					screen_bak = screen;
@@ -176,31 +176,31 @@ void test(void)
 			}
 			else
 			{
-				if (screen_hold) //×ĞÏ¸Ìå»áÒ»ÏÂÕâ¾äifºÍÉÏÃæÄÇ¾äif
+				if (screen_hold) //ä»”ç»†ä½“ä¼šä¸€ä¸‹è¿™å¥ifå’Œä¸Šé¢é‚£å¥if
 				{
 					screen_hold = 0;
 					screen = screen_bak;
 				}
 				
-				if (key_value == 13 && key_state == 255) //°´s13ËÉÊÖÊ±
+				if (key_value == 13 && key_state == 255) //æŒ‰s13æ¾æ‰‹æ—¶
 				{
-					if (screen < 4 && screen_switch) //ÏŞÖÆÔÚ½çÃæ1µ½½çÃæ4Ö®¼ä
+					if (screen < 4 && screen_switch) //é™åˆ¶åœ¨ç•Œé¢1åˆ°ç•Œé¢4ä¹‹é—´
 						screen++;
 				}
-				else if (key_value == 12 && key_state == 255) //°´s12ËÉÊÖÊ±
+				else if (key_value == 12 && key_state == 255) //æŒ‰s12æ¾æ‰‹æ—¶
 				{
 					if (screen > 1 && screen_switch)
 						screen--;
 				}
-				else if (key_value == 13 && key_state == 100) //³¤°´1Ãës13Ê±
+				else if (key_value == 13 && key_state == 100) //é•¿æŒ‰1ç§’s13æ—¶
 				{
-					if (screen_switch) //¼´½«¹Ø±ÕÏÔÊ¾
+					if (screen_switch) //å³å°†å…³é—­æ˜¾ç¤º
 					{
 						screen_bak = screen;
 						screen = 0;
 						screen_switch = 0;
 					}
-					else //¼´½«´ò¿ªÏÔÊ¾
+					else //å³å°†æ‰“å¼€æ˜¾ç¤º
 					{
 						screen = screen_bak;
 						screen_switch = 1;
@@ -208,18 +208,18 @@ void test(void)
 				}
 			}
 			
-			/* ÏÔÊ¾Êä³ö */
-			dig = dig_all[screen]; //ÏÔÊ¾½çÃæ
+			/* æ˜¾ç¤ºè¾“å‡º */
+			dig = dig_all[screen]; //æ˜¾ç¤ºç•Œé¢
 		}
 	}
 }
 
 #elif ULTRASONIC_TEST == 1
-/* ³¬Éù²¨²âÊÔ */
+/* è¶…å£°æ³¢æµ‹è¯• */
 void test(void)
 {
-	uint16_t distance_buf[3] = { 2, 2, 2 }; //ÓÃÀ´´æ·Å×î½üµÄ3´Î²â¾à½á¹û£¬³õÖµ²»Òª¸ø0
-	uint16_t distance_out = 0; //´æ·Å¾­¹ı¾ùÖµÂË²¨ºóµÄ½á¹û
+	uint16_t distance_buf[3] = { 2, 2, 2 }; //ç”¨æ¥å­˜æ”¾æœ€è¿‘çš„3æ¬¡æµ‹è·ç»“æœï¼Œåˆå€¼ä¸è¦ç»™0
+	uint16_t distance_out = 0; //å­˜æ”¾ç»è¿‡å‡å€¼æ»¤æ³¢åçš„ç»“æœ
 	uint8_t p = 0;
 	
 	while(1)
@@ -228,20 +228,20 @@ void test(void)
 		{
 			operate_timer_cnt = 0;
 			
-			/* ²â¾à */
+			/* æµ‹è· */
 			read_distance();
 			distance_buf[p] = distance;
 			if (++p >= 3)
 				P = 0;
-			distance_out = median_filter(distance_buf); //Ê¹ÓÃÂË²¨µÄ·¶Àı£¬²»Ê¹ÓÃÒ²ĞĞµÄ
+			distance_out = median_filter(distance_buf); //ä½¿ç”¨æ»¤æ³¢çš„èŒƒä¾‹ï¼Œä¸ä½¿ç”¨ä¹Ÿè¡Œçš„
 			
-			/* ¿ØÖÆ¼ÌµçÆ÷ */;
+			/* æ§åˆ¶ç»§ç”µå™¨ */;
 			if (distance < 30)
 				high_power_state |= 0x10;
 			else
 				high_power_state &= ~0x10;
 			
-			/* ¾àÀëÏÔÊ¾ */
+			/* è·ç¦»æ˜¾ç¤º */
 			dig[0] = distance_out / 10000;
 			dig[1] = distance_out / 1000 % 10;
 			dig[2] = distance_out / 100 % 10;
@@ -252,18 +252,18 @@ void test(void)
 }
 
 #elif RTC_TEST == 1
-/* ÊµÊ±Ê±ÖÓ²âÊÔ */
+/* å®æ—¶æ—¶é’Ÿæµ‹è¯• */
 void test(void)
 {
 	uint8_t write_ds1302_flag = 0;
 	write_ds1302();
 	
-	dig = dig_all[2]; //ÄÄ¸ö½çÃæ¶¼Ò»Ñù
+	dig = dig_all[2]; //å“ªä¸ªç•Œé¢éƒ½ä¸€æ ·
 	
-	dig_all[2][2] = 17; //·Ö¸ô·û¡°-¡±
-	dig_all[2][5] = 17; //·Ö¸ô·û¡°-¡±
+	dig_all[2][2] = 17; //åˆ†éš”ç¬¦â€œ-â€
+	dig_all[2][5] = 17; //åˆ†éš”ç¬¦â€œ-â€
 	
-	loop: //ÕâÀïÕ¹Ê¾ÁíÍâÒ»ÖÖÑ­»·µÄĞ´·¨£¬ºÍwhile(1)ÊÇÒ»ÑùµÄ
+	loop: //è¿™é‡Œå±•ç¤ºå¦å¤–ä¸€ç§å¾ªç¯çš„å†™æ³•ï¼Œå’Œwhile(1)æ˜¯ä¸€æ ·çš„
 
 	if (Timer10ms_cnt)
 	{
@@ -271,7 +271,7 @@ void test(void)
 		
 		key_pad_scan();
 		
-		if (key_value == 9 && key_state == 2) //s9ÔİÍ£»òÆô¶¯Ê±¼ä
+		if (key_value == 9 && key_state == 2) //s9æš‚åœæˆ–å¯åŠ¨æ—¶é—´
 		{
 			write_ds1302_flag++;
 		}
@@ -288,7 +288,7 @@ void test(void)
 		}
 		else if (write_ds1302_flag == 0)
 			read_ds1302();
-		else //Èç¹ûwrite_ds1302_flag == 1£¬±íÊ¾Ê±¼äÔİÍ£
+		else //å¦‚æœwrite_ds1302_flag == 1ï¼Œè¡¨ç¤ºæ—¶é—´æš‚åœ
 			;
 	}
 	
@@ -301,17 +301,17 @@ void test(void)
 	dig_all[2][6] = time_10[2] / 10;
 	dig_all[2][7] = time_10[2] % 10;
 	
-	if (write_ds1302_flag) //Ê±Í£µÄÊ±ºòµãÁÁled
+	if (write_ds1302_flag) //æ—¶åœçš„æ—¶å€™ç‚¹äº®led
 		led_state |= 0x80;
 	else
 		led_state &= ~0x80;
 	
-	goto loop; //³ÌĞòÅÜµ½ÕâÀï»áÌø×ªµ½ÉÏÃæµÄloop±êÖ¾ÖØĞÂ¿ªÊ¼ÔËĞĞ
+	goto loop; //ç¨‹åºè·‘åˆ°è¿™é‡Œä¼šè·³è½¬åˆ°ä¸Šé¢çš„loopæ ‡å¿—é‡æ–°å¼€å§‹è¿è¡Œ
 }
 
 #elif E2PROM_TEST == 1
-/* e2prom²âÊÔ */
-void test(void) Î´Íê¹¤
+/* e2promæµ‹è¯• */
+void test(void) æœªå®Œå·¥
 {
 	uint8_t Data_e[16] = { 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, };
 	uint8_t Data0[16] = { 2, 0, 2, 3, 0, 3, 2, 6, 1, 2, 3, 4, 5, 6, 7, 8, };
@@ -379,7 +379,7 @@ void test(void) Î´Íê¹¤
 }
 
 #elif ADC_DAC_TEST == 1
-/* adc_dac²âÊÔ */
+/* adc_dacæµ‹è¯• */
 void test(void)
 {
 	uint8_t operate_flag = 0;
@@ -453,7 +453,7 @@ void test(void)
 }
 
 #elif TEMP_TEST == 1
-/* ÎÂ¶È²âÊÔ */
+/* æ¸©åº¦æµ‹è¯• */
 void test(void)
 {
 	read_temp();
@@ -476,7 +476,7 @@ void test(void)
 }
 
 #elif UART_TEST == 1
-/* ´®¿Ú²âÊÔ */
+/* ä¸²å£æµ‹è¯• */
 void test(void)
 {
 	dig_switch = 0x00;
@@ -496,7 +496,7 @@ void test(void)
 		if (Timer10ms_cnt >= 10)
 		{
 			Timer10ms_cnt = 0;
-			key_pad_scan(); //¾ØÕó¼üÅÌ²¢²»»áÓ°Ïì´®¿ÚÊÕ·¢
+			key_pad_scan(); //çŸ©é˜µé”®ç›˜å¹¶ä¸ä¼šå½±å“ä¸²å£æ”¶å‘
 		}
 		
 		if (cmd)
@@ -528,7 +528,7 @@ void test(void)
 }
 
 #elif CHIPS_TEST == 1
-/* ËùÓĞĞ¾Æ¬×ÛºÏ²âÊÔ */
+/* æ‰€æœ‰èŠ¯ç‰‡ç»¼åˆæµ‹è¯• */
 void test(void)
 {
 	uint8_t mode = 1;
@@ -540,7 +540,7 @@ void test(void)
 	Delay5ms();
 	adc_read();
 	
-	dig_all[1][2] = dig_all[1][5] = 17; //·Ö¸ô·û¡°-¡±
+	dig_all[1][2] = dig_all[1][5] = 17; //åˆ†éš”ç¬¦â€œ-â€
 	
 	loop:
 	
@@ -548,10 +548,10 @@ void test(void)
 	{
 		Timer10ms_cnt = 0;
 		
-		/* °´¼üÉ¨Ãè */
+		/* æŒ‰é”®æ‰«æ */
 		key_pad_scan();
 		
-		/* ¸÷ÖÖÊ±Ğò²Ù×÷ */
+		/* å„ç§æ—¶åºæ“ä½œ */
 		if (operate_timer_cnt >= 20)
 		{
 			operate_timer_cnt = 0;
@@ -575,7 +575,7 @@ void test(void)
 			}
 		}
 		
-		/* °´¼ü¹¦ÄÜ */
+		/* æŒ‰é”®åŠŸèƒ½ */
 		if (key_value == 13 && key_state == 2)
 		{
 			if (++mode >= SCREEN_NUM)
@@ -587,13 +587,13 @@ void test(void)
 				mode = SCREEN_NUM - 1;
 		}
 		
-		/* ledÏÔÊ¾µ±Ç°Ä£Ê½ */
+		/* ledæ˜¾ç¤ºå½“å‰æ¨¡å¼ */
 		led_state = 0x01 << (mode - 1);
 		
-		/* ÊıÂë¹Ü½çÃæÑ¡Ôñ */
+		/* æ•°ç ç®¡ç•Œé¢é€‰æ‹© */
 		dig = dig_all[mode];
 		
-		/* ½çÃæ1 Ê±ÖÓÏÔÊ¾ */
+		/* ç•Œé¢1 æ—¶é’Ÿæ˜¾ç¤º */
 		dig_all[1][0] = time_10[0] / 10;
 		dig_all[1][1] = time_10[0] % 10;
 		
@@ -603,7 +603,7 @@ void test(void)
 		dig_all[1][6] = time_10[2] / 10;
 		dig_all[1][7] = time_10[2] % 10;
 		
-		/* ½çÃæ2 ADCÍ¨µÀ0¡¢1 */
+		/* ç•Œé¢2 ADCé€šé“0ã€1 */
 		dig_all[2][0] = adc_level[0] / 100;
 		dig_all[2][1] = adc_level[0] / 10 % 10;
 		dig_all[2][2] = adc_level[0] % 10;
@@ -612,7 +612,7 @@ void test(void)
 		dig_all[2][6] = adc_level[1] / 10 % 10;
 		dig_all[2][7] = adc_level[1] % 10;
 		
-		/* ½çÃæ3 ADCÍ¨µÀ2¡¢3 */
+		/* ç•Œé¢3 ADCé€šé“2ã€3 */
 		dig_all[3][0] = adc_level[2] / 100;
 		dig_all[3][1] = adc_level[2] / 10 % 10;
 		dig_all[3][2] = adc_level[2] % 10;
@@ -621,7 +621,7 @@ void test(void)
 		dig_all[3][6] = adc_level[3] / 10 % 10;
 		dig_all[3][7] = adc_level[3] % 10;
 		
-		/* ½çÃæ4 DAC¡¢³¬Éù²¨²â¾à */
+		/* ç•Œé¢4 DACã€è¶…å£°æ³¢æµ‹è· */
 		dig_all[4][0] = dac_level / 100;
 		dig_all[4][1] = dac_level / 10 % 10;
 		dig_all[4][2] = dac_level % 10;
@@ -630,14 +630,14 @@ void test(void)
 		dig_all[4][6] = distance / 10 % 10;
 		dig_all[4][7] = distance % 10;
 		
-		/* ½çÃæ5 ne555ÆµÂÊ */
+		/* ç•Œé¢5 ne555é¢‘ç‡ */
 		dig_all[5][3] = ne555_out / 1000;
 		dig_all[5][4] = ne555_out / 100 % 10;
 		dig_all[5][5] = ne555_out / 10 % 10;
 		dig_all[5][6] = ne555_out % 10;
 		dig_all[5][7] = 0;
 		
-		/* ½çÃæ6 ÎÂ¶ÈÏÔÊ¾ */
+		/* ç•Œé¢6 æ¸©åº¦æ˜¾ç¤º */
 		dig_all[6][4] = temperature / 10000;
 		dig_all[6][5] = temperature / 1000 % 10;
 		dig_all[6][6] = temperature / 100 % 10 + 32;
@@ -648,7 +648,7 @@ void test(void)
 }
 
 #else
-void test(void) //Õâ¸öÖ»ÊÇÎªÁË·ÀÖ¹¾¯¸æ
+void test(void) //è¿™ä¸ªåªæ˜¯ä¸ºäº†é˜²æ­¢è­¦å‘Š
 {
 	;
 }

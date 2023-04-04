@@ -8,7 +8,7 @@
 #include "myint.h"
 #include "intrins.h"
 
-#define DISTANCE_OUTRANG (0xFFFF) //¶¨ÒåÎª³¬³öÁ¿³ÌÊ±µÄ¾àÀëÊıÖµ
+#define DISTANCE_OUTRANG (0xFFFF) //å®šä¹‰ä¸ºè¶…å‡ºé‡ç¨‹æ—¶çš„è·ç¦»æ•°å€¼
 
 void TimerPCAInit();
 uint16_t read_distance();
