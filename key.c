@@ -102,7 +102,7 @@ void key_pad_scan()
 	else
 	{
 #ifdef KEY_RELEASE
-		if (key_state <= 250) //如果按键刚松开
+		if (key_value && key_state <= 250) //如果按键刚松开
 		{
 			if (key_state < 100) //若按下到松手时间没有超过1秒
 				key_state = 255;

@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   ONEWIRE                                                           03/29/2023 17:39:04 PAGE 1   
+C51 COMPILER V9.60.0.0   ONEWIRE                                                           04/04/2023 17:30:51 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE ONEWIRE
@@ -62,7 +62,7 @@ line level    source
   51   3            dat |= 0x80;
   52   3          }     
   53   2          Delay_OneWire(5);
-C51 COMPILER V9.60.0.0   ONEWIRE                                                           03/29/2023 17:39:04 PAGE 2   
+C51 COMPILER V9.60.0.0   ONEWIRE                                                           04/04/2023 17:30:51 PAGE 2   
 
   54   2          EA = 1; //------------开中断
   55   2        }

@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   IIC                                                               03/29/2023 15:42:39 PAGE 1   
+C51 COMPILER V9.60.0.0   IIC                                                               04/04/2023 17:30:51 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE IIC
@@ -62,7 +62,7 @@ line level    source
   51   1        
   52   1          for(i=0; i<8; i++){
   53   2              scl = 0;
-C51 COMPILER V9.60.0.0   IIC                                                               03/29/2023 15:42:39 PAGE 2   
+C51 COMPILER V9.60.0.0   IIC                                                               04/04/2023 17:30:51 PAGE 2   
 
   54   2          I2C_Delay(DELAY_TIME);
   55   2              if(byt & 0x80){
@@ -126,7 +126,7 @@ line level    source
  113          
  114          /* ------------------at24c02----------------- */
  115          void e2prom_write(uint8_t addr, uint8_t *Data, uint8_t len)
-C51 COMPILER V9.60.0.0   IIC                                                               03/29/2023 15:42:39 PAGE 3   
+C51 COMPILER V9.60.0.0   IIC                                                               04/04/2023 17:30:51 PAGE 3   
 
  116          {
  117   1        I2CStart();
@@ -141,94 +141,93 @@ line level    source
  126   2          Data++;
  127   2        }
  128   1        I2CStop();
- 129   1        I2C_Delay(DELAY_TIME);
- 130   1      }
- 131          
- 132          void e2prom_read(uint8_t addr, uint8_t *Data, uint8_t len)
- 133          {
- 134   1        I2CStart();
- 135   1        I2CSendByte(0xA0);
- 136   1        I2CWaitAck();
- 137   1        I2CSendByte(addr);
- 138   1        I2CWaitAck();
- 139   1        
- 140   1        I2CStart();
- 141   1        I2CSendByte(0xA1);
- 142   1        I2CWaitAck();
- 143   1        
- 144   1        loop:
- 145   1        *Data = I2CReceiveByte();
- 146   1        if (--len)
- 147   1        {
- 148   2          I2CSendAck(0); //发送应答
- 149   2          Data++;
- 150   2          goto loop;
- 151   2        }
- 152   1        I2CSendAck(1); //发送非应答
- 153   1        I2CStop();
- 154   1      }
- 155          
- 156          /* ------------------pcf8591----------------- */
- 157          uint8_t control_byte = 0x04;
- 158          uint8_t dac_level = 0; //当前dac输出的等级，输出前先修改这个值再调用输出函数
- 159          uint8_t adc_level[4] = { 0 };
- 160          
- 161          void dac_out(void)
- 162          {
- 163   1        control_byte |= 0x40; //开启dac输出
- 164   1        
- 165   1        I2CStart();
- 166   1        I2CSendByte(0x90);
- 167   1        I2CWaitAck();
- 168   1        I2CSendByte(control_byte);
- 169   1        I2CWaitAck();
- 170   1        I2CSendByte(dac_level);
- 171   1        I2CWaitAck();
- 172   1        I2CStop();
- 173   1      }
- 174          
- 175          void dac_stop(void)
- 176          {
- 177   1        control_byte &= ~0x40; //关闭dac输出
-C51 COMPILER V9.60.0.0   IIC                                                               03/29/2023 15:42:39 PAGE 4   
+ 129   1      }
+ 130          
+ 131          void e2prom_read(uint8_t addr, uint8_t *Data, uint8_t len)
+ 132          {
+ 133   1        I2CStart();
+ 134   1        I2CSendByte(0xA0);
+ 135   1        I2CWaitAck();
+ 136   1        I2CSendByte(addr);
+ 137   1        I2CWaitAck();
+ 138   1        
+ 139   1        I2CStart();
+ 140   1        I2CSendByte(0xA1);
+ 141   1        I2CWaitAck();
+ 142   1        
+ 143   1        loop:
+ 144   1        *Data = I2CReceiveByte();
+ 145   1        if (--len)
+ 146   1        {
+ 147   2          I2CSendAck(0); //发送应答
+ 148   2          Data++;
+ 149   2          goto loop;
+ 150   2        }
+ 151   1        I2CSendAck(1); //发送非应答
+ 152   1        I2CStop();
+ 153   1      }
+ 154          
+ 155          /* ------------------pcf8591----------------- */
+ 156          uint8_t control_byte = 0x04;
+ 157          uint8_t dac_level = 0; //当前dac输出的等级，输出前先修改这个值再调用输出函数
+ 158          uint8_t adc_level[4] = { 0 };
+ 159          
+ 160          void dac_out(void)
+ 161          {
+ 162   1        control_byte |= 0x40; //开启dac输出
+ 163   1        
+ 164   1        I2CStart();
+ 165   1        I2CSendByte(0x90);
+ 166   1        I2CWaitAck();
+ 167   1        I2CSendByte(control_byte);
+ 168   1        I2CWaitAck();
+ 169   1        I2CSendByte(dac_level);
+ 170   1        I2CWaitAck();
+ 171   1        I2CStop();
+ 172   1      }
+ 173          
+ 174          void dac_stop(void)
+ 175          {
+ 176   1        control_byte &= ~0x40; //关闭dac输出
+ 177   1        
+C51 COMPILER V9.60.0.0   IIC                                                               04/04/2023 17:30:51 PAGE 4   
 
- 178   1        
- 179   1        I2CStart();
- 180   1        I2CSendByte(0x90);
- 181   1        I2CWaitAck();
- 182   1        I2CSendByte(control_byte);
- 183   1        I2CWaitAck();
- 184   1        I2CStop();
- 185   1      }
- 186          
- 187          void adc_read(void)
- 188          {
- 189   1        I2CStart();
- 190   1        I2CSendByte(0x90);
- 191   1        I2CWaitAck();
- 192   1        I2CSendByte(control_byte);
- 193   1        I2CWaitAck();
- 194   1        
- 195   1        I2CStart();
- 196   1        I2CSendByte(0x91);
- 197   1        I2CWaitAck();
- 198   1        
- 199   1        I2CReceiveByte(); //第一次读取的数据不要使用
- 200   1        I2CSendAck(0); //发送应答
- 201   1        adc_level[0] = I2CReceiveByte();
- 202   1        I2CSendAck(0); //发送应答
- 203   1        adc_level[1] = I2CReceiveByte();
- 204   1        I2CSendAck(0); //发送应答
- 205   1        adc_level[2] = I2CReceiveByte();
- 206   1        I2CSendAck(0); //发送应答
- 207   1        adc_level[3] = I2CReceiveByte();
- 208   1        I2CSendAck(1); //发送非应答
- 209   1        I2CStop();
- 210   1      }
+ 178   1        I2CStart();
+ 179   1        I2CSendByte(0x90);
+ 180   1        I2CWaitAck();
+ 181   1        I2CSendByte(control_byte);
+ 182   1        I2CWaitAck();
+ 183   1        I2CStop();
+ 184   1      }
+ 185          
+ 186          void adc_read(void)
+ 187          {
+ 188   1        I2CStart();
+ 189   1        I2CSendByte(0x90);
+ 190   1        I2CWaitAck();
+ 191   1        I2CSendByte(control_byte);
+ 192   1        I2CWaitAck();
+ 193   1        
+ 194   1        I2CStart();
+ 195   1        I2CSendByte(0x91);
+ 196   1        I2CWaitAck();
+ 197   1        
+ 198   1        I2CReceiveByte(); //第一次读取的数据不要使用
+ 199   1        I2CSendAck(0); //发送应答
+ 200   1        adc_level[0] = I2CReceiveByte();
+ 201   1        I2CSendAck(0); //发送应答
+ 202   1        adc_level[1] = I2CReceiveByte();
+ 203   1        I2CSendAck(0); //发送应答
+ 204   1        adc_level[2] = I2CReceiveByte();
+ 205   1        I2CSendAck(0); //发送应答
+ 206   1        adc_level[3] = I2CReceiveByte();
+ 207   1        I2CSendAck(1); //发送非应答
+ 208   1        I2CStop();
+ 209   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    400    ----
+   CODE SIZE        =    395    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

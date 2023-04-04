@@ -27,7 +27,7 @@
 	 按住、短按、长按1秒、长按2秒、
 	 短按松手（小于1秒）、长按按下1秒至2秒内松开、
 	 长按按下2秒后松开，几种控制方式 */
-#define KEY_TEST 0
+#define KEY_TEST 1
 /* 显示测试
    配合按键，实现按键切换数码管显示界面，
 	 s13和s12可以切换界面1至4
@@ -49,7 +49,7 @@
 /* 串口测试 */
 #define UART_TEST 0
 /* 所有芯片综合测试 */
-#define CHIPS_TEST 1
+#define CHIPS_TEST 0
 
 #if LED_PWM_TEST + KEY_TEST + DISPLAY_TEST + \
 		ULTRASONIC_TEST + RTC_TEST + E2PROM_TEST + \
