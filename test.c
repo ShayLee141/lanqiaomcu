@@ -232,7 +232,7 @@ void test(void)
 			read_distance();
 			distance_buf[p] = distance;
 			if (++p >= 3)
-				P = 0;
+				p = 0;
 			distance_out = median_filter(distance_buf); //使用滤波的范例，不使用也行的
 			
 			/* 控制继电器 */;
