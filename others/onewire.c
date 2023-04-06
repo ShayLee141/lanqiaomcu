@@ -93,5 +93,5 @@ void read_temp(void)
 	temp_L = Read_DS18B20();
 	temp_H = Read_DS18B20();
 	
-	temperature = (float)(temp_H << 8 | temp_L) * 6.25;
+	temperature = (float)(temp_H << 8 | temp_L) * 6.25; //温度放大100倍存储
 }
