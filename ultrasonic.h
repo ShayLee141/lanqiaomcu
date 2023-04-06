@@ -12,10 +12,13 @@
 #include "intrins.h"
 
 #define DISTANCE_OUTRANG (0xFFFF) //定义为超出量程时的距离数值
+#define RANGE_LIMIT 
 
 void TimerPCAInit();
-uint16_t read_distance();
+void sand_ultrasonic();
+void calculate_distance();
 
 extern uint16_t distance;
+extern uint8_t ultrasonic_flag;
 
 #endif

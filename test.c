@@ -229,11 +229,17 @@ void test(void)
 			operate_timer_cnt = 0;
 			
 			/* 测距 */
-			read_distance();
-			distance_buf[p] = distance;
-			if (++p >= 3)
-				p = 0;
-			distance_out = median_filter(distance_buf); //使用滤波的范例，不使用也行的
+			if (ultrasonic_flag == 0)
+				sand_ultrasonic();
+			else if (ultrasonic_flag > 1)
+			{
+				calculate_distance();
+				
+				distance_buf[p] = distance;
+				if (++p >= 3)
+					p = 0;
+				distance_out = median_filter(distance_buf); //使用滤波的范例，不使用滤波也行的
+			}
 			
 			/* 控制继电器 */;
 			if (distance < 30)
