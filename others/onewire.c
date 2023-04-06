@@ -13,7 +13,7 @@ void Delay_OneWire(unsigned int t)
 {
 	unsigned char i;
 	while(t--){
-		for(i=0;i<12;i++);
+		for(i=0;i<6;i++);
 	}
 }
 

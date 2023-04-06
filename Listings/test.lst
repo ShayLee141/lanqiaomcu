@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 16:38:56 PAGE 1   
+C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 17:23:19 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TEST
@@ -62,7 +62,7 @@ line level    source
                   }
                   
                   if (Timer100ms_cnt >= 100) //10ms更新一次pwm占空比和led输出状态
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 16:38:56 PAGE 2   
+C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 17:23:19 PAGE 2   
 
                   {
                     Timer100ms_cnt = 0;
@@ -126,7 +126,7 @@ line level    source
                           led_state |= 0x40;
                         
                         else if (key_value == 9 && key_state == 253) //s9按下2秒以上再松开
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 16:38:56 PAGE 3   
+C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 17:23:19 PAGE 3   
 
                           led_state |= 0x80;
                       }
@@ -190,7 +190,7 @@ line level    source
                         screen = 5;
                       }
                     }
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 16:38:56 PAGE 4   
+C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 17:23:19 PAGE 4   
 
                     else
                     {
@@ -233,50 +233,50 @@ line level    source
               }
               
               #elif ULTRASONIC_TEST == 1
- 218          /* 超声波测试 */
- 219          void test(void)
- 220          {
- 221   1        uint16_t distance_buf[3] = { 2, 2, 2 }; //用来存放最近的3次测距结果，初值不要给0
- 222   1        uint16_t distance_out = 0; //存放经过均值滤波后的结果
- 223   1        uint8_t p = 0;
- 224   1        
- 225   1        while(1)
- 226   1        {
- 227   2          if (operate_timer_cnt >= 100)
- 228   2          {
- 229   3            operate_timer_cnt = 0;
- 230   3            
- 231   3            /* 测距 */
- 232   3            read_distance();
- 233   3            
- 234   3            distance_buf[p] = distance;
- 235   3            if (++p >= 3)
- 236   3              p = 0;
- 237   3            distance_out = median_filter(distance_buf); //使用滤波的范例，不使用滤波也行的
- 238   3            
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 16:38:56 PAGE 5   
+              /* 超声波测试 */
+              void test(void)
+              {
+                uint16_t distance_buf[3] = { 2, 2, 2 }; //用来存放最近的3次测距结果，初值不要给0
+                uint16_t distance_out = 0; //存放经过均值滤波后的结果
+                uint8_t p = 0;
+                
+                while(1)
+                {
+                  if (operate_timer_cnt >= 100)
+                  {
+                    operate_timer_cnt = 0;
+                    
+                    /* 测距 */
+                    read_distance();
+                    
+                    distance_buf[p] = distance;
+                    if (++p >= 3)
+                      p = 0;
+                    distance_out = median_filter(distance_buf); //使用滤波的范例，不使用滤波也行的
+                    
+C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 17:23:19 PAGE 5   
 
- 239   3            /* 控制继电器 */;
- 240   3            if (distance < 30)
- 241   3              high_power_state |= 0x10;
- 242   3            else
- 243   3              high_power_state &= ~0x10;
- 244   3            
- 245   3            /* 距离显示 */
- 246   3            dig[0] = distance_out / 10000;
- 247   3            dig[1] = distance_out / 1000 % 10;
- 248   3            dig[2] = distance_out / 100 % 10;
- 249   3            dig[3] = distance_out / 10 % 10;
- 250   3            dig[4] = distance_out % 10;
- 251   3            
- 252   3            /* 用数码管显示ultrasonic_flag */
- 253   3            led_state &= ~0x03;
- 254   3            led_state |= ultrasonic_flag;
- 255   3          }
- 256   2        }
- 257   1      }
- 258          
- 259          #elif RTC_TEST == 1
+                    /* 控制继电器 */;
+                    if (distance < 30)
+                      high_power_state |= 0x10;
+                    else
+                      high_power_state &= ~0x10;
+                    
+                    /* 距离显示 */
+                    dig[0] = distance_out / 10000;
+                    dig[1] = distance_out / 1000 % 10;
+                    dig[2] = distance_out / 100 % 10;
+                    dig[3] = distance_out / 10 % 10;
+                    dig[4] = distance_out % 10;
+                    
+                    /* 用数码管显示ultrasonic_flag */
+                    led_state &= ~0x03;
+                    led_state |= ultrasonic_flag;
+                  }
+                }
+              }
+              
+              #elif RTC_TEST == 1
               /* 实时时钟测试 */
               void test(void)
               {
@@ -318,7 +318,7 @@ line level    source
                 }
                 
                 dig_all[2][0] = time_10[0] / 10;
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 16:38:56 PAGE 6   
+C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 17:23:19 PAGE 6   
 
                 dig_all[2][1] = time_10[0] % 10;
                 
@@ -382,7 +382,7 @@ line level    source
                     
                     if (key_value == 9 && key_state == 2)
                     {
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 16:38:56 PAGE 7   
+C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 17:23:19 PAGE 7   
 
                       operate = 10;
                     }
@@ -446,7 +446,7 @@ line level    source
                       case 12:
                         dac_stop();
                         break;
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 16:38:56 PAGE 8   
+C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 17:23:19 PAGE 8   
 
                     }
                   }
@@ -484,33 +484,33 @@ line level    source
               }
               
               #elif TEMP_TEST == 1
-              /* 温度测试 */
-              void test(void)
-              {
-                read_temp();
-                Delay100ms();
-                
-                while (1)
-                {
-                  if (operate_timer_cnt >= 20)
-                  {
-                    operate_timer_cnt = 0;
-                    
-                    read_temp();
-                  }
-                  
-                  dig[0] = temperature / 1000;
-                  dig[1] = temperature / 100 % 10 + 32;
-                  dig[2] = temperature / 10 % 10;
-                  dig[3] = temperature % 10;
-                }
-              }
-              
-              #elif UART_TEST == 1
+ 461          /* 温度测试 */
+ 462          void test(void)
+ 463          {
+ 464   1        read_temp();
+ 465   1        Delay100ms();
+ 466   1        
+ 467   1        while (1)
+ 468   1        {
+ 469   2          if (operate_timer_cnt >= 20)
+ 470   2          {
+ 471   3            operate_timer_cnt = 0;
+ 472   3            
+ 473   3            read_temp();
+ 474   3          }
+ 475   2          
+ 476   2          dig[0] = temperature / 1000;
+ 477   2          dig[1] = temperature / 100 % 10 + 32;
+ 478   2          dig[2] = temperature / 10 % 10;
+ 479   2          dig[3] = temperature % 10;
+ 480   2        }
+ 481   1      }
+ 482          
+ 483          #elif UART_TEST == 1
               /* 串口测试 */
               void test(void)
               {
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 16:38:56 PAGE 9   
+C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 17:23:19 PAGE 9   
 
                 dig_switch = 0x00;
                 
@@ -574,7 +574,7 @@ line level    source
                 adc_read();
                 
                 dig_all[1][2] = dig_all[1][5] = 17; //分隔符“-”
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 16:38:56 PAGE 10  
+C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 17:23:19 PAGE 10  
 
                 
                 loop:
@@ -638,7 +638,7 @@ line level    source
                   dig_all[1][6] = time_10[2] / 10;
                   dig_all[1][7] = time_10[2] % 10;
                   
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 16:38:56 PAGE 11  
+C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 17:23:19 PAGE 11  
 
                   /* 界面2 ADC通道0、1 */
                   dig_all[2][0] = adc_level[0] / 100;
@@ -693,11 +693,11 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    264    ----
-   CONSTANT SIZE    =      6    ----
+   CODE SIZE        =    140    ----
+   CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----       9
+   DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
