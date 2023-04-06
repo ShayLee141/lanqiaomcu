@@ -12,7 +12,3 @@ gitee:	https://gitee.com/ShayLee141/lanqiaomcu
 ![Gitee](/和代码模板没关系的东西/01.图片/Gitee.png "Gitee")
 
 也可以去找在你认识我的地方问我
-=======
-github:https://github.com/ShayLee141/lanqiaomcu
-自己写的的蓝桥杯单片机代码模板，不是最好的，而是我高度针对比赛过程写的模板
->>>>>>> parent of 8d6579b... 修改了一下仓库结构，更新了readme
