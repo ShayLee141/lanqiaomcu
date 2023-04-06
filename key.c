@@ -73,7 +73,9 @@ void key_pad_scan()
 		P44 = 1; //第1列
 		P42 = 1; //第2列
 		P35 = 1; //第3列
+#ifndef USE_NE555
 		P34 = 1; //第4列
+#endif //USE_NE555
 		
 		/* 列判断 */
 		if (!P44) //第1列
