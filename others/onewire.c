@@ -46,6 +46,7 @@ unsigned char Read_DS18B20(void)
 		DQ = 0;
 		dat >>= 1;
 		DQ = 1;
+		Delay_OneWire(1); //有些板子不用加这句
 		if(DQ)
 		{
 			dat |= 0x80;
