@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   ONEWIRE                                                           04/06/2023 17:23:48 PAGE 1   
+C51 COMPILER V9.60.0.0   ONEWIRE                                                           04/06/2023 21:15:03 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE ONEWIRE
@@ -57,60 +57,61 @@ line level    source
   46   2          DQ = 0;
   47   2          dat >>= 1;
   48   2          DQ = 1;
-  49   2          if(DQ)
-  50   2          {
-  51   3            dat |= 0x80;
-  52   3          }     
-  53   2          Delay_OneWire(5);
-C51 COMPILER V9.60.0.0   ONEWIRE                                                           04/06/2023 17:23:48 PAGE 2   
+  49   2          Delay_OneWire(1); //有些板子不用加这句
+  50   2          if(DQ)
+  51   2          {
+  52   3            dat |= 0x80;
+  53   3          }     
+C51 COMPILER V9.60.0.0   ONEWIRE                                                           04/06/2023 21:15:03 PAGE 2   
 
-  54   2          EA = 1; //------------开中断
-  55   2        }
-  56   1        return dat;
-  57   1      }
-  58          
-  59          //
-  60          bit init_ds18b20(void)
-  61          {
-  62   1          bit initflag = 0;
-  63   1          
-  64   1          DQ = 1;
-  65   1          Delay_OneWire(12);
-  66   1          DQ = 0;
-  67   1          Delay_OneWire(80);
-  68   1          DQ = 1;
-  69   1          EA = 0; //------------关中断
-  70   1          Delay_OneWire(10); 
-  71   1          initflag = DQ;    
-  72   1          EA = 1; //------------开中断
-  73   1          Delay_OneWire(5);
-  74   1        
-  75   1          return initflag;
-  76   1      }
-  77          
-  78          /* -------------------------------------------- */
-  79          uint16_t temperature = 0;
-  80          void read_temp(void)
-  81          {
-  82   1        uint16_t temp_H, temp_L;
-  83   1        
-  84   1        init_ds18b20();
-  85   1        Write_DS18B20(0xCC);
-  86   1        Write_DS18B20(0x44);
-  87   1        
-  88   1        init_ds18b20();
-  89   1        Write_DS18B20(0xCC);
-  90   1        Write_DS18B20(0xBE);
-  91   1        
-  92   1        temp_L = Read_DS18B20();
-  93   1        temp_H = Read_DS18B20();
-  94   1        
-  95   1        temperature = (float)(temp_H << 8 | temp_L) * 6.25;
-  96   1      }
+  54   2          Delay_OneWire(5);
+  55   2          EA = 1; //------------开中断
+  56   2        }
+  57   1        return dat;
+  58   1      }
+  59          
+  60          //
+  61          bit init_ds18b20(void)
+  62          {
+  63   1          bit initflag = 0;
+  64   1          
+  65   1          DQ = 1;
+  66   1          Delay_OneWire(12);
+  67   1          DQ = 0;
+  68   1          Delay_OneWire(80);
+  69   1          DQ = 1;
+  70   1          EA = 0; //------------关中断
+  71   1          Delay_OneWire(10); 
+  72   1          initflag = DQ;    
+  73   1          EA = 1; //------------开中断
+  74   1          Delay_OneWire(5);
+  75   1        
+  76   1          return initflag;
+  77   1      }
+  78          
+  79          /* -------------------------------------------- */
+  80          uint16_t temperature = 0;
+  81          void read_temp(void)
+  82          {
+  83   1        uint16_t temp_H, temp_L;
+  84   1        
+  85   1        init_ds18b20();
+  86   1        Write_DS18B20(0xCC);
+  87   1        Write_DS18B20(0x44);
+  88   1        
+  89   1        init_ds18b20();
+  90   1        Write_DS18B20(0xCC);
+  91   1        Write_DS18B20(0xBE);
+  92   1        
+  93   1        temp_L = Read_DS18B20();
+  94   1        temp_H = Read_DS18B20();
+  95   1        
+  96   1        temperature = (float)(temp_H << 8 | temp_L) * 6.25; //温度放大100倍存储
+  97   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    221    ----
+   CODE SIZE        =    228    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

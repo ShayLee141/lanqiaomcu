@@ -25,16 +25,13 @@ void TimerPCAInit()
 									//利用脉冲捕获来模拟P11下降沿外部中断
 }
 
-uint16_t distance = 0;
 /* ultrasonic_flag 超声波状态标志
 	 0：空闲阶段
 	 1：发送阶段
 	 2：确认接收到返回的超声波
 	 3：接收不到超声波，或超出量程 */
 uint8_t ultrasonic_flag = 0;
-static const uint16_t C_DEF = 65535 - RANGE_LIMIT / 0.017;
-static const uint8_t CH_DEF = (uint16_t)(65535 - RANGE_LIMIT / 0.017) >> 8;
-static const uint8_t CL_DEF = (uint16_t)(65535 - RANGE_LIMIT / 0.017) & 0x00FF;
+uint16_t distance = 0;
 
 /* P11，即超声波RX，一旦出现下降沿，
 	 则说明已经收到返回的超声波，进入此中断 */
@@ -62,8 +59,8 @@ void TimerPCAIsr() interrupt 7
 void sand_ultrasonic()
 { //计时在前还是发送在前都可以，在我的板子上我发现计时在前的数据比较准确
 	/* 启动计时 */
-	CH = CH_DEF;		//设置定时初始值
-	CL = CL_DEF;		//设置定时初始值
+	CH = 0x8D;		//设置定时初始值，这个值是这么来的：0x8D1C ≈ 65535 - 500（厘米） * 0.017（厘米/微秒），想改量程可以自己算
+	CL = 0x1C;		//设置定时初始值
 	/* 经过测试，板子能测的最长距离是4米（至少我这块板子是这样），
 		 而定时器的理论量程远超4米，所以设置初值的意义在于缩短量程
 		 （大概缩减到5米），以此来减少不必要的测量时间，
@@ -92,9 +89,9 @@ void calculate_distance()
 //		distance = CCAP0H;
 //		distance <<= 8;
 //		distance |= CCAP0L;
-//		distance -= C_DEF; //减掉定时器初值，减去初值原因在设置初值的地方有注解
+//		distance -= 0x8D1C; //减掉定时器初值，减去初值原因在设置初值的地方有注解
 //		distance = (float)distance * 0.017;
-		distance = ((CCAP0H << 8 | CCAP0L) - C_DEF) * 0.017;
+		distance = ((CCAP0H << 8 | CCAP0L) - 0x8D1C) * 0.017;
 	}
 	else //接收不到超声波，或超出量程
 	{
