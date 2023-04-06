@@ -12,11 +12,12 @@
 #include "intrins.h"
 
 #define DISTANCE_OUTRANG (0xFFFF) //定义为超出量程时的距离数值
-#define RANGE_LIMIT 
+#define RANGE_LIMIT 500 //单位是厘米，表示最大量程限制为500厘米以内
 
 void TimerPCAInit();
 void sand_ultrasonic();
 void calculate_distance();
+void read_distance();
 
 extern uint16_t distance;
 extern uint8_t ultrasonic_flag;

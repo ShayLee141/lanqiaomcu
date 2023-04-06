@@ -224,22 +224,17 @@ void test(void)
 	
 	while(1)
 	{
-		if (operate_timer_cnt >= 50)
+		if (operate_timer_cnt >= 100)
 		{
 			operate_timer_cnt = 0;
 			
 			/* 测距 */
-			if (ultrasonic_flag == 0)
-				sand_ultrasonic();
-			else if (ultrasonic_flag > 1)
-			{
-				calculate_distance();
-				
-				distance_buf[p] = distance;
-				if (++p >= 3)
-					p = 0;
-				distance_out = median_filter(distance_buf); //使用滤波的范例，不使用滤波也行的
-			}
+			read_distance();
+			
+			distance_buf[p] = distance;
+			if (++p >= 3)
+				p = 0;
+			distance_out = median_filter(distance_buf); //使用滤波的范例，不使用滤波也行的
 			
 			/* 控制继电器 */;
 			if (distance < 30)
@@ -253,6 +248,10 @@ void test(void)
 			dig[2] = distance_out / 100 % 10;
 			dig[3] = distance_out / 10 % 10;
 			dig[4] = distance_out % 10;
+			
+			/* 用数码管显示ultrasonic_flag */
+			led_state &= ~0x03;
+			led_state |= ultrasonic_flag;
 		}
 	}
 }

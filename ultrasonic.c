@@ -32,8 +32,9 @@ uint16_t distance = 0;
 	 2：确认接收到返回的超声波
 	 3：接收不到超声波，或超出量程 */
 uint8_t ultrasonic_flag = 0;
-static const uint8_t CH_DEF = 0;
-static const uint8_t CL_DEF = 0;
+static const uint16_t C_DEF = 65535 - RANGE_LIMIT / 0.017;
+static const uint8_t CH_DEF = (uint16_t)(65535 - RANGE_LIMIT / 0.017) >> 8;
+static const uint8_t CL_DEF = (uint16_t)(65535 - RANGE_LIMIT / 0.017) & 0x00FF;
 
 /* P11，即超声波RX，一旦出现下降沿，
 	 则说明已经收到返回的超声波，进入此中断 */
@@ -41,19 +42,18 @@ void TimerPCAIsr() interrupt 7
 {
 	CR = 0; //优先结束计时
 	
-	/* 清除标志位，必须把标志位清除，不然会卡死 */
-	if (CCF0)
+	if (ultrasonic_flag == 1)
 	{
-		CCF0 = 0;
-		ultrasonic_flag = 2;
+		if (CCF0) /* 接收到返回的超声波 */
+			ultrasonic_flag = 2; //这句是关键
+		else if (CF) /* 超出量程 */
+			ultrasonic_flag = 3; //这句是关键
+		else
+			ultrasonic_flag = 0; //意外情况
 	}
 	
-	if (CF)
-	{
-		CF = 0;
-		ultrasonic_flag = 3;
-	}
-	
+	CF = 0;
+	CCF0 = 0;
 	CCF1 = 0; //这两个标志位虽然没有用到
 	CCF2 = 0; //但是以防万一，导致中断卡住
 }
@@ -62,17 +62,17 @@ void TimerPCAIsr() interrupt 7
 void sand_ultrasonic()
 { //计时在前还是发送在前都可以，在我的板子上我发现计时在前的数据比较准确
 	/* 启动计时 */
-	CL = 0x1C;		//设置定时初始值
-	CH = 0x8D;		//设置定时初始值
+	CH = CH_DEF;		//设置定时初始值
+	CL = CL_DEF;		//设置定时初始值
 	/* 经过测试，板子能测的最长距离是4米（至少我这块板子是这样），
 		 而定时器的理论量程远超4米，所以设置初值的意义在于缩短量程
 		 （大概缩减到5米），以此来减少不必要的测量时间，
 		 所以超声波传播的时间就是终值减初值 */
 	CF = 0;		//清除CF标志
-	EA = 0; //我们有个定时器是100微秒的，对这个一定会有影响，所以要先关闭中断
 	
 	/* 启动超声波发送 */
-	CR = 1;		//定时器开始计时
+	EA = 0; //关闭中断，防止打断发送
+	CR = 1;	//定时器开始计时
 	P10 = 1; Delay13us(); P10 = 0; Delay13us(); //高电平在前低电平在后
 	P10 = 1; Delay13us(); P10 = 0; Delay13us();
 	P10 = 1; Delay13us(); P10 = 0; Delay13us();
@@ -81,30 +81,41 @@ void sand_ultrasonic()
 	P10 = 1; Delay13us(); P10 = 0; Delay13us();
 	P10 = 1; Delay13us(); P10 = 0; Delay13us();
 	P10 = 1; Delay13us(); P10 = 0;
-	
 	EA = 1; //重新打开中断
-	
-	ultrasonic_flag = 1; //进入发送阶段
 }
 
 /* 计算距离 */
 void calculate_distance()
 {
-	if (ultrasonic_flag < 2) //没有完成发送之前不能计算
-		return ;
-	
 	if (ultrasonic_flag == 2) //确认接收到返回的超声波
 	{
-		distance = CCAP0H;
-		distance <<= 8;
-		distance |= CCAP0L;
-		distance -= 0x8D1C; //减掉定时器初值，减去初值原因在设置初值的地方有注解
-		distance = (float)distance * 0.017;
+//		distance = CCAP0H;
+//		distance <<= 8;
+//		distance |= CCAP0L;
+//		distance -= C_DEF; //减掉定时器初值，减去初值原因在设置初值的地方有注解
+//		distance = (float)distance * 0.017;
+		distance = ((CCAP0H << 8 | CCAP0L) - C_DEF) * 0.017;
 	}
 	else //接收不到超声波，或超出量程
 	{
 		distance = DISTANCE_OUTRANG;
 	}
+}
+
+/* 读取距离函数
+	 不一定需要这么写
+	 可以更据上面两个函数自行修改 */
+void read_distance()
+	{ //可能你会觉得这个函数写的不好，但这应该是最简单的写法了
+	if (ultrasonic_flag > 1)
+	{
+		calculate_distance();
+		ultrasonic_flag = 0; //进入发送阶段
+	}
 	
-	ultrasonic_flag = 0;
+	if (ultrasonic_flag == 0)
+	{
+		sand_ultrasonic();
+		ultrasonic_flag = 1; //进入发送阶段
+	}
 }
