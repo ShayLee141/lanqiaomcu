@@ -32,7 +32,7 @@ void key_pad_scan()
 	uint8_t row = 255, column = 255; //行号与列号，255是默认值，即无效值
 	
 	/* 操作IO口，这里按每个位来操作的，实际上可以统一赋值 */
-#ifndef USE_UART
+#ifndef USE_UART //有关这些#if的内容在main.h里可以找到
 	P30 = 1; //第1行
 	P31 = 1; //第2行
 #endif //USE_UART
@@ -40,7 +40,9 @@ void key_pad_scan()
 	P33 = 1; //第4行
 	
 	P44 = 0; //第1列
+#ifndef MM_MODE
 	P42 = 0; //第2列
+#endif //MM_MODE
 	P35 = 0; //第3列
 #ifndef USE_NE555
 	P34 = 0; //第4列
@@ -71,7 +73,9 @@ void key_pad_scan()
 		P33 = 0; //第4行
 		
 		P44 = 1; //第1列
+#ifndef MM_MODE
 		P42 = 1; //第2列
+#endif //MM_MODE
 		P35 = 1; //第3列
 #ifndef USE_NE555
 		P34 = 1; //第4列
@@ -80,8 +84,10 @@ void key_pad_scan()
 		/* 列判断 */
 		if (!P44) //第1列
 			column = 0;
+#ifndef MM_MODE
 		else if (!P42) //第2列
 			column = 1;
+#endif //MM_MODE
 		else if (!P35) //第3列
 			column = 2;
 #ifndef USE_NE555

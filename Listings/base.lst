@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   BASE                                                              04/06/2023 17:23:20 PAGE 1   
+C51 COMPILER V9.60.0.0   BASE                                                              04/07/2023 21:29:14 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE BASE
@@ -62,7 +62,7 @@ line level    source
   52          uint8_t xdata led_pwm_cnt = 0;  //led的pwm计数器
   53          uint8_t xdata led_pwm_duty = 10; //led的pwm占空比，默认满占空比，占空比不能超过周期
   54          uint8_t xdata led_pwm_period = 10; //led的pwm周期（单位就是定时器的周期，这里是100us）
-C51 COMPILER V9.60.0.0   BASE                                                              04/06/2023 17:23:20 PAGE 2   
+C51 COMPILER V9.60.0.0   BASE                                                              04/07/2023 21:29:14 PAGE 2   
 
   55          
   56          /* 大功率外设状态 */
@@ -126,7 +126,7 @@ line level    source
  112   3            ne555_out = TH0 << 8 | TL0;
  113   3            TL0 = 0x00; //复位初始值
  114   3            TH0 = 0x00; //复位初始值
-C51 COMPILER V9.60.0.0   BASE                                                              04/06/2023 17:23:20 PAGE 3   
+C51 COMPILER V9.60.0.0   BASE                                                              04/07/2023 21:29:14 PAGE 3   
 
  115   3            TR0 = 1;    //定时器0开始计数
  116   3      //      ne555_out *= 10;
@@ -139,7 +139,7 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    337    ----
+   CODE SIZE        =    320    ----
    CONSTANT SIZE    =     51    ----
    XDATA SIZE       =     75    ----
    PDATA SIZE       =   ----    ----

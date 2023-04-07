@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/06/2023 22:58:08 PAGE 1   
+C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/07/2023 21:29:13 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE ULTRASONIC
@@ -49,88 +49,90 @@ line level    source
   39          {
   40   1        CR = 0; //优先结束计时
   41   1        
-  42   1        if (ultrasonic_flag == 1)
+  42   1        if (ultrasonic_flag == 1) //当处于发送阶段
   43   1        {
   44   2          if (CCF0) /* 接收到返回的超声波 */
-  45   2            ultrasonic_flag = 2; //这句是关键
+  45   2            ultrasonic_flag = 2; //确认接收到返回的超声波
   46   2          else if (CF) /* 超出量程 */
-  47   2            ultrasonic_flag = 3; //这句是关键
+  47   2            ultrasonic_flag = 3; //接收不到超声波，或超出量程
   48   2          else
   49   2            ultrasonic_flag = 0; //意外情况
   50   2        }
-  51   1        
-  52   1        CF = 0;
-  53   1        CCF0 = 0;
-  54   1        CCF1 = 0; //这两个标志位虽然没有用到
-C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/06/2023 22:58:08 PAGE 2   
+  51   1      //  else 这里本应该加这个else，但有bug，我暂时找不到
+  52   1      //    ultrasonic_flag = 0; //意外情况
+  53   1        
+  54   1        CF = 0;
+C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/07/2023 21:29:13 PAGE 2   
 
-  55   1        CCF2 = 0; //但是以防万一，导致中断卡住
-  56   1      }
-  57          
-  58          /* 超声波发送 */
-  59          void sand_ultrasonic()
-  60          { //计时在前还是发送在前都可以，在我的板子上我发现计时在前的数据比较准确
-  61   1        /* 启动计时 */
-  62   1        CH = 0x8D;    //设置定时初始值，这个值是这么来的：0x8D1C ≈ 65535 - 500（厘米） / 0.0
+  55   1        CCF0 = 0;
+  56   1        CCF1 = 0; //这两个标志位虽然没有用到
+  57   1        CCF2 = 0; //但是以防万一，导致中断卡住
+  58   1      }
+  59          
+  60          /* 超声波发送 */
+  61          void sand_ultrasonic()
+  62          { //计时在前还是发送在前都可以，在我的板子上我发现计时在前的数据比较准确
+  63   1        /* 启动计时 */
+  64   1        CH = 0x8D;    //设置定时初始值，这个值是这么来的：0x8D1C ≈ 65535 - 500（厘米） / 0.0
              -17（厘米/微秒），想改量程可以自己算
-  63   1        CL = 0x1C;    //设置定时初始值
-  64   1        /* 经过测试，板子能测的最长距离是4米（至少我这块板子是这样），
-  65   1           而定时器的理论量程远超4米，所以设置初值的意义在于缩短量程
-  66   1           （大概缩减到5米），以此来减少不必要的测量时间，
-  67   1           所以超声波传播的时间就是终值减初值 */
-  68   1        CF = 0;   //清除CF标志
-  69   1        
-  70   1        /* 启动超声波发送 */
-  71   1        EA = 0; //关闭中断，防止打断发送
-  72   1        CR = 1; //定时器开始计时
-  73   1        P10 = 1; Delay13us(); P10 = 0; Delay13us(); //高电平在前低电平在后
-  74   1        P10 = 1; Delay13us(); P10 = 0; Delay13us();
-  75   1        P10 = 1; Delay13us(); P10 = 0; Delay13us();
+  65   1        CL = 0x1C;    //设置定时初始值
+  66   1        /* 经过测试，板子能测的最长距离是4米（至少我这块板子是这样），
+  67   1           而定时器的理论量程远超4米，所以设置初值的意义在于缩短量程
+  68   1           （大概缩减到5米），以此来减少不必要的测量时间，
+  69   1           所以超声波传播的时间就是终值减初值 */
+  70   1        CF = 0;   //清除CF标志
+  71   1        
+  72   1        /* 启动超声波发送 */
+  73   1        EA = 0; //关闭中断，防止打断发送
+  74   1        CR = 1; //定时器开始计时
+  75   1        P10 = 1; Delay13us(); P10 = 0; Delay13us(); //高电平在前低电平在后
   76   1        P10 = 1; Delay13us(); P10 = 0; Delay13us();
   77   1        P10 = 1; Delay13us(); P10 = 0; Delay13us();
   78   1        P10 = 1; Delay13us(); P10 = 0; Delay13us();
   79   1        P10 = 1; Delay13us(); P10 = 0; Delay13us();
-  80   1        P10 = 1; Delay13us(); P10 = 0;
-  81   1        EA = 1; //重新打开中断
-  82   1      }
-  83          
-  84          /* 计算距离 */
-  85          void calculate_distance()
-  86          {
-  87   1        if (ultrasonic_flag == 2) //确认接收到返回的超声波
-  88   1        {
-  89   2      //    distance = CCAP0H;
-  90   2      //    distance <<= 8;
-  91   2      //    distance |= CCAP0L;
-  92   2      //    distance -= 0x8D1C; //减掉定时器初值，减去初值原因在设置初值的地方有注解
-  93   2      //    distance = (float)distance * 0.017;
-  94   2          distance = ((CCAP0H << 8 | CCAP0L) - 0x8D1C) * 0.017;
-  95   2        }
-  96   1        else //接收不到超声波，或超出量程
-  97   1        {
-  98   2          distance = DISTANCE_OUTRANG;
-  99   2        }
- 100   1      }
- 101          
- 102          /* 读取距离函数
- 103             不一定需要这么写
- 104             可以更据上面两个函数自行修改 */
- 105          void read_distance()
- 106            { //可能你会觉得这个函数写的不好，但这应该是最简单的写法了
- 107   1        if (ultrasonic_flag > 1)
- 108   1        {
- 109   2          calculate_distance();
- 110   2          ultrasonic_flag = 0; //进入发送阶段
- 111   2        }
- 112   1        
- 113   1        if (ultrasonic_flag == 0)
- 114   1        {
- 115   2          sand_ultrasonic();
-C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/06/2023 22:58:08 PAGE 3   
+  80   1        P10 = 1; Delay13us(); P10 = 0; Delay13us();
+  81   1        P10 = 1; Delay13us(); P10 = 0; Delay13us();
+  82   1        P10 = 1; Delay13us(); P10 = 0; //有时候，做人要直接一点（指直接复制8次）
+  83   1        EA = 1; //重新打开中断
+  84   1      }
+  85          
+  86          /* 计算距离 */
+  87          void calculate_distance()
+  88          {
+  89   1        if (ultrasonic_flag == 2) //确认接收到返回的超声波
+  90   1        {
+  91   2      //    distance = CCAP0H;
+  92   2      //    distance <<= 8;
+  93   2      //    distance |= CCAP0L;
+  94   2      //    distance -= 0x8D1C; //减掉定时器初值，减去初值原因在设置初值的地方有注解
+  95   2      //    distance = (float)distance * 0.017;
+  96   2          distance = ((CCAP0H << 8 | CCAP0L) - 0x8D1C) * 0.017;
+  97   2        }
+  98   1        else //接收不到超声波，或超出量程
+  99   1        {
+ 100   2          distance = DISTANCE_OUTRANG;
+ 101   2        }
+ 102   1      }
+ 103          
+ 104          /* 读取距离函数
+ 105             不一定需要这么写
+ 106             可以更据上面两个函数自行修改 */
+ 107          void read_distance()
+ 108          { //可能你会觉得这个函数写的不好，但这应该是最简单的写法了
+ 109   1        if (ultrasonic_flag > 1)
+ 110   1        {
+ 111   2          calculate_distance();
+ 112   2          ultrasonic_flag = 0; //进入发送阶段
+ 113   2        }
+ 114   1        
+ 115   1        if (ultrasonic_flag == 0)
+C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/07/2023 21:29:13 PAGE 3   
 
- 116   2          ultrasonic_flag = 1; //进入发送阶段
- 117   2        }
- 118   1      }
+ 116   1        {
+ 117   2          sand_ultrasonic();
+ 118   2          ultrasonic_flag = 1; //进入发送阶段
+ 119   2        }
+ 120   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

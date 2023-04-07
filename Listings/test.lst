@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 22:58:08 PAGE 1   
+C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TEST
@@ -62,7 +62,7 @@ line level    source
                   }
                   
                   if (Timer100ms_cnt >= 100) //10ms更新一次pwm占空比和led输出状态
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 22:58:08 PAGE 2   
+C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 2   
 
                   {
                     Timer100ms_cnt = 0;
@@ -126,7 +126,7 @@ line level    source
                           led_state |= 0x40;
                         
                         else if (key_value == 9 && key_state == 253) //s9按下2秒以上再松开
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 22:58:08 PAGE 3   
+C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 3   
 
                           led_state |= 0x80;
                       }
@@ -190,7 +190,7 @@ line level    source
                         screen = 5;
                       }
                     }
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 22:58:08 PAGE 4   
+C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 4   
 
                     else
                     {
@@ -233,50 +233,50 @@ line level    source
               }
               
               #elif ULTRASONIC_TEST == 1
- 218          /* 超声波测试 */
- 219          void test(void)
- 220          {
- 221   1        uint16_t distance_buf[3] = { 2, 2, 2 }; //用来存放最近的3次测距结果，初值不要给0
- 222   1        uint16_t distance_out = 0; //存放经过均值滤波后的结果
- 223   1        uint8_t p = 0;
- 224   1        
- 225   1        while(1)
- 226   1        {
- 227   2          if (operate_timer_cnt >= 100)
- 228   2          {
- 229   3            operate_timer_cnt = 0;
- 230   3            
- 231   3            /* 测距 */
- 232   3            read_distance();
- 233   3            
- 234   3            distance_buf[p] = distance;
- 235   3            if (++p >= 3)
- 236   3              p = 0;
- 237   3            distance_out = median_filter(distance_buf); //使用滤波的范例，不使用滤波也行的
- 238   3            
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 22:58:08 PAGE 5   
+              /* 超声波测试 */
+              void test(void)
+              {
+                uint16_t distance_buf[3] = { 2, 2, 2 }; //用来存放最近的3次测距结果，初值不要给0
+                uint16_t distance_out = 0; //存放经过均值滤波后的结果
+                uint8_t p = 0;
+                
+                while(1)
+                {
+                  if (operate_timer_cnt >= 100)
+                  {
+                    operate_timer_cnt = 0;
+                    
+                    /* 测距 */
+                    read_distance();
+                    
+                    distance_buf[p] = distance;
+                    if (++p >= 3)
+                      p = 0;
+                    distance_out = median_filter(distance_buf); //使用滤波的范例，不使用滤波也行的
+                    
+C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 5   
 
- 239   3            /* 控制继电器 */;
- 240   3            if (distance < 30)
- 241   3              high_power_state |= 0x10;
- 242   3            else
- 243   3              high_power_state &= ~0x10;
- 244   3            
- 245   3            /* 距离显示 */
- 246   3            dig[0] = distance_out / 10000;
- 247   3            dig[1] = distance_out / 1000 % 10;
- 248   3            dig[2] = distance_out / 100 % 10;
- 249   3            dig[3] = distance_out / 10 % 10;
- 250   3            dig[4] = distance_out % 10;
- 251   3            
- 252   3            /* 用数码管显示ultrasonic_flag */
- 253   3            led_state &= ~0x03;
- 254   3            led_state |= ultrasonic_flag;
- 255   3          }
- 256   2        }
- 257   1      }
- 258          
- 259          #elif RTC_TEST == 1
+                    /* 控制继电器 */;
+                    if (distance < 30)
+                      high_power_state |= 0x10;
+                    else
+                      high_power_state &= ~0x10;
+                    
+                    /* 距离显示 */
+                    dig[0] = distance_out / 10000;
+                    dig[1] = distance_out / 1000 % 10;
+                    dig[2] = distance_out / 100 % 10;
+                    dig[3] = distance_out / 10 % 10;
+                    dig[4] = distance_out % 10;
+                    
+                    /* 用数码管显示ultrasonic_flag */
+                    led_state &= ~0x03;
+                    led_state |= ultrasonic_flag;
+                  }
+                }
+              }
+              
+              #elif RTC_TEST == 1
               /* 实时时钟测试 */
               void test(void)
               {
@@ -318,7 +318,7 @@ line level    source
                 }
                 
                 dig_all[2][0] = time_10[0] / 10;
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 22:58:08 PAGE 6   
+C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 6   
 
                 dig_all[2][1] = time_10[0] % 10;
                 
@@ -382,7 +382,7 @@ line level    source
                     
                     if (key_value == 9 && key_state == 2)
                     {
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 22:58:08 PAGE 7   
+C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 7   
 
                       operate = 10;
                     }
@@ -446,7 +446,7 @@ line level    source
                       case 12:
                         dac_stop();
                         break;
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 22:58:08 PAGE 8   
+C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 8   
 
                     }
                   }
@@ -510,7 +510,7 @@ line level    source
               /* 串口测试 */
               void test(void)
               {
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 22:58:08 PAGE 9   
+C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 9   
 
                 dig_switch = 0x00;
                 
@@ -561,130 +561,130 @@ line level    source
               }
               
               #elif CHIPS_TEST == 1
-              /* 所有芯片综合测试 */
-              void test(void)
-              {
-                uint8_t mode = 1;
-                uint8_t operate_flag = 0;
-                
-                read_temp();
-                write_ds1302();
-                dac_out();
-                Delay5ms();
-                adc_read();
-                
-                dig_all[1][2] = dig_all[1][5] = 17; //分隔符“-”
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 22:58:08 PAGE 10  
+ 536          /* 所有芯片综合测试 */
+ 537          void test(void)
+ 538          {
+ 539   1        uint8_t mode = 1;
+ 540   1        uint8_t operate_flag = 0;
+ 541   1        
+ 542   1        read_temp();
+ 543   1        write_ds1302();
+ 544   1        dac_out();
+ 545   1        Delay5ms();
+ 546   1        adc_read();
+ 547   1        
+ 548   1        dig_all[1][2] = dig_all[1][5] = 17; //分隔符“-”
+C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 10  
 
-                
-                loop:
-                
-                if (Timer10ms_cnt >= 10)
-                {
-                  Timer10ms_cnt = 0;
-                  
-                  /* 按键扫描 */
-                  key_pad_scan();
-                  
-                  /* 各种时序操作 */
-                  if (operate_timer_cnt >= 20)
-                  {
-                    operate_timer_cnt = 0;
-                    
-                    switch (operate_flag++)
-                    {
-                      default:
-                        operate_flag = 1;
-                      case 0:
-                        read_ds1302();
-                        break;
-                      case 1:
-                        adc_read();
-                        break;
-                      case 2:
-                        read_temp();
-                        break;
-                      case 3:
-                        read_distance();
-                        break;
-                    }
-                  }
-                  
-                  /* 按键功能 */
-                  if (key_value == 13 && key_state == 2)
-                  {
-                    if (++mode >= SCREEN_NUM)
-                      mode = 1;
-                  }
-                  else if (key_value == 12 && key_state == 2)
-                  {
-                    if (--mode <= 1)
-                      mode = SCREEN_NUM - 1;
-                  }
-                  
-                  /* led显示当前模式 */
-                  led_state = 0x01 << (mode - 1);
-                  
-                  /* 数码管界面选择 */
-                  dig = dig_all[mode];
-                  
-                  /* 界面1 时钟显示 */
-                  dig_all[1][0] = time_10[0] / 10;
-                  dig_all[1][1] = time_10[0] % 10;
-                  
-                  dig_all[1][3] = time_10[1] / 10;
-                  dig_all[1][4] = time_10[1] % 10;
-                  
-                  dig_all[1][6] = time_10[2] / 10;
-                  dig_all[1][7] = time_10[2] % 10;
-                  
-C51 COMPILER V9.60.0.0   TEST                                                              04/06/2023 22:58:08 PAGE 11  
+ 549   1        
+ 550   1        loop:
+ 551   1        
+ 552   1        if (Timer10ms_cnt >= 10)
+ 553   1        {
+ 554   2          Timer10ms_cnt = 0;
+ 555   2          
+ 556   2          /* 按键扫描 */
+ 557   2          key_pad_scan();
+ 558   2          
+ 559   2          /* 各种时序操作 */
+ 560   2          if (operate_timer_cnt >= 20)
+ 561   2          {
+ 562   3            operate_timer_cnt = 0;
+ 563   3            
+ 564   3            switch (operate_flag++)
+ 565   3            {
+ 566   4              default:
+ 567   4                operate_flag = 1;
+ 568   4              case 0:
+ 569   4                read_ds1302();
+ 570   4                break;
+ 571   4              case 1:
+ 572   4                adc_read();
+ 573   4                break;
+ 574   4              case 2:
+ 575   4                read_temp();
+ 576   4                break;
+ 577   4              case 3:
+ 578   4                read_distance();
+ 579   4                break;
+ 580   4            }
+ 581   3          }
+ 582   2          
+ 583   2          /* 按键功能 */
+ 584   2          if (key_value == 13 && key_state == 2)
+ 585   2          {
+ 586   3            if (++mode >= SCREEN_NUM)
+ 587   3              mode = 1;
+ 588   3          }
+ 589   2          else if (key_value == 12 && key_state == 2)
+ 590   2          {
+ 591   3            if (--mode <= 1)
+ 592   3              mode = SCREEN_NUM - 1;
+ 593   3          }
+ 594   2          
+ 595   2          /* led显示当前模式 */
+ 596   2          led_state = 0x01 << (mode - 1);
+ 597   2          
+ 598   2          /* 数码管界面选择 */
+ 599   2          dig = dig_all[mode];
+ 600   2          
+ 601   2          /* 界面1 时钟显示 */
+ 602   2          dig_all[1][0] = time_10[0] / 10;
+ 603   2          dig_all[1][1] = time_10[0] % 10;
+ 604   2          
+ 605   2          dig_all[1][3] = time_10[1] / 10;
+ 606   2          dig_all[1][4] = time_10[1] % 10;
+ 607   2          
+ 608   2          dig_all[1][6] = time_10[2] / 10;
+ 609   2          dig_all[1][7] = time_10[2] % 10;
+ 610   2          
+C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 11  
 
-                  /* 界面2 ADC通道0、1 */
-                  dig_all[2][0] = adc_level[0] / 100;
-                  dig_all[2][1] = adc_level[0] / 10 % 10;
-                  dig_all[2][2] = adc_level[0] % 10;
-                  
-                  dig_all[2][5] = adc_level[1] / 100;
-                  dig_all[2][6] = adc_level[1] / 10 % 10;
-                  dig_all[2][7] = adc_level[1] % 10;
-                  
-                  /* 界面3 ADC通道2、3 */
-                  dig_all[3][0] = adc_level[2] / 100;
-                  dig_all[3][1] = adc_level[2] / 10 % 10;
-                  dig_all[3][2] = adc_level[2] % 10;
-                  
-                  dig_all[3][5] = adc_level[3] / 100;
-                  dig_all[3][6] = adc_level[3] / 10 % 10;
-                  dig_all[3][7] = adc_level[3] % 10;
-                  
-                  /* 界面4 DAC、超声波测距 */
-                  dig_all[4][0] = dac_level / 100;
-                  dig_all[4][1] = dac_level / 10 % 10;
-                  dig_all[4][2] = dac_level % 10;
-                  
-                  dig_all[4][5] = distance / 100;
-                  dig_all[4][6] = distance / 10 % 10;
-                  dig_all[4][7] = distance % 10;
-                  
-                  /* 界面5 ne555频率 */
-                  dig_all[5][3] = ne555_out / 1000;
-                  dig_all[5][4] = ne555_out / 100 % 10;
-                  dig_all[5][5] = ne555_out / 10 % 10;
-                  dig_all[5][6] = ne555_out % 10;
-                  dig_all[5][7] = 0;
-                  
-                  /* 界面6 温度显示 */
-                  dig_all[6][4] = temperature / 10000;
-                  dig_all[6][5] = temperature / 1000 % 10;
-                  dig_all[6][6] = temperature / 100 % 10 + 32;
-                  dig_all[6][7] = temperature % 10;
-                }
-                
-                goto loop;
-              }
-              
-              #else
+ 611   2          /* 界面2 ADC通道0、1 */
+ 612   2          dig_all[2][0] = adc_level[0] / 100;
+ 613   2          dig_all[2][1] = adc_level[0] / 10 % 10;
+ 614   2          dig_all[2][2] = adc_level[0] % 10;
+ 615   2          
+ 616   2          dig_all[2][5] = adc_level[1] / 100;
+ 617   2          dig_all[2][6] = adc_level[1] / 10 % 10;
+ 618   2          dig_all[2][7] = adc_level[1] % 10;
+ 619   2          
+ 620   2          /* 界面3 ADC通道2、3 */
+ 621   2          dig_all[3][0] = adc_level[2] / 100;
+ 622   2          dig_all[3][1] = adc_level[2] / 10 % 10;
+ 623   2          dig_all[3][2] = adc_level[2] % 10;
+ 624   2          
+ 625   2          dig_all[3][5] = adc_level[3] / 100;
+ 626   2          dig_all[3][6] = adc_level[3] / 10 % 10;
+ 627   2          dig_all[3][7] = adc_level[3] % 10;
+ 628   2          
+ 629   2          /* 界面4 DAC、超声波测距 */
+ 630   2          dig_all[4][0] = dac_level / 100;
+ 631   2          dig_all[4][1] = dac_level / 10 % 10;
+ 632   2          dig_all[4][2] = dac_level % 10;
+ 633   2          
+ 634   2          dig_all[4][5] = distance / 100;
+ 635   2          dig_all[4][6] = distance / 10 % 10;
+ 636   2          dig_all[4][7] = distance % 10;
+ 637   2          
+ 638   2          /* 界面5 ne555频率 */
+ 639   2          dig_all[5][3] = ne555_out / 1000;
+ 640   2          dig_all[5][4] = ne555_out / 100 % 10;
+ 641   2          dig_all[5][5] = ne555_out / 10 % 10;
+ 642   2          dig_all[5][6] = ne555_out % 10;
+ 643   2          dig_all[5][7] = 0;
+ 644   2          
+ 645   2          /* 界面6 温度显示 */
+ 646   2          dig_all[6][4] = temperature / 10000;
+ 647   2          dig_all[6][5] = temperature / 1000 % 10;
+ 648   2          dig_all[6][6] = temperature / 100 % 10 + 32;
+ 649   2          dig_all[6][7] = temperature % 10;
+ 650   2        }
+ 651   1        
+ 652   1        goto loop;
+ 653   1      }
+ 654          
+ 655          #else
               void test(void) //这个只是为了防止警告
               {
                 ;
@@ -693,11 +693,11 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    264    ----
-   CONSTANT SIZE    =      6    ----
+   CODE SIZE        =    664    ----
+   CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----       9
+   DATA SIZE        =   ----       2
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

@@ -4,7 +4,7 @@
 #include <STC15F2K60S2.H>
 #include "intrins.h"
 
-#include "myint.h"
+#include "main.h"
 
 extern uint8_t control_byte;
 extern uint8_t dac_level;

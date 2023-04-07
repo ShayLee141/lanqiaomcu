@@ -7,7 +7,7 @@
 #include <STC15F2K60S2.H>
 #include "intrins.h"
 
-#include "myint.h"
+#include "main.h"
 
 #include "base.h"
 

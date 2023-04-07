@@ -6,9 +6,9 @@
 	 而不是来质疑我的代码 (>w<) */
 #include <STC15F2K60S2.H>
 
+#include "main.h"
 #include "base.h"
 
-#include "myint.h"
 #include "intrins.h"
 
 #define DISTANCE_OUTRANG (0xFFFF) //定义为超出量程时的距离数值

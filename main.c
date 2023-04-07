@@ -1,6 +1,7 @@
 #include <STC15F2K60S2.H>
 #include <intrins.h>
 
+#include "main.h"
 #include "base.h"
 #include "key.h"
 #include "ultrasonic.h"
@@ -10,7 +11,6 @@
 #include "iic.h"
 #include "onewire.h"
 
-#include "myint.h"
 #include "filter.h"
 
 #include "test.h"

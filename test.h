@@ -3,6 +3,7 @@
 
 #include <STC15F2K60S2.H>
 
+#include "main.h"
 #include "base.h"
 #include "key.h"
 #include "ultrasonic.h"
@@ -12,7 +13,6 @@
 #include "iic.h"
 #include "onewire.h"
 
-#include "myint.h"
 #include "filter.h"
 
 /* led pwm测试
@@ -36,7 +36,7 @@
 #define DISPLAY_TEST 0
 /* 超声波测试
    显示当前测距，距离小于30会打开继电器 */
-#define ULTRASONIC_TEST 1
+#define ULTRASONIC_TEST 0
 /* 实时时钟测试
 	 按键s9可以启动和暂停时钟	 */
 #define RTC_TEST 0
@@ -49,7 +49,7 @@
 /* 串口测试 */
 #define UART_TEST 0
 /* 所有芯片综合测试 */
-#define CHIPS_TEST 0
+#define CHIPS_TEST 1
 
 #if LED_PWM_TEST + KEY_TEST + DISPLAY_TEST + \
 		ULTRASONIC_TEST + RTC_TEST + E2PROM_TEST + \

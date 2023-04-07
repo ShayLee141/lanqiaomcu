@@ -9,9 +9,18 @@
 
 #include <STC15F2K60S2.H>
 
-#include "myint.h"
+#include "main.h"
+
+#ifdef MM_MODE
+
+#include "absacc.h"
+#define CHANNLE(n, x) { XBYTE[n << 13] = x; }
+
+#else
 
 #define CHANNLE(n, x) { P0 = x; P2 |= n << 5; P2 &= 0x1F; }
+
+#endif
 
 #define SCREEN_NUM 7 //界面的数量
 
