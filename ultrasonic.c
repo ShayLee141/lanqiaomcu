@@ -39,15 +39,17 @@ void TimerPCAIsr() interrupt 7
 {
 	CR = 0; //优先结束计时
 	
-	if (ultrasonic_flag == 1)
+	if (ultrasonic_flag == 1) //当处于发送阶段
 	{
 		if (CCF0) /* 接收到返回的超声波 */
-			ultrasonic_flag = 2; //这句是关键
+			ultrasonic_flag = 2; //确认接收到返回的超声波
 		else if (CF) /* 超出量程 */
-			ultrasonic_flag = 3; //这句是关键
+			ultrasonic_flag = 3; //接收不到超声波，或超出量程
 		else
 			ultrasonic_flag = 0; //意外情况
 	}
+//	else 这里本应该加这个else，但有bug，我暂时找不到
+//		ultrasonic_flag = 0; //意外情况
 	
 	CF = 0;
 	CCF0 = 0;
@@ -77,7 +79,7 @@ void sand_ultrasonic()
 	P10 = 1; Delay13us(); P10 = 0; Delay13us();
 	P10 = 1; Delay13us(); P10 = 0; Delay13us();
 	P10 = 1; Delay13us(); P10 = 0; Delay13us();
-	P10 = 1; Delay13us(); P10 = 0;
+	P10 = 1; Delay13us(); P10 = 0; //有时候，做人要直接一点（指直接复制8次）
 	EA = 1; //重新打开中断
 }
 
@@ -103,7 +105,7 @@ void calculate_distance()
 	 不一定需要这么写
 	 可以更据上面两个函数自行修改 */
 void read_distance()
-	{ //可能你会觉得这个函数写的不好，但这应该是最简单的写法了
+{ //可能你会觉得这个函数写的不好，但这应该是最简单的写法了
 	if (ultrasonic_flag > 1)
 	{
 		calculate_distance();

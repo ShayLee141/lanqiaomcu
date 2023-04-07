@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/06/2023 21:15:14 PAGE 1   
+C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/06/2023 22:58:08 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE ULTRASONIC
@@ -62,7 +62,7 @@ line level    source
   52   1        CF = 0;
   53   1        CCF0 = 0;
   54   1        CCF1 = 0; //这两个标志位虽然没有用到
-C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/06/2023 21:15:14 PAGE 2   
+C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/06/2023 22:58:08 PAGE 2   
 
   55   1        CCF2 = 0; //但是以防万一，导致中断卡住
   56   1      }
@@ -71,7 +71,7 @@ line level    source
   59          void sand_ultrasonic()
   60          { //计时在前还是发送在前都可以，在我的板子上我发现计时在前的数据比较准确
   61   1        /* 启动计时 */
-  62   1        CH = 0x8D;    //设置定时初始值，这个值是这么来的：0x8D1C ≈ 65535 - 500（厘米） * 0.0
+  62   1        CH = 0x8D;    //设置定时初始值，这个值是这么来的：0x8D1C ≈ 65535 - 500（厘米） / 0.0
              -17（厘米/微秒），想改量程可以自己算
   63   1        CL = 0x1C;    //设置定时初始值
   64   1        /* 经过测试，板子能测的最长距离是4米（至少我这块板子是这样），
@@ -126,7 +126,7 @@ line level    source
  113   1        if (ultrasonic_flag == 0)
  114   1        {
  115   2          sand_ultrasonic();
-C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/06/2023 21:15:14 PAGE 3   
+C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/06/2023 22:58:08 PAGE 3   
 
  116   2          ultrasonic_flag = 1; //进入发送阶段
  117   2        }

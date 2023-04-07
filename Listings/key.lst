@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   KEY                                                               04/06/2023 17:23:19 PAGE 1   
+C51 COMPILER V9.60.0.0   KEY                                                               04/06/2023 22:58:08 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE KEY
@@ -62,7 +62,7 @@ line level    source
   51   2          /* 行判断 */
   52   2          if (!P33) //第4行
   53   2            row = 3;
-C51 COMPILER V9.60.0.0   KEY                                                               04/06/2023 17:23:19 PAGE 2   
+C51 COMPILER V9.60.0.0   KEY                                                               04/06/2023 22:58:08 PAGE 2   
 
   54   2          else if (!P32) //第3行
   55   2            row = 2;
@@ -86,54 +86,56 @@ line level    source
   73   2          P44 = 1; //第1列
   74   2          P42 = 1; //第2列
   75   2          P35 = 1; //第3列
-  76   2          P34 = 1; //第4列
-  77   2          
-  78   2          /* 列判断 */
-  79   2          if (!P44) //第1列
-  80   2            column = 0;
-  81   2          else if (!P42) //第2列
-  82   2            column = 1;
-  83   2          else if (!P35) //第3列
-  84   2            column = 2;
-  85   2      #ifndef USE_NE555
-  86   2          else if (!P34) //第4列
-  87   2            column = 3;
-  88   2      #endif //USE_NE555
-  89   2          else //如果使误读则退出函数
-  90   2            return ;
-  91   2          
-  92   2          /* 键值判断 */
-  93   2          if (row != 255 && column != 255) //如果按键有效
-  94   2          {
-  95   3            key_value = key_pad_value_all[row][column];
-  96   3          }
-  97   2          
-  98   2          /* 按键计时 */
-  99   2          if (key_state < 250)
- 100   2            key_state++;
- 101   2        }
- 102   1        else
- 103   1        {
- 104   2      #ifdef KEY_RELEASE
- 105   2          if (key_value && key_state <= 250) //如果按键刚松开
- 106   2          {
- 107   3            if (key_state < 100) //若按下到松手时间没有超过1秒
- 108   3              key_state = 255;
- 109   3            else if (key_state < 200) //若按下到松手时间超过1秒而没超过2秒
- 110   3              key_state = 254;
- 111   3            else //若按下到松手时间超过2秒
- 112   3              key_state = 253;
- 113   3          }
- 114   2          else //按键完全松开
- 115   2      #endif //KEY_RELEASE
-C51 COMPILER V9.60.0.0   KEY                                                               04/06/2023 17:23:19 PAGE 3   
+  76   2      #ifndef USE_NE555
+  77   2          P34 = 1; //第4列
+  78   2      #endif //USE_NE555
+  79   2          
+  80   2          /* 列判断 */
+  81   2          if (!P44) //第1列
+  82   2            column = 0;
+  83   2          else if (!P42) //第2列
+  84   2            column = 1;
+  85   2          else if (!P35) //第3列
+  86   2            column = 2;
+  87   2      #ifndef USE_NE555
+  88   2          else if (!P34) //第4列
+  89   2            column = 3;
+  90   2      #endif //USE_NE555
+  91   2          else //如果使误读则退出函数
+  92   2            return ;
+  93   2          
+  94   2          /* 键值判断 */
+  95   2          if (row != 255 && column != 255) //如果按键有效
+  96   2          {
+  97   3            key_value = key_pad_value_all[row][column];
+  98   3          }
+  99   2          
+ 100   2          /* 按键计时 */
+ 101   2          if (key_state < 250)
+ 102   2            key_state++;
+ 103   2        }
+ 104   1        else
+ 105   1        {
+ 106   2      #ifdef KEY_RELEASE
+ 107   2          if (key_value && key_state <= 250) //如果按键刚松开
+ 108   2          {
+ 109   3            if (key_state < 100) //若按下到松手时间没有超过1秒
+ 110   3              key_state = 255;
+ 111   3            else if (key_state < 200) //若按下到松手时间超过1秒而没超过2秒
+ 112   3              key_state = 254;
+ 113   3            else //若按下到松手时间超过2秒
+ 114   3              key_state = 253;
+ 115   3          }
+C51 COMPILER V9.60.0.0   KEY                                                               04/06/2023 22:58:08 PAGE 3   
 
- 116   2          {
- 117   3            key_value = 0;
- 118   3            key_state = 0;
- 119   3          }
- 120   2        }
- 121   1      }
+ 116   2          else //按键完全松开
+ 117   2      #endif //KEY_RELEASE
+ 118   2          {
+ 119   3            key_value = 0;
+ 120   3            key_state = 0;
+ 121   3          }
+ 122   2        }
+ 123   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

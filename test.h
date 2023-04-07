@@ -36,7 +36,7 @@
 #define DISPLAY_TEST 0
 /* 超声波测试
    显示当前测距，距离小于30会打开继电器 */
-#define ULTRASONIC_TEST 0
+#define ULTRASONIC_TEST 1
 /* 实时时钟测试
 	 按键s9可以启动和暂停时钟	 */
 #define RTC_TEST 0
@@ -45,7 +45,7 @@
 /* adc_dac测试 */
 #define ADC_DAC_TEST 0
 /* 温度测试 */
-#define TEMP_TEST 1
+#define TEMP_TEST 0
 /* 串口测试 */
 #define UART_TEST 0
 /* 所有芯片综合测试 */
