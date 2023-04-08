@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/07/2023 21:29:13 PAGE 1   
+C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/08/2023 11:00:50 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE ULTRASONIC
@@ -62,7 +62,7 @@ line level    source
   52   1      //    ultrasonic_flag = 0; //意外情况
   53   1        
   54   1        CF = 0;
-C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/07/2023 21:29:13 PAGE 2   
+C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/08/2023 11:00:50 PAGE 2   
 
   55   1        CCF0 = 0;
   56   1        CCF1 = 0; //这两个标志位虽然没有用到
@@ -126,7 +126,7 @@ line level    source
  113   2        }
  114   1        
  115   1        if (ultrasonic_flag == 0)
-C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/07/2023 21:29:13 PAGE 3   
+C51 COMPILER V9.60.0.0   ULTRASONIC                                                        04/08/2023 11:00:50 PAGE 3   
 
  116   1        {
  117   2          sand_ultrasonic();

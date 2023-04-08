@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 1   
+C51 COMPILER V9.60.0.0   TEST                                                              04/08/2023 11:00:50 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TEST
@@ -62,7 +62,7 @@ line level    source
                   }
                   
                   if (Timer100ms_cnt >= 100) //10ms更新一次pwm占空比和led输出状态
-C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 2   
+C51 COMPILER V9.60.0.0   TEST                                                              04/08/2023 11:00:50 PAGE 2   
 
                   {
                     Timer100ms_cnt = 0;
@@ -126,7 +126,7 @@ line level    source
                           led_state |= 0x40;
                         
                         else if (key_value == 9 && key_state == 253) //s9按下2秒以上再松开
-C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 3   
+C51 COMPILER V9.60.0.0   TEST                                                              04/08/2023 11:00:50 PAGE 3   
 
                           led_state |= 0x80;
                       }
@@ -190,7 +190,7 @@ line level    source
                         screen = 5;
                       }
                     }
-C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 4   
+C51 COMPILER V9.60.0.0   TEST                                                              04/08/2023 11:00:50 PAGE 4   
 
                     else
                     {
@@ -254,7 +254,7 @@ line level    source
                       p = 0;
                     distance_out = median_filter(distance_buf); //使用滤波的范例，不使用滤波也行的
                     
-C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 5   
+C51 COMPILER V9.60.0.0   TEST                                                              04/08/2023 11:00:50 PAGE 5   
 
                     /* 控制继电器 */;
                     if (distance < 30)
@@ -318,7 +318,7 @@ line level    source
                 }
                 
                 dig_all[2][0] = time_10[0] / 10;
-C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 6   
+C51 COMPILER V9.60.0.0   TEST                                                              04/08/2023 11:00:50 PAGE 6   
 
                 dig_all[2][1] = time_10[0] % 10;
                 
@@ -382,7 +382,7 @@ line level    source
                     
                     if (key_value == 9 && key_state == 2)
                     {
-C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 7   
+C51 COMPILER V9.60.0.0   TEST                                                              04/08/2023 11:00:50 PAGE 7   
 
                       operate = 10;
                     }
@@ -446,7 +446,7 @@ line level    source
                       case 12:
                         dac_stop();
                         break;
-C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 8   
+C51 COMPILER V9.60.0.0   TEST                                                              04/08/2023 11:00:50 PAGE 8   
 
                     }
                   }
@@ -510,7 +510,7 @@ line level    source
               /* 串口测试 */
               void test(void)
               {
-C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 9   
+C51 COMPILER V9.60.0.0   TEST                                                              04/08/2023 11:00:50 PAGE 9   
 
                 dig_switch = 0x00;
                 
@@ -574,7 +574,7 @@ line level    source
  546   1        adc_read();
  547   1        
  548   1        dig_all[1][2] = dig_all[1][5] = 17; //分隔符“-”
-C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 10  
+C51 COMPILER V9.60.0.0   TEST                                                              04/08/2023 11:00:50 PAGE 10  
 
  549   1        
  550   1        loop:
@@ -638,7 +638,7 @@ line level    source
  608   2          dig_all[1][6] = time_10[2] / 10;
  609   2          dig_all[1][7] = time_10[2] % 10;
  610   2          
-C51 COMPILER V9.60.0.0   TEST                                                              04/07/2023 21:29:58 PAGE 11  
+C51 COMPILER V9.60.0.0   TEST                                                              04/08/2023 11:00:50 PAGE 11  
 
  611   2          /* 界面2 ADC通道0、1 */
  612   2          dig_all[2][0] = adc_level[0] / 100;
